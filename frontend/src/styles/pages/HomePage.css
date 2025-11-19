@@ -1,0 +1,5 @@
+.vehicle-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.service-wrap{display:flex;gap:16px}
+.service-table{flex:1;overflow:auto;background:var(--card);padding:12px;border-radius:10px;border:1px solid var(--border)}
+.documents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.section-title{color:var(--nav-title);font-size:1.125rem;margin:0 0 12px 0}

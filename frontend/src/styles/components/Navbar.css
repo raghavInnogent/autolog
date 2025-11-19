@@ -1,0 +1,16 @@
+.autolog-navbar{display:flex;align-items:center;padding:12px 24px;background:var(--nav-bg);border-bottom:1px solid rgba(255,255,255,0.06);position:relative;color:var(--nav-text)}
+.autolog-left{display:flex;align-items:center;gap:16px}
+.autolog-logo{font-weight:700;font-size:1.25rem;color:#fff}
+.nav-center{position:absolute;left:0;right:0;display:flex;justify-content:center;pointer-events:none}
+.nav-links{display:flex;gap:18px;pointer-events:auto}
+.nav-link{color:var(--nav-text);text-decoration:none;padding:8px 10px;border-radius:8px;position:relative}
+.nav-link:hover{background:transparent}
+.nav-link::after{content:'';position:absolute;left:8px;right:8px;bottom:6px;height:2px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform 180ms ease-in-out;border-radius:2px}
+.nav-link:hover::after{transform:scaleX(1)}
+.navbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.icon-btn{background:transparent;border:1px solid var(--border);padding:8px;border-radius:8px;color:var(--text);cursor:pointer;transition:all 180ms ease}
+.autolog-navbar .icon-btn{color:var(--nav-text);border-color:rgba(255,255,255,0.12)}
+.autolog-navbar .icon-btn svg{color:var(--nav-text)}
+.autolog-navbar .icon-btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.3);box-shadow:0 0 8px rgba(30,144,255,0.2)}
+.dropdown-btn{background:transparent;border:1px solid var(--border);padding:8px 12px;border-radius:6px;color:var(--text);cursor:pointer;width:100%;text-align:left;transition:all 180ms ease}
+.dropdown-btn:hover{background:linear-gradient(90deg, rgba(30,144,255,0.1), rgba(2,6,23,0.02));border-color:var(--accent);color:var(--nav-title)}

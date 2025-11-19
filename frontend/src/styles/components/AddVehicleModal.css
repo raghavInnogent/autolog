@@ -1,0 +1,4 @@
+.add-vehicle-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5)}
+.add-vehicle-modal form{background:var(--card);padding:20px;border-radius:8px;width:420px;border:1px solid var(--border)}
+.add-vehicle-modal label{display:block;margin-top:8px}
+.add-vehicle-modal input{width:100%;padding:8px;margin-top:6px;border-radius:6px}
