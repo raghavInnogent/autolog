@@ -27,7 +27,7 @@ public class ServiceRecord {
 
     private String serviceCentre;
 
-    @ElementCollection   
+    @OneToMany
     private List<ServicedItems> servicedItems;
     
 

@@ -28,7 +28,6 @@ public class User {
 
     
     @OneToMany
-    @ElementCollection
     List<Vehicle> vehicles;
 
 }

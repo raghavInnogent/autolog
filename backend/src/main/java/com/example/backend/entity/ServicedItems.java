@@ -20,7 +20,7 @@ public class ServicedItems {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne  
+    @ManyToOne
     private ServiceCategories servicedItems;
 
     private LocalDate expirationDate;

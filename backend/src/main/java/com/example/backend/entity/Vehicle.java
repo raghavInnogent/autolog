@@ -23,7 +23,7 @@ public class Vehicle {
     @ManyToOne
     private User owner;
 
-    private String registrationNumber;
+    private String vehicleNumber;
 
     private String model;
 
@@ -34,11 +34,9 @@ public class Vehicle {
     private String type;
 
     @OneToMany
-    @ElementCollection
     private List<Document> documents;
 
     @OneToMany
-    @ElementCollection
     private List<ServiceRecord> servicings;
 
 }

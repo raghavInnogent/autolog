@@ -7,11 +7,14 @@ public class VehicleSummaryDTO {
 
     private Long id;
 
-    private String registrationNumber;
+    private String vehicleNumber;
 
     private String model;
 
     private String company;
 
     private String type;
+
+    public VehicleSummaryDTO(Long id, String company, String model, String vehicleNumber) {
+    }
 }
