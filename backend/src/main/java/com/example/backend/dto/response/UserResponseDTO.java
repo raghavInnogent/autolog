@@ -1,9 +1,9 @@
-package com.example.backend.dto.user;
+package com.example.backend.dto.response;
 
 import lombok.Data;
 import java.util.List;
 
-import com.example.backend.dto.vehicle.VehicleSummaryDTO;
+import com.example.backend.dto.summary.VehicleSummaryDTO;
 
 @Data
 public class UserResponseDTO {

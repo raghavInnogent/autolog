@@ -1,4 +1,4 @@
-package com.example.backend.dto.vehicle;
+package com.example.backend.dto.request;
 
 import lombok.Data;
 

@@ -2,11 +2,7 @@ package com.example.backend.entity;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,6 +20,9 @@ public class Document {
 	
 	@Column(length = 1000)
 	private String docImage;
+
+    @ManyToOne
+    private Vehicle vehicle;
 	
 	private String docName;
 	

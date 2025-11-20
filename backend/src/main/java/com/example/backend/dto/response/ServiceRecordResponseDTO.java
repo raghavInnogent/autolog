@@ -1,4 +1,4 @@
-package com.example.backend.dto.serviceRecord;
+package com.example.backend.dto.response;
 
 import lombok.Data;
 import java.time.LocalDate;
@@ -17,5 +17,5 @@ public class ServiceRecordResponseDTO {
 
     private String serviceCentre;
 
-    private List<ServicedItemsResponseDTO> servicedItems;  
+    private List<ServicedItemsResponseDTO> servicedItems;
 }

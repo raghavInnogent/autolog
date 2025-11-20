@@ -1,9 +1,8 @@
-package com.example.backend.dto.vehicle;
+package com.example.backend.dto;
 
+import com.example.backend.dto.summary.ServiceRecordSummaryDTO;
 import lombok.Data;
 import java.util.List;
-import com.example.backend.dto.DocumentSummaryDTO;
-import com.example.backend.dto.serviceRecord.ServiceRecordSummaryDTO;
 
 @Data
 public class VehicleResponseDTO {
@@ -21,4 +20,8 @@ public class VehicleResponseDTO {
     private String description;
 
     private String type;
+
+    private List<DocumentSummaryDTO> documents;
+
+    private List<ServiceRecordSummaryDTO> servicings;
 }

@@ -1,4 +1,4 @@
-package com.example.backend.dto.serviceRecord;
+package com.example.backend.dto.request;
 
 import lombok.Data;
 import java.time.LocalDate;
