@@ -14,4 +14,9 @@ public class VehicleRequestDTO {
     private String description;
 
     private String type;
+
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd")
+    private java.time.LocalDate purchaseDate;
+
+    private String image;
 }

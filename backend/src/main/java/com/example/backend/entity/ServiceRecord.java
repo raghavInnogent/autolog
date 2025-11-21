@@ -27,6 +27,12 @@ public class ServiceRecord {
 
     private String serviceCentre;
 
+    private Integer mileage;
+
+    private String invoice;
+
+    private String type;
+
     @OneToMany
     private List<ServicedItems> servicedItems;
     

@@ -4,7 +4,6 @@ import lombok.Data;
 import java.time.LocalDate;
 
 import com.example.backend.dto.serviceOptions.ServiceCategoriesResponseDTO;
-import com.example.backend.entity.ServiceCategories;
 
 @Data
 public class ServicedItemsResponseDTO {

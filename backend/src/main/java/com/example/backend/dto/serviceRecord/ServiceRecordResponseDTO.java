@@ -13,9 +13,15 @@ public class ServiceRecordResponseDTO {
 
     private Integer cost;
 
-    private LocalDate dateOfService;
+    private LocalDate date;
 
-    private String serviceCentre;
+    private String workshop;
 
-    private List<ServicedItemsResponseDTO> servicedItems;  
+    private Integer mileage;
+
+    private String invoice;
+
+    private String type;
+
+    private List<String> items;  
 }

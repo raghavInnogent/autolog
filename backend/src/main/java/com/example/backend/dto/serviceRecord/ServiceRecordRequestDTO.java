@@ -7,11 +7,19 @@ import java.util.List;
 @Data
 public class ServiceRecordRequestDTO {
 
+    private Long vehicleId;
+
     private Integer cost;
 
-    private LocalDate dateOfService;
+    private LocalDate date;
 
-    private String serviceCentre;
+    private String workshop;
 
-    private List<ServicedItemRequestDTO> servicedItems;
+    private Integer mileage;
+
+    private String invoice;
+
+    private String type;
+
+    private List<String> items;
 }

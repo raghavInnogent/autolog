@@ -7,7 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -20,23 +19,28 @@ public class Vehicle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
-    private String vehicleNumber;
+    private String registrationNumber;
 
     private String model;
 
     private String company;
 
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
     private String description;
 
     private String type;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Document> documents;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ServiceRecord> servicings;
 
+    private LocalDate purchaseDate;
+    
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    private String image;
 }

@@ -1,9 +1,6 @@
 package com.example.backend.dto.vehicle;
 
 import lombok.Data;
-import java.util.List;
-import com.example.backend.dto.DocumentSummaryDTO;
-import com.example.backend.dto.serviceRecord.ServiceRecordSummaryDTO;
 
 @Data
 public class VehicleResponseDTO {
@@ -21,4 +18,9 @@ public class VehicleResponseDTO {
     private String description;
 
     private String type;
+
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd")
+    private java.time.LocalDate purchaseDate;
+
+    private String image;
 }

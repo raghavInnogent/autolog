@@ -1,0 +1,17 @@
+{
+  "C_Cpp.default.compilerPath": "C:\\MinGW\\bin\\gcc.exe",
+  "cmake.showOptionsMovedNotification": false,
+  "cmake.configureOnOpen": true,
+  "remote.portsAttributes": {
+    "1080": {
+      "protocol": "https"
+    }
+  },
+  "editor.mouseWheelZoom": true,
+  "editor.acceptSuggestionOnEnter": "smart",
+  "editor.inlineSuggest.edits.showCollapsed": true,
+  "git.openRepositoryInParentFolders": "never",
+  "workbench.editor.empty.hint": "hidden",
+  "python.createEnvironment.trigger": "off",
+  "javascript.updateImportsOnFileMove.enabled": "always"
+}

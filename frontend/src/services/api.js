@@ -1,12 +1,22 @@
 import axios from 'axios'
 
+const baseURL = import.meta.env.DEV ? '/api' : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080')
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080',
+  baseURL,
   withCredentials: true, // Include http-only cookies in all requests
 })
 
 // Interceptor for http-only cookies - no Authorization header needed
 api.interceptors.request.use((config)=>{
+  // Attach token from localStorage (if any) so backend JWT auth works
+  try{
+    const token = localStorage.getItem('autolog_token')
+    if(token){
+      config.headers = config.headers || {}
+      if(!config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`
+    }
+  }catch(e){/* ignore */}
   // Cookies are automatically sent by browser with withCredentials: true
   return config
 })
@@ -14,7 +24,10 @@ api.interceptors.request.use((config)=>{
 export default api
 
 export const vehiclesAPI = {
-  getAll: () => api.get('/vehicles'),
+  // backend exposes GET /vehicles/getAll
+  getAll: () => api.get('/vehicles/getAll'),
+  // alias for older callers
+  getAllLegacy: () => api.get('/vehicles'),
   get: (id) => api.get(`/vehicles/${id}`),
   create: (data) => api.post('/vehicles', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
@@ -22,7 +35,7 @@ export const vehiclesAPI = {
 }
 
 export const documentsAPI = {
-  getAll: () => api.get('/documents'),
+  getAll: (params) => api.get('/documents', { params }),
   upload: (formData) => api.post('/documents', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 }
 
@@ -33,4 +46,25 @@ export const servicesAPI = {
 
 export const notificationsAPI = {
   getAll: () => api.get('/notifications'),
+}
+
+export const schedulesAPI = {
+  getUpcoming: (vehicleId) => api.get('/schedules/upcoming', { params: { vehicleId } }),
+}
+
+export const analyticsAPI = {
+  spendByCategory: (vehicleId, period) => api.get('/analytics/spend-by-category', { params: { vehicleId, period } }),
+  costPerKm: (vehicleId, period) => api.get('/analytics/cost-per-km', { params: { vehicleId, period } }),
+  serviceFrequency: (vehicleId, period) => api.get('/analytics/service-frequency', { params: { vehicleId, period } }),
+  ownershipCost: (vehicleId) => api.get('/analytics/ownership-cost', { params: { vehicleId } }),
+}
+
+export const authAPI = {
+  login: (email, password) => api.post('/auth/login', { email, password }),
+  logout: () => api.post('/auth/logout'),
+  me: () => api.get('/auth/me'),
+}
+
+export const usersAPI = {
+  create: (data) => api.post('/users/create', data),
 }

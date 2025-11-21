@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { servicesAPI } from '../services/api'
+import AddServiceModal from './AddServiceModal'
 import '../styles/components/ServiceTable.css'
 
 export default function ServiceTable(){
@@ -7,6 +8,7 @@ export default function ServiceTable(){
   const [loading, setLoading] = useState(false)
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
+  const [openAdd, setOpenAdd] = useState(false)
 
   const fetch = async ()=>{
     setLoading(true)
@@ -32,7 +34,7 @@ export default function ServiceTable(){
           <button className="navy-btn" onClick={fetch} style={{marginLeft:8}}>Filter</button>
         </div>
         <div>
-          <button className="navy-btn">Add Service Record</button>
+          <button className="navy-btn" onClick={()=>setOpenAdd(true)}>Add Service Record</button>
         </div>
       </div>
 
@@ -64,6 +66,8 @@ export default function ServiceTable(){
           </tbody>
         </table>
       )}
+
+      {openAdd && <AddServiceModal onClose={()=>setOpenAdd(false)} onCreated={fetch} />}
     </div>
   )
 }

@@ -5,10 +5,12 @@ import com.example.backend.dto.user.UserRequestDTO;
 import com.example.backend.dto.user.UserResponseDTO;
 import com.example.backend.dto.vehicle.VehicleSummaryDTO;
 import com.example.backend.entity.User;
-
+import com.example.backend.enums.MessageKey;
+import com.example.backend.mapper.UserMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,31 +24,29 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
-    // Create
     public UserResponseDTO create(UserRequestDTO dto) {
 
         if (userDao.existsByEmail(dto.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, com.example.backend.enums.MessageKey.EMAIL_ALREADY_EXISTS.name());
         }
 
         User user = new User();
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(dto.getPassword()));
         user.setContactNo(dto.getContactNo());
+        user.setRole(com.example.backend.enums.UserRole.USER);
 
         User saved = userDao.save(user);
         return convert(saved);
     }
 
-    // Get by id
     public UserResponseDTO getById(Long id) {
         User user = userDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
         return convert(user);
     }
 
-    // Get all
     public List<UserResponseDTO> getAll() {
         return userDao.findAll()
                 .stream()
@@ -58,34 +58,36 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO update(Long id, UserRequestDTO dto) {
 
         User user = userDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
 
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
+        user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(dto.getPassword()));
         user.setContactNo(dto.getContactNo());
 
         User updated = userDao.save(user);
         return convert(updated);
     }
 
-    // Delete
     public UserResponseDTO delete(Long id) {
         User user = userDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,MessageKey.USER_NOT_FOUND.name()));
         UserResponseDTO dto = convert(user);
         userDao.delete(user);
         return dto;
     }
 
-    // Convert Entity -> DTO
-    private UserResponseDTO convert(User user) {
-        UserResponseDTO dto = new UserResponseDTO();
+    public void updatePassword(String email, String oldPassword, String newPassword) {
+        User user = userDao.findByEmail(email);
+        if (user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name());
+        var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        if (!encoder.matches(oldPassword, user.getPassword())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.INVALID_CREDENTIALS.name());
+        user.setPassword(encoder.encode(newPassword));
+        userDao.save(user);
+    }
 
-        dto.setId(user.getId());
-        dto.setName(user.getName());
-        dto.setEmail(user.getEmail());
-        dto.setContactNo(user.getContactNo());
+    private UserResponseDTO convert(User user) {
+        UserResponseDTO dto = UserMapper.toResponse(user);
 
         if (user.getVehicles() != null) {
             dto.setVehicles(
@@ -94,7 +96,7 @@ public class UserServiceImpl implements UserService {
                                     v.getId(),
                                     v.getCompany(),
                                     v.getModel(),
-                                    v.getVehicleNumber()
+                                    v.getRegistrationNumber()
                             ))
                             .collect(Collectors.toList())
             );

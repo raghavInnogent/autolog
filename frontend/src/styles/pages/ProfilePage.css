@@ -1,0 +1,8 @@
+/* frontend/src/styles/pages/ProfilePage.css */
+.profile-page{padding:12px}
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px;box-shadow:0 8px 20px rgba(2,6,23,0.06)}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.profile-vehicle{padding:12px;border:1px solid var(--border);border-radius:10px;background:linear-gradient(180deg, rgba(11,18,32,0.04), rgba(255,255,255,0.02));transition:all 180ms ease}
+.profile-vehicle:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(30,144,255,0.12);border-color:rgba(30,144,255,0.25)}
+.profile-title{font-weight:700;color:var(--nav-title)}
+.profile-meta{color:var(--muted)}

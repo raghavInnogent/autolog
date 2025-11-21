@@ -11,4 +11,6 @@ public interface UserService {
     public List<UserResponseDTO> getAll();
     public UserResponseDTO update(Long id, UserRequestDTO dto);
     public UserResponseDTO delete(Long id);
+
+            void updatePassword(String name, String oldPassword, String newPassword);
 }

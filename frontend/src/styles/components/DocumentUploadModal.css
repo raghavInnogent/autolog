@@ -1,0 +1,7 @@
+
+.document-upload-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5)}
+.document-upload-modal form{background:var(--card);padding:20px;border-radius:10px;width:480px;border:1px solid var(--border);box-shadow:0 10px 30px rgba(2,6,23,0.25)}
+.document-upload-modal label{display:block;margin-top:8px;color:var(--nav-title);font-weight:600}
+.document-upload-modal input{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid var(--border)}
+.document-upload-modal .navy-btn{margin-top:12px}
+@media (max-width:600px){.document-upload-modal form{width:92vw;padding:16px}}
