@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import com.example.backend.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,7 +27,7 @@ public class User {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    private com.example.backend.enums.UserRole role;
+    private UserRole role;
 
 	private Long contactNo;
 

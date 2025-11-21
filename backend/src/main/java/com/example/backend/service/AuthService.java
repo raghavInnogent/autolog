@@ -6,5 +6,5 @@ import jakarta.servlet.http.HttpSession;
 public interface AuthService {
     UserResponseDTO login(String email, String password);
     void logout();
-    UserResponseDTO me();
+    UserResponseDTO getCurrentUser();
 }

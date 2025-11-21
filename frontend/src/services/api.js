@@ -7,17 +7,15 @@ const api = axios.create({
   withCredentials: true, // Include http-only cookies in all requests
 })
 
-// Interceptor for http-only cookies - no Authorization header needed
-api.interceptors.request.use((config)=>{
-  // Attach token from localStorage (if any) so backend JWT auth works
-  try{
+// Interceptor to attach JWT token to requests
+api.interceptors.request.use((config) => {
+  try {
     const token = localStorage.getItem('autolog_token')
-    if(token){
+    if (token) {
       config.headers = config.headers || {}
-      if(!config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`
+      if (!config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`
     }
-  }catch(e){/* ignore */}
-  // Cookies are automatically sent by browser with withCredentials: true
+  } catch (e) {/* ignore */ }
   return config
 })
 
@@ -62,7 +60,7 @@ export const analyticsAPI = {
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   logout: () => api.post('/auth/logout'),
-  me: () => api.get('/auth/me'),
+  getCurrentUser: () => api.get('/auth/me'),
 }
 
 export const usersAPI = {

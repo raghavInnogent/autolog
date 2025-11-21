@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         // Stateless logout (client discards token)
     }
 
-    public UserResponseDTO me() {
+    public UserResponseDTO getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.UNAUTHORIZED.name());

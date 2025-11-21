@@ -27,25 +27,21 @@ public class UserController {
         return ResponseEntity.status(201).body(userService.create(dto));
     }
 
-
     @GetMapping("/getById/{id}")
     public ResponseEntity<UserResponseDTO> get(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getById(id));
     }
-
 
     @GetMapping("/getAll")
     public ResponseEntity<List<UserResponseDTO>> getAll() {
         return ResponseEntity.ok(userService.getAll());
     }
 
-
     @PutMapping("/updateById/{id}")
     public ResponseEntity<UserResponseDTO> update(@PathVariable Long id,@RequestBody UserRequestDTO dto)
     {
         return ResponseEntity.ok(userService.update(id, dto));
     }
-
 
     @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

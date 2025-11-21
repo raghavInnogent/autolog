@@ -33,8 +33,8 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponseDTO> me(){
-        return ResponseEntity.ok(authService.me());
+    public ResponseEntity<UserResponseDTO> getCurrentUser(){
+        return ResponseEntity.ok(authService.getCurrentUser());
     }
 
     public static class LoginRequest{
