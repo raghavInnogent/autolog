@@ -32,7 +32,7 @@ public class User {
 	private Long contactNo;
 
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     List<Vehicle> vehicles;
 
 }

@@ -1,12 +1,13 @@
 package com.example.backend.controller;
 
-import com.example.backend.dao.UserDao;
+
 import com.example.backend.dto.vehicle.VehicleRequestDTO;
 import com.example.backend.dto.vehicle.VehicleResponseDTO;
 import com.example.backend.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.example.backend.security.UserPrincipal;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
@@ -17,48 +18,35 @@ public class VehicleController {
 
     @Autowired
     private VehicleService vehicleService;
-    @Autowired
-    private UserDao userDao;
 
     @GetMapping("/getAll")
     public ResponseEntity<List<VehicleResponseDTO>> getAll() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Long userId = userDao.findByEmail(email).getId();
-        return ResponseEntity.ok(vehicleService.getAll(userId));
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(vehicleService.getAll(principal.getId()));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> get(@PathVariable Long id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Long userId = userDao.findByEmail(email).getId();
-        return ResponseEntity.ok(vehicleService.getById(id, userId));
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(vehicleService.getById(id, principal.getId()));
     }
 
     @PostMapping
     public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth == null || !auth.isAuthenticated()) return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body(null);
-        String email = auth.getName();
-        Long ownerId = userDao.findByEmail(email).getId();
-        return ResponseEntity.status(201).body(vehicleService.create(ownerId, dto));
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.status(201).body(vehicleService.create(principal.getId(), dto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<VehicleResponseDTO> update(@PathVariable Long id, @RequestBody VehicleRequestDTO dto) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Long userId = userDao.findByEmail(email).getId();
-        return ResponseEntity.ok(vehicleService.update(id, userId, dto));
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ResponseEntity.ok(vehicleService.update(id, principal.getId(), dto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Long userId = userDao.findByEmail(email).getId();
-        vehicleService.delete(id, userId);
+        UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        vehicleService.delete(id, principal.getId());
         return ResponseEntity.noContent().build();
     }
 }

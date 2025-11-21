@@ -33,7 +33,7 @@ public class ServiceRecord {
 
     private String type;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ServicedItems> servicedItems;
     
 

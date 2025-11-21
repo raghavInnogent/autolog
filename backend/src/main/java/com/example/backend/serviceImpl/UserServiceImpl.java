@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
 import com.example.backend.dto.user.UserRequestDTO;
@@ -7,10 +7,12 @@ import com.example.backend.dto.vehicle.VehicleSummaryDTO;
 import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.UserMapper;
+import com.example.backend.service.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -75,12 +77,14 @@ public class UserServiceImpl implements UserService {
         UserResponseDTO dto = convert(user);
         userDao.delete(user);
         return dto;
+
+
     }
 
     public void updatePassword(String email, String oldPassword, String newPassword) {
         User user = userDao.findByEmail(email);
         if (user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name());
-        var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         if (!encoder.matches(oldPassword, user.getPassword())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.INVALID_CREDENTIALS.name());
         user.setPassword(encoder.encode(newPassword));
         userDao.save(user);

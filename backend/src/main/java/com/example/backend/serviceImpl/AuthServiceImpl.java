@@ -5,6 +5,7 @@ import com.example.backend.dto.user.UserResponseDTO;
 import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.UserMapper;
+import com.example.backend.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -12,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
 
 
 @Service
@@ -42,7 +42,10 @@ public class AuthServiceImpl implements AuthService {
         if(auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.UNAUTHORIZED.name());
         }
-        User user = userDao.findByEmail(auth.getName());
+        
+        UserPrincipal principal = (UserPrincipal) auth.getPrincipal();
+        User user = userDao.findById(principal.getId()).orElse(null);
+        
         if(user == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.UNAUTHORIZED.name());
         }

@@ -41,6 +41,6 @@ public class Vehicle {
 
     private LocalDate purchaseDate;
     
-    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String image;
 }

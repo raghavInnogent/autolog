@@ -69,6 +69,6 @@ public class VehicleServiceImpl implements VehicleService {
         if(!v.getOwner().getId().equals(userId)){
              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
-        vehicleDao.delete(v);   
+        vehicleDao.delete(v);
     }
 }
