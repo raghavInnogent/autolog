@@ -30,7 +30,7 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.getById(id, principal.getId()));
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.status(201).body(vehicleService.create(principal.getId(), dto));
