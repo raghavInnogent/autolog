@@ -1,15 +1,15 @@
-package com.example.backend.dto.document;
+package com.example.backend.dto.request;
 
 import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class DocumentResponseDTO {
-    private Integer id;
+public class DocumentRequestDTO {
+
     private Long vehicleId;
+    private String registrationNumber;
     private String name;
     private String type;
     private LocalDate issuedDate;
     private LocalDate expiry;
-    private String url;
 }

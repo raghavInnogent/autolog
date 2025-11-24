@@ -1,9 +1,9 @@
-package com.example.backend.dto.serviceRecord;
+package com.example.backend.dto.response;
 
 import lombok.Data;
 import java.time.LocalDate;
 
-import com.example.backend.dto.serviceOptions.ServiceCategoriesResponseDTO;
+import com.example.backend.dto.response.ServiceCategoriesResponseDTO;
 
 @Data
 public class ServicedItemsResponseDTO {

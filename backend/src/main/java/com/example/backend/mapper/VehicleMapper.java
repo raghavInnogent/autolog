@@ -1,44 +1,32 @@
 package com.example.backend.mapper;
 
-import com.example.backend.dto.vehicle.VehicleRequestDTO;
-import com.example.backend.dto.vehicle.VehicleResponseDTO;
-import com.example.backend.dto.vehicle.VehicleSummaryDTO;
+import com.example.backend.dto.request.VehicleRequestDTO;
+import com.example.backend.dto.response.VehicleResponseDTO;
+import com.example.backend.dto.summary.VehicleSummaryDTO;
 import com.example.backend.entity.Vehicle;
+import org.mapstruct.*;
 
-public class VehicleMapper {
+import java.util.ArrayList;
 
-    public static Vehicle toEntity(VehicleRequestDTO dto, Vehicle v) {
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {
+                ServiceRecordMapper.class,
+                DocumentMapper.class
+        }
+)
+public interface VehicleMapper {
 
-        v.setRegistrationNumber(dto.getRegistrationNumber());
-        v.setModel(dto.getModel());
-        v.setCompany(dto.getCompany());
-        v.setDescription(dto.getDescription());
-        v.setType(dto.getType());
-        v.setPurchaseDate(dto.getPurchaseDate());
-        v.setImage(dto.getImage());
-        return v;
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "owner", ignore = true)
+    @Mapping(target = "documents", expression = "java(new java.util.ArrayList<>())")
+    @Mapping(target = "servicings", expression = "java(new java.util.ArrayList<>())")
+    Vehicle toEntity(VehicleRequestDTO dto);
 
-    public static VehicleResponseDTO toResponse(Vehicle v) {
-        VehicleResponseDTO dto = new VehicleResponseDTO();
-        dto.setId(v.getId());
-        dto.setOwnerId(v.getOwner() != null ? v.getOwner().getId() : null);
-        dto.setRegistrationNumber(v.getRegistrationNumber());
-        dto.setModel(v.getModel());
-        dto.setCompany(v.getCompany());
-        dto.setDescription(v.getDescription());
-        dto.setType(v.getType());
-        dto.setPurchaseDate(v.getPurchaseDate());
-        dto.setImage(v.getImage());
-        return dto;
-    }
+     VehicleSummaryDTO toSummaryDTO(Vehicle vehicle);
 
-    public static VehicleSummaryDTO toSummary(Vehicle v) {
-        return new VehicleSummaryDTO(
-                v.getId(),
-                v.getCompany(),
-                v.getModel(),
-                v.getRegistrationNumber()
-        );
-    }
+    @Mapping(source = "owner.id", target = "ownerId")
+    @Mapping(source = "documents", target = "documents")
+    @Mapping(source = "servicings", target = "servicings")
+    VehicleResponseDTO toResponseDTO(Vehicle vehicle);
 }

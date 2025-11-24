@@ -1,14 +1,13 @@
 package com.example.backend.controller;
 
 
-import com.example.backend.dto.vehicle.VehicleRequestDTO;
-import com.example.backend.dto.vehicle.VehicleResponseDTO;
+import com.example.backend.dto.request.VehicleRequestDTO;
+import com.example.backend.dto.response.VehicleResponseDTO;
 import com.example.backend.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.backend.security.UserPrincipal;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 

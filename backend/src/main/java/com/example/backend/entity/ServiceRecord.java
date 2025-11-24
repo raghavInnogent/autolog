@@ -25,7 +25,7 @@ public class ServiceRecord {
 
     private LocalDate dateOfService;
 
-    private String serviceCentre;
+    private String workshop;
 
     private Integer mileage;
 

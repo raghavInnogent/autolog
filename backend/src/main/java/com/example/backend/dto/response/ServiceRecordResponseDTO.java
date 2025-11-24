@@ -1,17 +1,19 @@
-package com.example.backend.dto.serviceRecord;
+package com.example.backend.dto.response;
 
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
 
 @Data
-public class ServiceRecordRequestDTO {
+public class ServiceRecordResponseDTO {
+
+    private Long id;
 
     private Long vehicleId;
 
     private Integer cost;
 
-    private LocalDate date;
+    private LocalDate dadateOfServicete;
 
     private String workshop;
 

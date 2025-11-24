@@ -1,4 +1,4 @@
-package com.example.backend.dto.serviceRecord;
+package com.example.backend.dto.summary;
 
 import lombok.Data;
 import java.time.LocalDate;
@@ -12,5 +12,5 @@ public class ServiceRecordSummaryDTO {
 
     private LocalDate dateOfService;
 
-    private String serviceCentre;
+    private String workshop;
 }

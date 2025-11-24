@@ -1,11 +1,11 @@
-package com.example.backend.service;
+package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
-import com.example.backend.dto.user.UserResponseDTO;
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.UserMapper;
-import com.example.backend.security.UserPrincipal;
+import com.example.backend.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -14,12 +14,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.example.backend.security.UserPrincipal;
+
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private UserMapper userMapper;
 
     public UserResponseDTO login(String email, String password) {
         User user = userDao.findByEmail(email);
@@ -30,11 +35,10 @@ public class AuthServiceImpl implements AuthService {
         if(!encoder.matches(password, user.getPassword())){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.INVALID_CREDENTIALS.name());
         }
-        return UserMapper.toResponse(user);
+        return userMapper.toResponseDTO(user);
     }
 
     public void logout() {
-        // Stateless logout (client discards token)
     }
 
     public UserResponseDTO getCurrentUser() {
@@ -49,6 +53,6 @@ public class AuthServiceImpl implements AuthService {
         if(user == null){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.UNAUTHORIZED.name());
         }
-        return UserMapper.toResponse(user);
+        return userMapper.toResponseDTO(user);
     }
 }

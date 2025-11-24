@@ -1,4 +1,4 @@
-package com.example.backend.dto;
+package com.example.backend.exception;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 @Data @AllArgsConstructor

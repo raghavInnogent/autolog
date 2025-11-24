@@ -1,10 +1,12 @@
-package com.example.backend.dto.serviceOptions;
+package com.example.backend.dto.response;
 
 import lombok.Data;
 import java.time.Period;
 
 @Data
-public class ServiceCategoriesRequestDTO {
+public class ServiceCategoriesResponseDTO {
+
+    private Long id;
 
     private String itemName;
 

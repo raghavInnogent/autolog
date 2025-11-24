@@ -1,7 +1,7 @@
 package com.example.backend.service;
 
-import com.example.backend.dto.vehicle.VehicleRequestDTO;
-import com.example.backend.dto.vehicle.VehicleResponseDTO;
+import com.example.backend.dto.request.VehicleRequestDTO;
+import com.example.backend.dto.response.VehicleResponseDTO;
 
 import java.util.List;
 

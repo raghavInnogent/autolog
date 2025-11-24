@@ -1,6 +1,6 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.user.UserResponseDTO;
+import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.service.AuthService;
 import com.example.backend.security.JwtUtil;
 import jakarta.validation.Valid;

@@ -43,4 +43,21 @@ public class Vehicle {
     
     @Column(columnDefinition = "TEXT")
     private String image;
+
+    @Override
+    public String toString() {
+        return "Vehicle{" +
+                "id=" + id +
+                ", owner=" + owner +
+                ", registrationNumber='" + registrationNumber + '\'' +
+                ", model='" + model + '\'' +
+                ", company='" + company + '\'' +
+                ", description='" + description + '\'' +
+                ", type='" + type + '\'' +
+                ", documents=" + documents +
+                ", servicings=" + servicings +
+                ", purchaseDate=" + purchaseDate +
+                ", image='" + image + '\'' +
+                '}';
+    }
 }

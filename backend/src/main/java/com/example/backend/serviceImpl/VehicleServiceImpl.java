@@ -1,13 +1,14 @@
-package com.example.backend.service;
+package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
 import com.example.backend.dao.VehicleDao;
-import com.example.backend.dto.vehicle.VehicleRequestDTO;
-import com.example.backend.dto.vehicle.VehicleResponseDTO;
+import com.example.backend.dto.request.VehicleRequestDTO;
+import com.example.backend.dto.response.VehicleResponseDTO;
 import com.example.backend.entity.User;
 import com.example.backend.entity.Vehicle;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.VehicleMapper;
+import com.example.backend.service.VehicleService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,15 +26,22 @@ public class VehicleServiceImpl implements VehicleService {
     private VehicleDao vehicleDao;
 
     @Autowired
+    private VehicleMapper vehicleMapper;
+
+    @Autowired
     private UserDao userDao;
 
     public VehicleResponseDTO create(Long ownerId, VehicleRequestDTO dto) {
         User owner = userDao.findById(ownerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
-        Vehicle v = VehicleMapper.toEntity(dto,new Vehicle());
+        Vehicle v = vehicleMapper.toEntity(dto);
         v.setOwner(owner);
+        System.out.println(v);
         Vehicle saved = vehicleDao.save(v);
-        return VehicleMapper.toResponse(saved);
+        System.out.println("after : " + saved);
+        VehicleResponseDTO response = vehicleMapper.toResponseDTO(saved);
+        System.out.println(response.getImage());
+        return response;
     }
 
     public VehicleResponseDTO getById(Long id, Long userId) {
@@ -42,12 +50,12 @@ public class VehicleServiceImpl implements VehicleService {
         if(!v.getOwner().getId().equals(userId)){
              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
-        return VehicleMapper.toResponse(v);
+        return vehicleMapper.toResponseDTO(v);
     }
 
     public List<VehicleResponseDTO> getAll(Long userId) {
         return vehicleDao.findByOwnerId(userId).stream()
-                .map(VehicleMapper::toResponse)
+                .map(vehicle ->  vehicleMapper.toResponseDTO(vehicle))
                 .collect(Collectors.toList());
     }
 
@@ -58,9 +66,9 @@ public class VehicleServiceImpl implements VehicleService {
              throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
 
-        v=VehicleMapper.toEntity(dto,v);
+        v=vehicleMapper.toEntity(dto);
         Vehicle updated = vehicleDao.save(v);
-        return VehicleMapper.toResponse(updated);
+        return vehicleMapper.toResponseDTO(updated);
     }
 
     public void delete(Long id, Long userId) {

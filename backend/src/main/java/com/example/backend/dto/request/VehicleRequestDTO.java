@@ -1,13 +1,9 @@
-package com.example.backend.dto.vehicle;
+package com.example.backend.dto.request;
 
 import lombok.Data;
 
 @Data
-public class VehicleResponseDTO {
-
-    private Long id;
-
-    private Long ownerId;
+public class VehicleRequestDTO {
 
     private String registrationNumber;
 

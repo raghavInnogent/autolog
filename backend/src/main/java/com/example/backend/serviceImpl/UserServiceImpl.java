@@ -1,9 +1,9 @@
 package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
-import com.example.backend.dto.user.UserRequestDTO;
-import com.example.backend.dto.user.UserResponseDTO;
-import com.example.backend.dto.vehicle.VehicleSummaryDTO;
+import com.example.backend.dto.request.UserRequestDTO;
+import com.example.backend.dto.response.UserResponseDTO;
+import com.example.backend.dto.summary.VehicleSummaryDTO;
 import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.UserMapper;
@@ -26,37 +26,36 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private UserMapper userMapper;
+
     public UserResponseDTO create(UserRequestDTO dto) {
 
         if (userDao.existsByEmail(dto.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, com.example.backend.enums.MessageKey.EMAIL_ALREADY_EXISTS.name());
+            throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.EMAIL_ALREADY_EXISTS.name());
         }
 
-        User user = new User();
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
+        User user = userMapper.toEntity(dto);
         user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(dto.getPassword()));
-        user.setContactNo(dto.getContactNo());
         user.setRole(com.example.backend.enums.UserRole.USER);
 
         User saved = userDao.save(user);
-        return convert(saved);
+        return userMapper.toResponseDTO(saved);
     }
 
     public UserResponseDTO getById(Long id) {
         User user = userDao.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
-        return convert(user);
+        return userMapper.toResponseDTO(user);
     }
 
     public List<UserResponseDTO> getAll() {
         return userDao.findAll()
                 .stream()
-                .map(this::convert)
+                .map(user-> userMapper.toResponseDTO(user))
                 .collect(Collectors.toList());
     }
 
-    // Update
     public UserResponseDTO update(Long id, UserRequestDTO dto) {
 
         User user = userDao.findById(id)
@@ -68,13 +67,13 @@ public class UserServiceImpl implements UserService {
         user.setContactNo(dto.getContactNo());
 
         User updated = userDao.save(user);
-        return convert(updated);
+        return userMapper.toResponseDTO(updated);
     }
 
     public UserResponseDTO delete(Long id) {
         User user = userDao.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,MessageKey.USER_NOT_FOUND.name()));
-        UserResponseDTO dto = convert(user);
+        UserResponseDTO dto = userMapper.toResponseDTO(user);
         userDao.delete(user);
         return dto;
 
@@ -91,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private UserResponseDTO convert(User user) {
-        UserResponseDTO dto = UserMapper.toResponse(user);
+        UserResponseDTO dto = userMapper.toResponseDTO(user);
 
         if (user.getVehicles() != null) {
             dto.setVehicles(
