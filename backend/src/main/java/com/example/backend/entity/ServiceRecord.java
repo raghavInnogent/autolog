@@ -21,7 +21,7 @@ public class ServiceRecord {
     @ManyToOne
     private Vehicle vehicle;
 
-    private Integer cost;   
+    private Integer cost;
 
     private LocalDate dateOfService;
 
@@ -35,6 +35,19 @@ public class ServiceRecord {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ServicedItems> servicedItems;
-    
 
+    @Override
+    public String toString() {
+        return "ServiceRecord{" +
+                "id=" + id +
+                ", vehicle=" + vehicle +
+                ", cost=" + cost +
+                ", dateOfService=" + dateOfService +
+                ", workshop='" + workshop + '\'' +
+                ", mileage=" + mileage +
+                ", invoice='" + invoice + '\'' +
+                ", type='" + type + '\'' +
+                ", servicedItems=" + servicedItems +
+                '}';
+    }
 }

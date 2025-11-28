@@ -26,5 +26,4 @@ public class VehicleResponseDTO {
 
     private List<DocumentSummaryDTO> documents;
 
-    private List<ServiceRecordSummaryDTO> servicings;
 }

@@ -20,13 +20,11 @@ public interface VehicleMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "owner", ignore = true)
     @Mapping(target = "documents", expression = "java(new java.util.ArrayList<>())")
-    @Mapping(target = "servicings", expression = "java(new java.util.ArrayList<>())")
     Vehicle toEntity(VehicleRequestDTO dto);
 
     VehicleSummaryDTO toSummaryDTO(Vehicle vehicle);
 
     @Mapping(source = "owner.id", target = "ownerId")
     @Mapping(source = "documents", target = "documents")
-    @Mapping(source = "servicings", target = "servicings")
     VehicleResponseDTO toResponseDTO(Vehicle vehicle);
 }

@@ -18,12 +18,28 @@ public class ServiceCategories {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String itemName;
+    @Column(unique = true)
+    private String name;
 
-    private String itemDescription;
+    private String description;
 
-    private Integer itemPrice;
+    private Integer price;
 
-    private Period itemQuantity;
+    @Column(columnDefinition = "TEXT")
+    private String image;
 
+    private Period expiryInMonths;
+
+
+    @Override
+    public String toString() {
+        return "ServiceCategories{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", image='" + image + '\'' +
+                ", expiryInMonths=" + expiryInMonths +
+                '}';
+    }
 }

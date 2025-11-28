@@ -21,5 +21,19 @@ public class ServiceRecordRequestDTO {
 
     private String type;
 
-    private List<String> items;
+    private List<ServicedItemRequestDTO> servicedItems;
+
+    @Override
+    public String toString() {
+        return "ServiceRecordRequestDTO{" +
+                "vehicleId=" + vehicleId +
+                ", cost=" + cost +
+                ", dateOfService=" + dateOfService +
+                ", workshop='" + workshop + '\'' +
+                ", mileage=" + mileage +
+                ", invoice='" + invoice + '\'' +
+                ", type='" + type + '\'' +
+                ", servicedItems=" + servicedItems +
+                '}';
+    }
 }

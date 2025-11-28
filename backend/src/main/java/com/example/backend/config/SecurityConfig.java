@@ -28,6 +28,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth->auth
             .requestMatchers("/auth/**", "/users/create").permitAll()
                 .requestMatchers("/vehicles/**").authenticated()
+                .requestMatchers("/categories/**").authenticated()
+                .requestMatchers("/servicing/**").authenticated()
                 .requestMatchers("/documents/**").authenticated()
             .anyRequest().authenticated()
         )

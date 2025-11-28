@@ -8,11 +8,13 @@ public class ServiceCategoriesResponseDTO {
 
     private Long id;
 
-    private String itemName;
+    private String name;
 
-    private String itemDescription;
+    private String description;
 
-    private Integer itemPrice;
+    private Integer price;
 
-    private Period itemQuantity;
+    private String image;
+
+    private Integer expiryInMonths;
 }

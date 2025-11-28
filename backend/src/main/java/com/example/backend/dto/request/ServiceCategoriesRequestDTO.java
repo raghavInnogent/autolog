@@ -1,16 +1,15 @@
 package com.example.backend.dto.request;
 
 import lombok.Data;
-import java.time.Period;
 
 @Data
 public class ServiceCategoriesRequestDTO {
 
-    private String itemName;
+    private String name;
+    private String description;
+    private Integer price;
+    private String image;
 
-    private String itemDescription;
-
-    private Integer itemPrice;
-
-    private Period itemQuantity;
+    private Integer expiryInMonths;
 }
+

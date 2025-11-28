@@ -15,13 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class ServicedItems {
-	
-	@Id
+
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private ServiceCategories servicedItems;
+    private Long serviceCategoryId;
 
     private LocalDate expirationDate;
 

@@ -36,9 +36,6 @@
         @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
         private List<Document> documents;
 
-        @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-        private List<ServiceRecord> servicings;
-
         private LocalDate purchaseDate;
 
         @Column(columnDefinition = "TEXT")
@@ -55,7 +52,6 @@
                     ", description='" + description + '\'' +
                     ", type='" + type + '\'' +
                     ", documents=" + documents +
-                    ", servicings=" + servicings +
                     ", purchaseDate=" + purchaseDate +
                     ", image='" + image + '\'' +
                     '}';

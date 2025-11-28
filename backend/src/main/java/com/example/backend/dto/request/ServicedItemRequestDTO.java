@@ -6,9 +6,18 @@ import java.time.LocalDate;
 @Data
 public class ServicedItemRequestDTO {
 
-    private Long serviceOptionsId;
+    private Long serviceCategoryId;
 
     private LocalDate expirationDate;
 
     private Integer quantity;
+
+    @Override
+    public String toString() {
+        return "ServicedItemRequestDTO{" +
+                "serviceCategoryId=" + serviceCategoryId +
+                ", expirationDate=" + expirationDate +
+                ", quantity=" + quantity +
+                '}';
+    }
 }

@@ -13,7 +13,7 @@ public class ServiceRecordResponseDTO {
 
     private Integer cost;
 
-    private LocalDate dadateOfServicete;
+    private LocalDate dateOfService;
 
     private String workshop;
 
@@ -23,5 +23,5 @@ public class ServiceRecordResponseDTO {
 
     private String type;
 
-    private List<String> items;
+    private List<ServicedItemResponseDTO> servicedItems;
 }
