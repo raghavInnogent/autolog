@@ -28,7 +28,7 @@ public class Document {
 	
 	@Column(length = 1000)
 	private String docImage;
-	
+	@Column(name = "doc_name")
 	private String docName;
 	
 	private String type;

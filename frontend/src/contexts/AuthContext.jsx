@@ -21,7 +21,6 @@ export function AuthProvider({ children }) {
 
   async function login({ email, password }) {
     const res = await authAPI.login(email, password)
-    // backend may return either { token, user } or a plain user object
     const data = res?.data
     let user = null
     if (data) {

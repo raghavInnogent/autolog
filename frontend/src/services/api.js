@@ -27,14 +27,14 @@ export const vehiclesAPI = {
   // alias for older callers
   getAllLegacy: () => api.get('/vehicles'),
   get: (id) => api.get(`/vehicles/${id}`),
-  create: (data) => api.post('/vehicles', data),
+  create: (data) => api.post('/vehicles/create', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   remove: (id) => api.delete(`/vehicles/${id}`),
 }
 
 export const documentsAPI = {
-  getAll: (params) => api.get('/documents', { params }),
-  upload: (formData) => api.post('/documents', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  getAll: (params) => api.get('/documents/getAllDocuments', { params }),
+  upload: (formData) => api.post('/documents/uploadDocument', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 }
 
 export const servicesAPI = {
@@ -60,7 +60,7 @@ export const analyticsAPI = {
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   logout: () => api.post('/auth/logout'),
-  getCurrentUser: () => api.get('/auth/me'),
+  getCurrentUser: () => api.get('/auth/getCurrentUser'),
 }
 
 export const usersAPI = {

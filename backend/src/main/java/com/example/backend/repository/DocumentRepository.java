@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface DocumentRepository extends JpaRepository<Document, Integer> {
     List<Document> findByType(String type);
+
+    List<Document> findAllByVehicleOwnerId(Long userId);
 }

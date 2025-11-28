@@ -9,6 +9,7 @@ import ServicingsPage from './pages/ServicingsPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ProfilePage from './pages/ProfilePage'
+import LandingPage from './pages/LandingPage'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
 
@@ -21,7 +22,7 @@ function App() {
           <NotificationBar />
           <main className="app-main">
             <Routes>
-              <Route path="/" element={<LoginPage />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
 

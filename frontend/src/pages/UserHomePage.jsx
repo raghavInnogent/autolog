@@ -79,8 +79,8 @@ export default function HomePage() {
   return (
     <div>
       <section style={{ marginBottom: 24 }}>
-        <div style={{ height: 220, borderRadius: 12, overflow: 'hidden', background: 'linear-gradient(90deg, rgba(30,144,255,0.12), rgba(255,255,255,0.02))', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <h1 style={{ fontSize: 28 }}>Smart Vehicle Maintenance Tracking</h1>
+        <div className="dashboard-banner">
+          <h1>Smart Vehicle Maintenance Tracking</h1>
         </div>
       </section>
 

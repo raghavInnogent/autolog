@@ -30,7 +30,7 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/me")
+    @GetMapping("/getCurrentUser")
     public ResponseEntity<UserResponseDTO> getCurrentUser(){
         return ResponseEntity.ok(authService.getCurrentUser());
     }

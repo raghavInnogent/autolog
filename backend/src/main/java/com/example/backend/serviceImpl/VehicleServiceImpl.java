@@ -79,4 +79,9 @@ public class VehicleServiceImpl implements VehicleService {
         }
         vehicleDao.delete(v);
     }
+
+    @Override
+    public Vehicle findVehicleByRegistrationNo(String registrationNo) {
+        return vehicleDao.findByRegistrationNumber(registrationNo).get();
+    }
 }

@@ -4,14 +4,13 @@ import '../styles/components/VehicleCard.css'
 export default function VehicleCard({ vehicle, onAdd }) {
   if (!vehicle) {
     return (
-      <div className="vehicle-card add-vehicle" onClick={onAdd}>
-        +
+      <div className="vehicle-card add-vehicle" onClick={onAdd}>+
       </div>
     )
   }
 
   return (
-    <div className="card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+    <div className="card vehicle-card" style={{ padding: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
       <div style={{ height: 140, overflow: 'hidden', background: '#000' }}>
         <img src={vehicle.image || '/public/vehicle-placeholder.jpg'} alt="vehicle" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
       </div>

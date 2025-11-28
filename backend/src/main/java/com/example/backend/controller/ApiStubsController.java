@@ -13,10 +13,10 @@ import java.util.List;
 @RequestMapping("/")
 public class ApiStubsController {
 
-    @GetMapping("/documents")
-    public ResponseEntity<List<?>> documents() {
-        return ResponseEntity.ok(Collections.emptyList());
-    }
+//    @GetMapping("/documents")
+//    public ResponseEntity<List<?>> documents() {
+//        return ResponseEntity.ok(Collections.emptyList());
+//    }
 
     @GetMapping("/services")
     public ResponseEntity<List<?>> services() {

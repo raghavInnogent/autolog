@@ -77,9 +77,8 @@ public class UserServiceImpl implements UserService {
         userDao.delete(user);
         return dto;
 
-
     }
-
+    @Override
     public void updatePassword(String email, String oldPassword, String newPassword) {
         User user = userDao.findByEmail(email);
         if (user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name());
@@ -89,22 +88,22 @@ public class UserServiceImpl implements UserService {
         userDao.save(user);
     }
 
-    private UserResponseDTO convert(User user) {
-        UserResponseDTO dto = userMapper.toResponseDTO(user);
-
-        if (user.getVehicles() != null) {
-            dto.setVehicles(
-                    user.getVehicles().stream()
-                            .map(v -> new VehicleSummaryDTO(
-                                    v.getId(),
-                                    v.getCompany(),
-                                    v.getModel(),
-                                    v.getRegistrationNumber()
-                            ))
-                            .collect(Collectors.toList())
-            );
-        }
-
-        return dto;
-    }
+//    private UserResponseDTO convert(User user) {
+//        UserResponseDTO dto = userMapper.toResponseDTO(user);
+//
+//        if (user.getVehicles() != null) {
+//            dto.setVehicles(
+//                    user.getVehicles().stream()
+//                            .map(v -> new VehicleSummaryDTO(
+//                                    v.getId(),
+//                                    v.getCompany(),
+//                                    v.getModel(),
+//                                    v.getRegistrationNumber()
+//                            ))
+//                            .collect(Collectors.toList())
+//            );
+//        }
+//
+//        return dto;
+//    }
 }

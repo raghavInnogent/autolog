@@ -23,7 +23,7 @@ public interface VehicleMapper {
     @Mapping(target = "servicings", expression = "java(new java.util.ArrayList<>())")
     Vehicle toEntity(VehicleRequestDTO dto);
 
-     VehicleSummaryDTO toSummaryDTO(Vehicle vehicle);
+    VehicleSummaryDTO toSummaryDTO(Vehicle vehicle);
 
     @Mapping(source = "owner.id", target = "ownerId")
     @Mapping(source = "documents", target = "documents")

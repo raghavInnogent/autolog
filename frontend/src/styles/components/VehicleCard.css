@@ -1,9 +1,65 @@
-.vehicle-card{background:linear-gradient(180deg, rgba(11,18,32,0.04), rgba(255,255,255,0.02));padding:16px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.06);border:1px solid var(--border);transition:all 180ms ease}
-.vehicle-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(30,144,255,0.12);border-color:rgba(30,144,255,0.25)}
-.vehicle-img{width:100%;height:160px;object-fit:cover;border-radius:8px;margin-bottom:12px}
-.add-vehicle{display:flex;align-items:center;justify-content:center;font-size:2rem;height:160px;border-radius:8px;background:linear-gradient(90deg, rgba(30,144,255,0.08), rgba(2,6,23,0.02));cursor:pointer;transition:all 180ms ease}
-.add-vehicle:hover{transform:scale(1.02);box-shadow:0 10px 24px rgba(30,144,255,0.12)}
-@media (max-width:600px){
-  .vehicle-img{height:120px}
-  .add-vehicle{height:120px}
+.vehicle-card {
+  background: #f5f5f5;
+  /* light grey */
+  color: #000;
+  /* black text */
+  font-weight: bold;
+  /* bold text */
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.vehicle-card:hover {
+  background: #3b5b9a;
+  /* light navy (adjust as needed) */
+  color: #fff;
+  /* shining white */
+  transform: translateY(-4px);
+  box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure inner elements inherit the text color */
+.vehicle-card * {
+  color: inherit;
+}
+
+/* Image container styling */
+.vehicle-img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.add-vehicle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  height: 160px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(30, 144, 255, 0.08), rgba(2, 6, 23, 0.02));
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.add-vehicle:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 24px rgba(30, 144, 255, 0.12);
+}
+
+@media (max-width: 600px) {
+  .vehicle-img {
+    height: 120px;
+  }
+
+  .add-vehicle {
+    height: 120px;
+  }
 }

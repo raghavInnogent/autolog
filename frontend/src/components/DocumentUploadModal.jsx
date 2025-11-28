@@ -16,26 +16,39 @@ export default function DocumentUploadModal({ onClose, onUploaded }) {
     vehiclesAPI.getAll().then(res => setVehicles(res.data || [])).catch(console.error)
   }, [])
 
-  const submit = async (e) => {
+
+const submit = async (e) => {
     e.preventDefault()
     if (!file) return
     setLoading(true)
     try {
-      const fd = new FormData()
-      fd.append('file', file)
-      if (name) fd.append('name', name)
-      if (registrationNumber) fd.append('registrationNumber', registrationNumber)
-      if (type) fd.append('type', type)
-      if (issuedDate) fd.append('issuedDate', issuedDate)
-      if (expiry) fd.append('expiry', expiry)
-      await documentsAPI.upload(fd)
-      onUploaded && onUploaded()
-      onClose && onClose()
-    } catch (err) {
-      console.error(err)
-      alert(err?.response?.data?.message || 'Upload failed')
-    } finally { setLoading(false) }
-  }
+        const fd = new FormData()
+        fd.append('file', file)
+
+        const documentPayload = {};
+        if (name) documentPayload.name = name;
+        if (registrationNumber) documentPayload.registrationNumber = registrationNumber;
+        if (type) documentPayload.type = type;
+        if (issuedDate) documentPayload.issuedDate = issuedDate;
+        if (expiry) documentPayload.expiry = expiry;
+
+         fd.append("document",new Blob([JSON.stringify(documentPayload)],
+                                         { type: "application/json" })
+    );
+        await documentsAPI.upload(fd)
+        onUploaded && onUploaded()
+        onClose && onClose()
+    } 
+    catch (err) {
+        console.error(err)
+        alert(err?.response?.data?.message || 'Upload failed')
+    } 
+    finally {
+        setLoading(false)
+    }
+}
+
+
 
   return (
     <div className="document-upload-modal">

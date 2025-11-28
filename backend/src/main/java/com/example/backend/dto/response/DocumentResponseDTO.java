@@ -1,5 +1,7 @@
 package com.example.backend.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Column;
 import lombok.Data;
 import java.time.LocalDate;
 
@@ -7,9 +9,11 @@ import java.time.LocalDate;
 public class DocumentResponseDTO {
     private Integer id;
     private Long vehicleId;
-    private String name;
+    @JsonProperty("name")
+    private String docName;
     private String type;
     private LocalDate issuedDate;
-    private LocalDate expiry;
-    private String url;
+    @JsonProperty("expiry")
+    private LocalDate expirationDate;
+    private String docImage;
 }
