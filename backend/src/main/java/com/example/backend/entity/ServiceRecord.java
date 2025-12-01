@@ -31,7 +31,7 @@ public class ServiceRecord {
 
     private String invoice;
 
-    private String type;
+    private String description;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ServicedItems> servicedItems;

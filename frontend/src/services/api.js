@@ -4,10 +4,10 @@ const baseURL = import.meta.env.DEV ? '/api' : (import.meta.env.VITE_BACKEND_URL
 
 const api = axios.create({
   baseURL,
-  withCredentials: true, // Include http-only cookies in all requests
+  withCredentials: true, 
 })
 
-// Interceptor to attach JWT token to requests
+
 api.interceptors.request.use((config) => {
   try {
     const token = localStorage.getItem('autolog_token')
@@ -22,12 +22,12 @@ api.interceptors.request.use((config) => {
 export default api
 
 export const vehiclesAPI = {
-  // backend exposes GET /vehicles/getAll
+  
   getAll: () => api.get('/vehicles/getAll'),
-  // alias for older callers
+  
   getAllLegacy: () => api.get('/vehicles'),
   get: (id) => api.get(`/vehicles/${id}`),
-  create: (data) => api.post('/vehicles', data),
+  create: (data) => api.post('/vehicles/create', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
   remove: (id) => api.delete(`/vehicles/${id}`),
 }
@@ -60,9 +60,17 @@ export const analyticsAPI = {
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   logout: () => api.post('/auth/logout'),
-  getCurrentUser: () => api.get('/auth/me'),
+  getCurrentUser: () => api.get('/auth/currentUser'),
 }
 
 export const usersAPI = {
   create: (data) => api.post('/users/create', data),
 }
+
+export const ocrAPI = {
+  extract: (formData) =>
+    api.post('/ocr/extract', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
+}
+

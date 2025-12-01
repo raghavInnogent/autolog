@@ -11,6 +11,7 @@ import SignupPage from './pages/SignupPage'
 import ProfilePage from './pages/ProfilePage'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import OcrUpload from "./pages/OcrUpload";
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/ocr" element={<OcrUpload />} />
+
               </Route>
             </Routes>
           </main>

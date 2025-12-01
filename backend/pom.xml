@@ -22,6 +22,14 @@
         <java.version>17</java.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+
     <dependencies>
 
         <!-- JPA -->
@@ -99,6 +107,16 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- Tess4J (OCR Library) -->
+        <dependency>
+    <groupId>net.sourceforge.tess4j</groupId>
+    <artifactId>tess4j</artifactId>
+    <version>4.5.5</version>
+</dependency>
+
+
+
 
         <!-- OPTIONAL (Only if you want JSON logs) -->
         <!--

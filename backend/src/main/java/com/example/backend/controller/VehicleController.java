@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.backend.security.UserPrincipal;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.getById(id, principal.getId()));
     }
 
-    @PostMapping
+    @PostMapping("create")
     public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.status(201).body(vehicleService.create(principal.getId(), dto));

@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
 import com.example.backend.dto.user.UserResponseDTO;
@@ -6,6 +6,8 @@ import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.UserMapper;
 import com.example.backend.security.UserPrincipal;
+import com.example.backend.service.AuthService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;

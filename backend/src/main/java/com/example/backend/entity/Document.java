@@ -29,8 +29,6 @@ public class Document {
 	@Column(length = 1000)
 	private String docImage;
 	
-	private String docName;
-	
 	private String type;
 	
 	private LocalDate issuedDate;

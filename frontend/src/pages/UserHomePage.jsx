@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import VehicleCard from '../components/VehicleCard'
 import AddVehicleModal from '../components/AddVehicleModal'
 import DocumentCard from '../components/DocumentCard'
@@ -64,6 +65,7 @@ export default function HomePage() {
   const [vehicles, setVehicles] = useState([])
   const [docs, setDocs] = useState([])
   const [showAdd, setShowAdd] = useState(false)
+  const nav = useNavigate()
 
   const fetch = async () => {
     try {
@@ -95,7 +97,7 @@ export default function HomePage() {
       <section style={{ marginBottom: 24 }}>
         <div className="documents-header-row">
           <h2 style={{ margin: 0 }}>Documents</h2>
-          <a href="/documents" className="navy-btn">View all documents</a>
+          <button type="button" onClick={()=>nav('/documents')} className="navy-btn">View all documents</button>
         </div>
         {docs.length > 0 ? (
           <DocumentsCarousel docs={docs} />

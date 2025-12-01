@@ -10,7 +10,9 @@ import java.util.Date;
 @Component
 public class JwtUtil {
   private final Key key;
-  public JwtUtil(@Value("${security.jwt.secret}") String secret){ this.key = Keys.hmacShaKeyFor(secret.getBytes()); }
+  public JwtUtil(@Value("${security.jwt.secret}") String secret){
+      this.key = Keys.hmacShaKeyFor(secret.getBytes());
+  }
 
   public String generateToken(String subjectEmail, Long userId, String role){
     long now = System.currentTimeMillis();
@@ -23,5 +25,7 @@ public class JwtUtil {
       .signWith(key, SignatureAlgorithm.HS256).compact();
   }
 
-  public Jws<Claims> parse(String token){ return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); }
+  public Jws<Claims> parse(String token){
+      return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+  }
 }

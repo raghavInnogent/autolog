@@ -1,4 +1,4 @@
-package com.example.backend.service;
+package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
 import com.example.backend.dao.VehicleDao;
@@ -8,6 +8,7 @@ import com.example.backend.entity.User;
 import com.example.backend.entity.Vehicle;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.VehicleMapper;
+import com.example.backend.service.VehicleService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

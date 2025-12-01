@@ -1,10 +1,13 @@
 package com.example.backend.service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.example.backend.dto.vehicle.VehicleRequestDTO;
 import com.example.backend.dto.vehicle.VehicleResponseDTO;
 
-import java.util.List;
-
+@Service
 public interface VehicleService {
     VehicleResponseDTO create(Long ownerId, VehicleRequestDTO dto);
     VehicleResponseDTO getById(Long id, Long userId);

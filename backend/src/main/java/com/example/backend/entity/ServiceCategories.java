@@ -24,6 +24,6 @@ public class ServiceCategories {
 
     private Integer itemPrice;
 
-    private Period itemQuantity;
+    private Period itemExpiry;
 
 }
