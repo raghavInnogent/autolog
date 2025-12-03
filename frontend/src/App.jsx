@@ -4,6 +4,7 @@ import NotificationBar from './components/NotificationBar'
 import Footer from './components/Footer'
 import UserHomePage from './pages/UserHomePage'
 import VehiclesPage from './pages/VehiclesPage'
+import VehicleDetailsPage from './pages/VehicleDetailsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ServicingsPage from './pages/ServicingsPage'
 import LoginPage from './pages/LoginPage'
@@ -29,6 +30,7 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/home" element={<UserHomePage />} />
                 <Route path="/vehicles" element={<VehiclesPage />} />
+                <Route path="/vehicles/:id" element={<VehicleDetailsPage />} />
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />

@@ -2,10 +2,10 @@
   --bg: #ffffff;
   --card: #ffffff;
   --muted: #64748b;
-  --accent: #1e90ff;
-  --nav-bg: linear-gradient(90deg, #071233 0%, #0b2a55 100%);
+  --accent: #FFC300;
+  --nav-bg: #22577A;
   --nav-text: #ffffff;
-  --nav-title: #0b2a55;
+  --nav-title: #22577A;
   --glass: rgba(2, 6, 23, 0.03);
   --border: rgba(15, 23, 42, 0.06);
   --text: #0f1724;
@@ -36,8 +36,6 @@ body {
 
 .app-main {
   flex: 1;
-  padding: 24px;
-  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
@@ -67,27 +65,27 @@ h2 {
 }
 
 .card:hover {
-  background: var(--accent);
-  color: red;
+  background: #FFC300;
+  color: #22577A;
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 /* Global Button Styling */
 .navy-btn {
-  background: var(--nav-title);
+  background: #22577A;
   color: white;
   padding: 0.8em 1.5em;
   border-radius: 6px;
   font-weight: 600;
-  border: 1px solid var(--nav-title);
+  border: 1px solid #22577A;
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .navy-btn:hover {
   background: white;
-  color: var(--nav-title);
+  color: #22577A;
 }
 
 @media (max-width: 900px) {

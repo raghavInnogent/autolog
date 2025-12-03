@@ -38,8 +38,12 @@ export const documentsAPI = {
 }
 
 export const servicesAPI = {
-  getAll: (params) => api.get('/services', { params }),
-  create: (data) => api.post('/services', data),
+  getAll: (params) => api.get('/servicing/getAll', { params }),
+  create: (data) => api.post('/servicing/create', data),
+}
+
+export const serviceCategoriesAPI = {
+  getAll: () => api.get('/categories/getAll'),
 }
 
 export const notificationsAPI = {

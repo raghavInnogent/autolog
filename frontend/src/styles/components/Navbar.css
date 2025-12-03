@@ -1,50 +1,58 @@
 .autolog-navbar {
     display: flex;
-    align-items: center;
-    padding: 12px 24px;
-    background: var(--nav-bg);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: stretch;
+    padding: 0;
     position: sticky;
     top: 0;
     z-index: 1000;
-    color: var(--nav-text);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    height: 70px;
+    background: #FFC300;
 }
 
+/* Left section with diagonal cut */
 .autolog-left {
     display: flex;
     align-items: center;
-    gap: 16px;
-}
-
-.autolog-logo {
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: #fff;
-}
-
-.nav-center {
-    position: absolute;
-    left: 0;
-    right: 0;
-    display: flex;
     justify-content: center;
-    pointer-events: none;
+    gap: 24px;
+    padding: 0 24px;
+    background: #22577A;
+    height: 100%;
+    position: relative;
+    flex: 1;
+    clip-path: polygon(0 0, calc(100% - 50px) 0, 100% 100%, 0 100%);
+    padding-right: 70px;
+}
+
+.autolog-logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    position: absolute;
+    left: 24px;
+}
+
+.autolog-logo-img {
+    height: 40px;
+    width: auto;
+    object-fit: contain;
 }
 
 .nav-links {
     display: flex;
     gap: 18px;
-    pointer-events: auto;
+    align-items: center;
 }
 
 /* Simple text links with underline on hover */
 .nav-link {
-    color: var(--nav-text);
+    color: #ffffff;
     text-decoration: none;
     padding: 8px 10px;
     position: relative;
     transition: color 180ms ease;
+    white-space: nowrap;
 }
 
 .nav-link::after {
@@ -54,11 +62,15 @@
     right: 0;
     bottom: 6px;
     height: 2px;
-    background: var(--accent);
+    background: #FFC300;
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 180ms ease-in-out;
     border-radius: 2px;
+}
+
+.nav-link:hover {
+    color: #FFC300;
 }
 
 .nav-link:hover::after {
@@ -66,77 +78,67 @@
 }
 
 .nav-link.active {
-    color: var(--accent);
+    color: #FFC300;
 }
 
 .nav-link.active::after {
     transform: scaleX(1);
 }
 
+/* Right section with yellow background */
 .navbar-right {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-left: auto;
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .mobile-only {
+            display: inline-flex;
+        }
+
+        .autolog-navbar {
+            height: 60px;
+        }
+
+        .autolog-left {
+            padding: 0 16px;
+            padding-right: 50px;
+            clip-path: polygon(0 0, calc(100% - 30px) 0, 100% 100%, 0 100%);
+        }
+
+        .navbar-right {
+            padding: 0 16px;
+            padding-left: 15px;
+        }
+
+        .autolog-logo-img {
+            height: 32px;
+        }
+
+        .autolog-logo-link {
+            left: 16px;
+        }
+    }
 }
 
-.icon-btn {
+.profile-btn {
     background: transparent;
-    border: 1px solid var(--border);
-    padding: 8px;
-    border-radius: 8px;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 180ms ease;
-}
-
-.autolog-navbar .icon-btn {
-    color: var(--nav-text);
-    border-color: rgba(255, 255, 255, 0.12);
-}
-
-.autolog-navbar .icon-btn svg {
-    color: var(--nav-text);
-}
-
-.autolog-navbar .icon-btn:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 8px rgba(30, 144, 255, 0.2);
-}
-
-.dropdown-btn {
-    background: transparent;
-    border: 1px solid var(--border);
-    padding: 8px 12px;
+    color: #22577A;
+    padding: 0.8em 1.5em;
     border-radius: 6px;
-    color: var(--text);
+    font-weight: 600;
+    border: transparent;
     cursor: pointer;
-    width: 100%;
-    text-align: left;
-    transition: all 180ms ease;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-.dropdown-btn:hover {
-    background: linear-gradient(90deg, rgba(30, 144, 255, 0.1), rgba(2, 6, 23, 0.02));
-    border-color: var(--accent);
-    color: var(--nav-title);
-}
+.profile-btn:hover {
+    transform: scale(1.15);
 
-.mobile-only {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .nav-center {
-        display: none;
-    }
-
-    .mobile-only {
-        display: inline-flex;
-    }
-
-    .autolog-navbar {
-        padding: 10px 16px;
-    }
+    background: transparent;
+    color: #22577A;
 }

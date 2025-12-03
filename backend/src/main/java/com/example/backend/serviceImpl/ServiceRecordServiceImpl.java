@@ -41,6 +41,8 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
                 ));
         record.setVehicle(vehicle);
 
+        System.out.println(dto);
+        System.out.println(record);
         record.getServicedItems().forEach(item-> {
             Period period =categoryDao.findById(item.getServiceCategoryId()).getExpiryInMonths();
             item.setExpirationDate(record.getDateOfService().plus(period));

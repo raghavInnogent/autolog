@@ -5,6 +5,7 @@ import com.example.backend.repository.ServiceCategoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -25,5 +26,9 @@ public class ServiceCategoriesDao {
 
     public ServiceCategories findById(Long id) {
         return serviceCategoriesRepository.findById(id).get();
+    }
+
+    public List<ServiceCategories> findAll() {
+        return serviceCategoriesRepository.findAll();
     }
 }

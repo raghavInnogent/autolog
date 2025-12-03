@@ -1,10 +1,7 @@
 .vehicle-card {
-  background: #f5f5f5;
-  /* light grey */
+  background: #ffffff;
   color: #000;
-  /* black text */
   font-weight: bold;
-  /* bold text */
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem;
@@ -15,10 +12,8 @@
 }
 
 .vehicle-card:hover {
-  background: #3b5b9a;
-  /* light navy (adjust as needed) */
-  color: #fff;
-  /* shining white */
+  background: #FFC300;
+  color: #22577A;
   transform: translateY(-4px);
   box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.2);
 }
@@ -44,14 +39,14 @@
   font-size: 2rem;
   height: 160px;
   border-radius: 8px;
-  background: linear-gradient(90deg, rgba(30, 144, 255, 0.08), rgba(2, 6, 23, 0.02));
+  background: linear-gradient(90deg, rgba(255, 195, 0, 0.08), rgba(34, 87, 122, 0.02));
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .add-vehicle:hover {
   transform: scale(1.02);
-  box-shadow: 0 10px 24px rgba(30, 144, 255, 0.12);
+  box-shadow: 0 10px 24px rgba(255, 195, 0, 0.12);
 }
 
 @media (max-width: 600px) {

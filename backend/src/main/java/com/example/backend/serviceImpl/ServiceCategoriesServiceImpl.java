@@ -31,17 +31,18 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.CATEGORY_ALREADY_EXISTS.name());
         }
 
-            System.out.println(dto);
             ServiceCategories serviceCategories = serviceCategoriesMapper.toEntity(dto);
             ServiceCategories saved = serviceCategoriesDao.save(serviceCategories);
-            System.out.println(saved);
             return serviceCategoriesMapper.toResponseDTO(saved);
 
     }
 
     @Override
     public List<ServiceCategoriesResponseDTO> getAll() {
-        return List.of();
+
+        return serviceCategoriesDao.findAll().stream()
+                .map(serviceCategoriesMapper::toResponseDTO)
+                .toList();
     }
 
 

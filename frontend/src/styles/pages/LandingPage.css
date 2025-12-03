@@ -7,7 +7,7 @@
 .landing-hero {
     width: 100%;
     min-height: 60vh;
-    background: linear-gradient(135deg, #4a90e2, #9013fe);
+    background: linear-gradient(135deg, #22577A, #1a4560);
     color: white;
     display: flex;
     justify-content: center;
@@ -50,7 +50,7 @@
 }
 
 .cta-button {
-    background: var(--nav-title);
+    background: #22577A;
     color: white;
     padding: 0.8em 1.5em;
     border-radius: 6px;
@@ -60,8 +60,8 @@
 }
 
 .cta-button:hover {
-    background: white;
-    color: var(--nav-title);
+    background: #FFC300;
+    color: #22577A;
 }
 
 .landing-section {
@@ -74,7 +74,7 @@
 .section-title {
     font-size: 1.8rem;
     margin-bottom: 1rem;
-    color: var(--nav-title);
+    color: #22577A;
 }
 
 .features-grid,
@@ -98,8 +98,8 @@
 }
 
 .feature-card:hover {
-    background: var(--accent);
-    color: red;
+    background: #FFC300;
+    color: #22577A;
 }
 
 .feature-icon {

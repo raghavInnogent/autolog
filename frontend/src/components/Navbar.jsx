@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { FiBell, FiUser, FiMenu } from 'react-icons/fi'
+import { FiBell, FiUser, FiMenu, FiLogOut } from 'react-icons/fi'
 import NotificationBell from './NotificationBell'
 import useAuth from '../hooks/useAuth'
+import autoLogLogo from '../assets/autolog_logo.png'
 import '../styles/components/Navbar.css'
 
 export default function Navbar() {
@@ -28,10 +29,10 @@ export default function Navbar() {
   return (
     <header className="autolog-navbar">
       <div className="autolog-left">
-        <div className="autolog-logo">AutoLog</div>
-      </div>
+        <Link to="/" className="autolog-logo-link">
+          <img src={autoLogLogo} alt="AutoLog" className="autolog-logo-img" />
+        </Link>
 
-      <div className="nav-center">
         <nav className="nav-links">
           {isAuth ? (
             <>
@@ -53,34 +54,24 @@ export default function Navbar() {
       <div className="navbar-right">
         <NotificationBell />
 
-        <div style={{ position: 'relative' }} ref={menuRef}>
-          <button className="navy-btn" title="Account" onClick={() => setOpen(s => !s)}>
-            <FiUser />
-          </button>
-
-          {open && (
-            <div style={{ position: 'absolute', right: 0, top: 44, background: 'var(--card)', padding: 8, borderRadius: 8, border: '1px solid var(--border)', minWidth: 160, zIndex: 1000 }}>
-              {!isAuth ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <Link to="/login" onClick={() => setOpen(false)} style={{ textDecoration: 'none' }}>
-                    <button className="navy-btn">Login</button>
-                  </Link>
-                </div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  <Link to="/profile" onClick={() => setOpen(false)} style={{ textDecoration: 'none' }}>
-                    <button className="navy-btn">Profile</button>
-                  </Link>
-                  <button className="navy-btn" onClick={handleLogout}>Logout</button>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <button className="navy-btn mobile-only">
-          <FiMenu />
-        </button>
+        {isAuth ? (
+          <>
+            <Link to="/profile" title="Profile">
+              <button className="profile-btn">
+                <FiUser />
+              </button>
+            </Link>
+            <button className="profile-btn" title="Logout" onClick={handleLogout}>
+              <FiLogOut />
+            </button>
+          </>
+        ) : (
+          <Link to="/login">
+            <button className="profile-btn" title="Login">
+              <FiUser />
+            </button>
+          </Link>
+        )}
       </div>
     </header>
   )

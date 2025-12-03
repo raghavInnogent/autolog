@@ -1,10 +1,88 @@
-.service-table{flex:1;overflow:auto;background:var(--card);padding:12px;border-radius:10px;border:1px solid var(--border)}
-.service-list{width:100%;border-collapse:collapse}
-.service-list th{padding:10px;border-bottom:1px solid rgba(15,23,42,0.06);background:linear-gradient(90deg, rgba(11,18,32,0.02), rgba(255,255,255,0.01));color:var(--nav-title);font-weight:600}
-.service-list td{padding:10px;border-bottom:1px dashed rgba(15,23,42,0.04)}
-.service-list tr:hover{background:rgba(30,144,255,0.06)}
-.service-controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-@media (max-width:700px){
-  .service-table{padding:8px}
-  .service-list th,.service-list td{padding:8px}
+.service-table {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.service-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.filter-group input {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.service-list {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.service-list th {
+  text-align: left;
+  padding: 16px;
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+.service-list td {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.service-list tr:last-child td {
+  border-bottom: none;
+}
+
+.service-list tr:hover td {
+  background: #f8f9fa;
+}
+
+.service-cost {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.view-link {
+  color: var(--primary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 4px 12px;
+  background: rgba(34, 87, 122, 0.1);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.view-link:hover {
+  background: var(--primary);
+  color: white;
 }

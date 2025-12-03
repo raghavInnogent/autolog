@@ -1,9 +1,45 @@
-.documents-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
-.navy-btn{background:var(--nav-bg);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-weight:500;cursor:pointer;transition:all 180ms ease;box-shadow:0 2px 8px rgba(11,18,32,0.08);text-decoration:none;}
-.navy-btn:hover{background:#0b2a55;color:#fff;box-shadow:0 4px 12px rgba(30,144,255,0.12);text-decoration:none;}
-.docs-carousel{position:relative}
-.docs-track{display:flex;gap:12px;overflow:visible;padding:8px 0 8px 0}
-.docs-row{display:flex;gap:12px;transition:transform 220ms ease;padding-left:20px}
-.carousel-btn{position:absolute;top:50%;transform:translateY(-50%);background:var(--nav-bg);border-radius:999px;padding:8px;border:1px solid rgba(255,255,255,0.12);color:var(--nav-text);cursor:pointer;z-index:30}
-.carousel-btn.left{left:-28px}
-.carousel-btn.right{right:-28px}
+.documents-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px
+}
+
+.docs-carousel {
+    position: relative
+}
+
+.docs-track {
+    display: flex;
+    gap: 12px;
+    overflow: visible;
+    padding: 8px 0 8px 0
+}
+
+.docs-row {
+    display: flex;
+    gap: 12px;
+    transition: transform 220ms ease;
+    padding-left: 20px
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--nav-bg);
+    border-radius: 999px;
+    padding: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--nav-text);
+    cursor: pointer;
+    z-index: 30
+}
+
+.carousel-btn.left {
+    left: -28px
+}
+
+.carousel-btn.right {
+    right: -28px
+}

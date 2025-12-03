@@ -1,4 +1,51 @@
-.notification-bell{position:relative}
-.notification-dropdown{position:absolute;right:0;top:40px;width:320px;background:var(--card);padding:12px;border-radius:8px;border:1px solid var(--border);}
-.notification-dropdown ul{list-style:none;padding:0;margin:0;max-height:240px;overflow:auto}
-.notification-dropdown li{padding:8px 6px;border-bottom:1px solid rgba(15,23,42,0.03)}
+.notification-bell {
+    position: relative;
+}
+
+.notification-bell .icon-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 10px;
+    border-radius: 8px;
+    color: #22577A;
+    cursor: pointer;
+    transition: all 180ms ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-bell .icon-btn svg {
+    color: #22577A;
+    font-size: 18px;
+}
+
+.notification-bell .icon-btn:hover {
+    background: transparent !important;
+    transform: scale(1.1);
+}
+
+.notification-dropdown {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 320px;
+    background: var(--card);
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    z-index: 2000;
+}
+
+.notification-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 240px;
+    overflow: auto;
+}
+
+.notification-dropdown li {
+    padding: 8px 6px;
+    border-bottom: 1px solid rgba(15, 23, 42, 0.03);
+}
