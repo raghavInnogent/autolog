@@ -14,10 +14,27 @@ public class VehicleDao {
     @Autowired
     private VehicleRepository vehicleRepository;
 
-    public Vehicle save(Vehicle v) { return vehicleRepository.save(v); }
-    public Optional<Vehicle> findById(Long id) { return vehicleRepository.findById(id); }
-    public List<Vehicle> findAll() { return vehicleRepository.findAll(); }
-    public void delete(Vehicle v) { vehicleRepository.delete(v); }
-    public List<Vehicle> findByOwnerId(Long ownerId) { return vehicleRepository.findByOwnerId(ownerId); }
-    public Optional<Vehicle> findByRegistrationNumber(String registrationNumber) { return vehicleRepository.findByRegistrationNumber(registrationNumber); }
+    public Vehicle save(Vehicle v) {
+    	return vehicleRepository.save(v); 
+    	}
+    
+    public Optional<Vehicle> findById(Long id) {
+    	return vehicleRepository.findById(id);
+    	}
+    
+    public List<Vehicle> findAll() { 
+    	return vehicleRepository.findAll(); 
+    	}
+    
+    public void delete(Vehicle v) { 
+    	vehicleRepository.delete(v); 
+    	}
+    
+    public List<Vehicle> findByOwnerId(Long ownerId) {
+    	return vehicleRepository.findByOwnerId(ownerId);
+    	}
+    
+    public Optional<Vehicle> findByRegistrationNumber(String registrationNumber) {
+    	return vehicleRepository.findByRegistrationNumber(registrationNumber); 
+    	}
 }

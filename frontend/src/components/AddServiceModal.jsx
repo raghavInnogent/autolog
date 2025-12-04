@@ -226,6 +226,7 @@ export default function AddServiceModal({ onClose, onCreated }) {
             </button>
           </div>
 
+
           {selectedItems.length > 0 && (
             <div style={{
               marginTop: 12,
@@ -272,6 +273,7 @@ export default function AddServiceModal({ onClose, onCreated }) {
                 </div>
               ))}
             </div>
+
           )}
         </div>
 

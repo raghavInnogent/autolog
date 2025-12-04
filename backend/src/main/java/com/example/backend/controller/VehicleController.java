@@ -24,7 +24,7 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.getAll(principal.getId()));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<VehicleResponseDTO> get(@PathVariable Long id) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(vehicleService.getById(id, principal.getId()));
@@ -36,13 +36,13 @@ public class VehicleController {
         return ResponseEntity.status(201).body(vehicleService.create(principal.getId(), dto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateById/{id}")
     public ResponseEntity<VehicleResponseDTO> update(@PathVariable Long id, @RequestBody VehicleRequestDTO dto) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(vehicleService.update(id, principal.getId(), dto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         vehicleService.delete(id, principal.getId());

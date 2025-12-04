@@ -46,42 +46,47 @@ public class VehicleServiceImpl implements VehicleService {
 
     public VehicleResponseDTO getById(Long id, Long userId) {
         Vehicle v = vehicleDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name()));
-        if(!v.getOwner().getId().equals(userId)){
-             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name()));
+        if (!v.getOwner().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
         return vehicleMapper.toResponseDTO(v);
     }
 
     public List<VehicleResponseDTO> getAll(Long userId) {
         return vehicleDao.findByOwnerId(userId).stream()
-                .map(vehicle ->  vehicleMapper.toResponseDTO(vehicle))
+                .map(vehicle -> vehicleMapper.toResponseDTO(vehicle))
                 .collect(Collectors.toList());
     }
 
     public VehicleResponseDTO update(Long id, Long userId, VehicleRequestDTO dto) {
         Vehicle v = vehicleDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name()));
-        if(!v.getOwner().getId().equals(userId)){
-             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name()));
+        if (!v.getOwner().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
 
-        v=vehicleMapper.toEntity(dto);
+        v = vehicleMapper.toEntity(dto);
         Vehicle updated = vehicleDao.save(v);
         return vehicleMapper.toResponseDTO(updated);
     }
 
     public void delete(Long id, Long userId) {
         Vehicle v = vehicleDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name()));
-        if(!v.getOwner().getId().equals(userId)){
-             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name()));
+        if (!v.getOwner().getId().equals(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
         vehicleDao.delete(v);
     }
 
     @Override
     public Vehicle findVehicleByRegistrationNo(String registrationNo) {
-        return vehicleDao.findByRegistrationNumber(registrationNo).get();
+        return vehicleDao.findByRegistrationNumber(registrationNo)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Vehicle not found with registration number: " + registrationNo));
     }
 }

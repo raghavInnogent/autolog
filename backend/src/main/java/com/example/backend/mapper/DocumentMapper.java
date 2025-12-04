@@ -2,7 +2,6 @@ package com.example.backend.mapper;
 
 import com.example.backend.dto.request.DocumentRequestDTO;
 import com.example.backend.dto.response.DocumentResponseDTO;
-import com.example.backend.dto.summary.DocumentSummaryDTO;
 import com.example.backend.entity.Document;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

@@ -44,6 +44,4 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
                 .map(serviceCategoriesMapper::toResponseDTO)
                 .toList();
     }
-
-
 }

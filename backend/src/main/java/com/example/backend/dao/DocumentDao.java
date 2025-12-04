@@ -11,7 +11,6 @@ import java.util.Optional;
 @Service
 public class DocumentDao {
     @Autowired
-
     private DocumentRepository documentRepository;
 
     public List<Document> findAll() {

@@ -6,7 +6,6 @@ import com.example.backend.dto.response.ServiceRecordResponseDTO;
 import com.example.backend.dto.response.ServicedItemResponseDTO;
 import com.example.backend.entity.*;
 import org.mapstruct.*;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface ServiceRecordMapper {

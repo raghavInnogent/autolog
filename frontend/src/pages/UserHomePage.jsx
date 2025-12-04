@@ -8,6 +8,7 @@ import AddVehicleModal from '../components/AddVehicleModal'
 import AddServiceModal from '../components/AddServiceModal'
 import DocumentUploadModal from '../components/DocumentUploadModal'
 import DocumentsCarousel from '../components/DocumentsCarousel'
+import UpcomingSchedules from '../components/UpcomingSchedules'
 import { vehiclesAPI, documentsAPI } from '../services/api'
 import '../styles/pages/HomePage.css'
 import heroImage1 from '../assets/heroImage1.jpg'
@@ -228,6 +229,12 @@ export default function UserHomePage() {
               No documents added yet.
             </div>
           )}
+        </section>
+
+        {/* Upcoming Schedules Section */}
+        <section style={{ marginBottom: 32 }}>
+          <h2 style={{ marginBottom: 16 }}>Upcoming Schedules</h2>
+          <UpcomingSchedules />
         </section>
       </div >
 

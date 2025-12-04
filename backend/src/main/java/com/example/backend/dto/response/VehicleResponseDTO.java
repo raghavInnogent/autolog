@@ -1,6 +1,5 @@
 package com.example.backend.dto.response;
 
-import com.example.backend.dto.summary.ServiceRecordSummaryDTO;
 import lombok.Data;
 import java.util.List;
 import com.example.backend.dto.summary.DocumentSummaryDTO;

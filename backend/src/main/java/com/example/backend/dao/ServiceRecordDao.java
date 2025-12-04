@@ -1,29 +1,36 @@
 package com.example.backend.dao;
 
-import com.example.backend.entity.ServiceRecord;
-import com.example.backend.repository.ServiceRecordRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.example.backend.entity.ServiceRecord;
+import com.example.backend.repository.ServiceRecordRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Repository
 @RequiredArgsConstructor
 public class ServiceRecordDao {
-
-    private final ServiceRecordRepository repository;
-
+	@Autowired
+    private  ServiceRecordRepository serviceRecordRepository;
 
     public ServiceRecord save(ServiceRecord record) {
-        return repository.save(record);
+        return serviceRecordRepository.save(record);
     }
 
     public Optional<ServiceRecord> findById(Long id) {
-        return repository.findById(id);
+        return serviceRecordRepository.findById(id);
+    }
+
+    public List<ServiceRecord> findByVehicleId(Long vehicleId) {
+        return serviceRecordRepository.findByVehicleId(vehicleId);
     }
 
     public List<ServiceRecord> findAll() {
-        return repository.findAll();
+
+        return serviceRecordRepository.findAll();
     }
 }

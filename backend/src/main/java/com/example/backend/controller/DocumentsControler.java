@@ -20,11 +20,18 @@ import java.util.List;
 public class DocumentsControler {
     @Autowired
     private DocumentService documentService;
+    @Autowired
+    private  CloudinaryController cloudinaryController;
+    @Autowired
+    private OcrController ocrController;
 
     @PostMapping(value = "/uploadDocument", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<DocumentResponseDTO> uploadDocument(
             @RequestPart("file") MultipartFile file,
             @Valid @RequestPart("document") DocumentRequestDTO document) {
+    	  ocrController.extract(file);//calling OCR
+        String imageAddress = cloudinaryController.uploadFileToCloudinary(file, "documents");
+        System.out.println(imageAddress);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(documentService.uploadDocument(document));
     }

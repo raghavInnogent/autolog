@@ -6,8 +6,6 @@ import com.example.backend.dto.summary.VehicleSummaryDTO;
 import com.example.backend.entity.Vehicle;
 import org.mapstruct.*;
 
-import java.util.ArrayList;
-
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
         uses = {

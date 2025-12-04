@@ -11,12 +11,16 @@ public class DocumentRequestDTO {
 
     private Long vehicleId;
     private String registrationNumber;
-    @Column(name="doc_name")
+    @Column(name = "doc_name")
     @JsonProperty("name")
     private String docName;
     private String type;
     private LocalDate issuedDate;
-    @Column(name="expiration_date")
+    @Column(name = "expiration_date")
     @JsonProperty("expiry")
     private LocalDate expirationDate;
+
+    @Column(name = "doc_image")
+    @JsonProperty("docImage")
+    private String docImage;
 }

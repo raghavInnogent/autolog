@@ -84,7 +84,7 @@
         </dependency>
 
         <!-- ===================== -->
-        <!-- ⭐ SWAGGER / OPENAPI 3 -->
+        <!--  SWAGGER / OPENAPI 3 -->
         <!-- ===================== -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -111,7 +111,7 @@
 
 
         <!-- =============== -->
-        <!-- ⭐ LOGGING API  -->
+        <!-- LOGGING API  -->
         <!-- =============== -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -132,6 +132,20 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+
+<!-- Cloudinary -->
+        <dependency>
+             <groupId>com.cloudinary</groupId>
+             <artifactId>cloudinary-http44</artifactId>
+            <version>1.33.0</version>
+            </dependency>
+
+        <!-- Tess4J (OCR Library) -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>4.5.5</version>
         </dependency>
 
     </dependencies>

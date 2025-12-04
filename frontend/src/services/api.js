@@ -4,10 +4,10 @@ const baseURL = import.meta.env.DEV ? '/api' : (import.meta.env.VITE_BACKEND_URL
 
 const api = axios.create({
   baseURL,
-  withCredentials: true, // Include http-only cookies in all requests
+  withCredentials: true, 
 })
 
-// Interceptor to attach JWT token to requests
+
 api.interceptors.request.use((config) => {
   try {
     const token = localStorage.getItem('autolog_token')
@@ -19,17 +19,12 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-export default api
-
 export const vehiclesAPI = {
-  // backend exposes GET /vehicles/getAll
   getAll: () => api.get('/vehicles/getAll'),
-  // alias for older callers
-  getAllLegacy: () => api.get('/vehicles'),
   get: (id) => api.get(`/vehicles/${id}`),
   create: (data) => api.post('/vehicles/create', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
-  remove: (id) => api.delete(`/vehicles/${id}`),
+  delete: (id) => api.delete(`/vehicles/${id}`),
 }
 
 export const documentsAPI = {
@@ -54,12 +49,12 @@ export const schedulesAPI = {
   getUpcoming: (vehicleId) => api.get('/schedules/upcoming', { params: { vehicleId } }),
 }
 
-export const analyticsAPI = {
-  spendByCategory: (vehicleId, period) => api.get('/analytics/spend-by-category', { params: { vehicleId, period } }),
-  costPerKm: (vehicleId, period) => api.get('/analytics/cost-per-km', { params: { vehicleId, period } }),
-  serviceFrequency: (vehicleId, period) => api.get('/analytics/service-frequency', { params: { vehicleId, period } }),
-  ownershipCost: (vehicleId) => api.get('/analytics/ownership-cost', { params: { vehicleId } }),
-}
+// export const analyticsAPI = {
+//   spendByCategory: (vehicleId, period) => api.get('/analytics/spend-by-category', { params: { vehicleId, period } }),
+//   costPerKm: (vehicleId, period) => api.get('/analytics/cost-per-km', { params: { vehicleId, period } }),
+//   serviceFrequency: (vehicleId, period) => api.get('/analytics/service-frequency', { params: { vehicleId, period } }),
+//   ownershipCost: (vehicleId) => api.get('/analytics/ownership-cost', { params: { vehicleId } }),
+// }
 
 export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),

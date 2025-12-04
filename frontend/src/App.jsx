@@ -7,6 +7,7 @@ import VehiclesPage from './pages/VehiclesPage'
 import VehicleDetailsPage from './pages/VehicleDetailsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ServicingsPage from './pages/ServicingsPage'
+// import AnalyticsPage from './pages/AnalyticsPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ProfilePage from './pages/ProfilePage'
@@ -34,6 +35,7 @@ function App() {
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />
+                {/* <Route path="/analytics" element={<AnalyticsPage />} /> */}
                 <Route path="/profile" element={<ProfilePage />} />
               </Route>
             </Routes>

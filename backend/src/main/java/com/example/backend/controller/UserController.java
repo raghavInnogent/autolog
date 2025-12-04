@@ -28,7 +28,6 @@ public class UserController {
         return ResponseEntity.status(201).body(userService.create(dto));
     }
 
-
     @GetMapping("/getById/{id}")
     public ResponseEntity<UserResponseDTO> get(@PathVariable Long id) {
 
@@ -56,7 +55,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/password")
+    @PutMapping("/updatePassword")
     public ResponseEntity<Void> changePassword(@Valid @RequestBody PasswordUpdateRequestDTO dto){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth==null || !auth.isAuthenticated()) return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();

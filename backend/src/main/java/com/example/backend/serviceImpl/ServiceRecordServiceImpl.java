@@ -12,6 +12,7 @@ import com.example.backend.repository.ServiceCategoriesRepository;
 import com.example.backend.repository.VehicleRepository;
 import com.example.backend.service.ServiceRecordService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,12 +24,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ServiceRecordServiceImpl implements ServiceRecordService {
-
-    private final ServiceRecordDao dao;
-    private final VehicleRepository vehicleRepo;
-    private final ServiceCategoriesRepository categoryRepo;
-    private final ServiceRecordMapper mapper;
-    private final ServiceCategoriesDao  categoryDao;
+    @Autowired
+    private  ServiceRecordDao dao;
+    @Autowired
+    private  VehicleRepository vehicleRepo;
+    @Autowired
+    private  ServiceCategoriesRepository categoryRepo;
+    @Autowired
+    private  ServiceRecordMapper mapper;
+    @Autowired
+    private  ServiceCategoriesDao  categoryDao;
 
     @Override
     public ServiceRecordResponseDTO create(ServiceRecordRequestDTO dto) {
@@ -51,9 +56,6 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
         ServiceRecord savedRecord = dao.save(record);
         return mapper.toResponseDTO(savedRecord);
     }
-
-
-
 
     @Override
     public ServiceRecordResponseDTO getById(Long id) {
