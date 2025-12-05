@@ -9,23 +9,11 @@ import AddServiceModal from '../components/AddServiceModal'
 import DocumentUploadModal from '../components/DocumentUploadModal'
 import DocumentsCarousel from '../components/DocumentsCarousel'
 import NotificationTable from '../components/NotificationTable'
-import { vehiclesAPI, documentsAPI, notificationsAPI } from '../services/api'
+import { vehiclesAPI, documentsAPI, notificationsAPI, analyticsAPI } from '../services/api'
 import '../styles/pages/HomePage.css'
 import heroImage1 from '../assets/heroImage1.jpg'
 
 ChartJS.register(ArcElement, Tooltip, Legend)
-
-const vehicleUsageData = {
-  labels: ['Toyota Camry', 'Honda Civic', 'Ford F-150', 'Others'],
-  datasets: [
-    {
-      data: [35, 25, 20, 20],
-      backgroundColor: ['#FFC300', '#22577A', '#FF5733', '#ffffff'],
-      borderColor: 'rgba(255, 255, 255, 0.2)',
-      borderWidth: 2,
-    },
-  ],
-}
 
 const chartOptions = {
   responsive: true,
@@ -62,37 +50,48 @@ const chartOptions = {
 export default function UserHomePage() {
   const [vehicles, setVehicles] = useState([])
   const [docs, setDocs] = useState([])
-  const [notificationCounts, setNotificationCounts] = useState({ 
+  const [notificationCounts, setNotificationCounts] = useState({
     highPriorityCount: 0,
     unreadCount: 0,
     activeCount: 0
-  }) 
+  })
   const [showAdd, setShowAdd] = useState(false)
   const [showServiceModal, setShowServiceModal] = useState(false)
   const [showDocumentModal, setShowDocumentModal] = useState(false)
+  const [top3Vehicles, setTop3Vehicles] = useState([])
+  const [mostEfficientVehicle, setMostEfficientVehicle] = useState(null)
 
   const fetch = async () => {
     try {
-      // Fetch vehicles
-      const v = await vehiclesAPI.getAll()
+      const [v, d, top3Res, efficientRes] = await Promise.all([
+        vehiclesAPI.getAll(),
+        documentsAPI.getAll(),
+        analyticsAPI.getTop3MostUsedVehicles(),
+        analyticsAPI.getMostEfficientVehicle()
+      ])
+
       setVehicles(v.data || [])
-      
+
       // Fetch documents
-      const d = await documentsAPI.getAll()
       setDocs(d.data || [])
-      
+
       // Fetch notification counts
       try {
         const n = await notificationsAPI.getCounts()
-        setNotificationCounts(n.data || { 
+        setNotificationCounts(n.data || {
           highPriorityCount: 0,
           unreadCount: 0,
           activeCount: 0
         })
       } catch (notifError) {
         console.error('Error fetching notification counts:', notifError)
-      
+
       }
+      setTop3Vehicles(top3Res.data || [])
+      setMostEfficientVehicle(efficientRes.data || null)
+
+      console.log('Top 3 Vehicles:', top3Res.data)
+      console.log('Most Efficient Vehicle:', efficientRes.data)
     } catch (err) {
       console.error('Error fetching data:', err)
     }
@@ -100,6 +99,18 @@ export default function UserHomePage() {
 
   useEffect(() => { fetch() }, [])
 
+  // Generate dynamic vehicle usage data for chart
+  const vehicleUsageData = {
+    labels: top3Vehicles.map(v => v.vehicleName || v.model || 'Unknown'),
+    datasets: [
+      {
+        data: top3Vehicles.map(v => v.usagePercentage || v.serviceCount || 0),
+        backgroundColor: ['#FFC300', '#22577A', '#FF5733', '#ffffff'],
+        borderColor: 'rgba(255, 255, 255, 0.2)',
+        borderWidth: 2,
+      },
+    ],
+  }
 
   return (
     <div>
@@ -111,7 +122,11 @@ export default function UserHomePage() {
             <div className="hero-chart-container">
               <h2 className="hero-chart-title">Your Most Used Vehicles</h2>
               <div className="hero-chart">
-                <Doughnut data={vehicleUsageData} options={chartOptions} />
+                {top3Vehicles.length > 0 ? (
+                  <Doughnut data={vehicleUsageData} options={chartOptions} />
+                ) : (
+                  <p style={{ color: '#fff', textAlign: 'center' }}>No vehicle data available</p>
+                )}
               </div>
             </div>
 
@@ -181,31 +196,31 @@ export default function UserHomePage() {
         <section style={{ marginBottom: 32 }}>
           <h2 style={{ margin: '0 0 16px 0' }}>Most Efficient Vehicle</h2>
           <div className="efficient-vehicle-card">
-            {vehicles.length > 0 ? (
+            {mostEfficientVehicle ? (
               <>
                 <div className="efficient-vehicle-badge">
                   <FaTrophy size={40} color="#FFC300" />
                 </div>
                 <div className="efficient-vehicle-info">
-                  <h3 className="efficient-vehicle-name">{vehicles[0]?.model || 'N/A'}</h3>
+                  <h3 className="efficient-vehicle-name">{mostEfficientVehicle.vehicleName || 'N/A'}</h3>
                   <p className="efficient-vehicle-desc">Best mileage per cost ratio</p>
                   <div className="efficient-vehicle-stats">
                     <div className="efficient-stat">
-                      <span className="efficient-stat-label">Avg. Mileage</span>
-                      <span className="efficient-stat-value">25 km/l</span>
+                      <span className="efficient-stat-label">Mileage</span>
+                      <span className="efficient-stat-value">{mostEfficientVehicle.latestMileage?.toLocaleString() || 'N/A'} km</span>
                     </div>
                     <div className="efficient-stat">
-                      <span className="efficient-stat-label">Total Distance</span>
-                      <span className="efficient-stat-value">15,000 km</span>
+                      <span className="efficient-stat-label">Total Service Cost</span>
+                      <span className="efficient-stat-value">₹{mostEfficientVehicle.totalServiceCost?.toLocaleString() || '0'}</span>
                     </div>
                     <div className="efficient-stat">
                       <span className="efficient-stat-label">Cost Efficiency</span>
-                      <span className="efficient-stat-value">₹2.5/km</span>
+                      <span className="efficient-stat-value">₹{mostEfficientVehicle.runningCostPerKm?.toFixed(2) || '0'}/km</span>
                     </div>
                   </div>
                 </div>
                 <div className="efficient-vehicle-image">
-                  <img src={vehicles[0]?.image || '/vehicle-placeholder.jpg'} alt={vehicles[0]?.model || 'Vehicle'} />
+                  <img src={mostEfficientVehicle.image || '/vehicle-placeholder.jpg'} alt={mostEfficientVehicle.vehicleName || 'Vehicle'} />
                 </div>
               </>
             ) : (
@@ -253,7 +268,7 @@ export default function UserHomePage() {
           )}
         </section>
 
-       {/* Notification Table */}
+        {/* Notification Table */}
         <NotificationTable />
       </div>
 

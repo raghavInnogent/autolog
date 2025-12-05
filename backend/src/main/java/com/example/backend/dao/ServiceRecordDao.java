@@ -33,4 +33,20 @@ public class ServiceRecordDao {
 
         return serviceRecordRepository.findAll();
     }
+
+    public List<Object[]> getMonthlyExpenditureByYear(Long userId, int year) {
+        return serviceRecordRepository.getMonthlyExpenditureByYear(userId,year);
+    }
+
+    public List<Object[]> getVehicleWiseExpenditureByUser(Long userId) {
+        return serviceRecordRepository.getVehicleWiseExpenditureByUser(userId);
+    }
+
+    public List<Object[]> getRunningCostDataByUser(Long userId) {
+        return serviceRecordRepository.getRunningCostDataByUser(userId);
+    }
+
+    public List<Object[]> getTop3MostUsedVehiclesByYear(Long userId, int year) {
+        return serviceRecordRepository.getTop3MostUsedVehiclesByYear(userId, year);
+    }
 }

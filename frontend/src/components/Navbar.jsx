@@ -40,6 +40,7 @@ export default function Navbar() {
               <NavLink to="/vehicles" className="nav-link">Vehicles</NavLink>
               <NavLink to="/documents" className="nav-link">Documents</NavLink>
               <NavLink to="/servicings" className="nav-link">Servicings</NavLink>
+              <NavLink to="/analysis" className="nav-link">Analysis</NavLink>
             </>
           ) : (
             <>

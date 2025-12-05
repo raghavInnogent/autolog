@@ -26,3 +26,4 @@ public class ServicedItems {
 
     private Integer quantity;
 }
+
