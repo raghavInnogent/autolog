@@ -15,7 +15,7 @@ public interface ServiceRecordService {
 
     ServiceRecordResponseDTO getById(Long id);
 
-    List<ServiceRecordResponseDTO> getAll();
+    List<ServiceRecordResponseDTO> getAllByUserId(Long userId);
 
     MonthlyExpenditureDTO getMonthlyExpenditure();
 

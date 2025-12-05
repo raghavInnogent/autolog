@@ -34,6 +34,10 @@ public class ServiceRecordDao {
         return serviceRecordRepository.findAll();
     }
 
+    public List<ServiceRecord> findByUserId(Long userId) {
+        return serviceRecordRepository.findAllByUserId(userId);
+    }
+
     public List<Object[]> getMonthlyExpenditureByYear(Long userId, int year) {
         return serviceRecordRepository.getMonthlyExpenditureByYear(userId,year);
     }

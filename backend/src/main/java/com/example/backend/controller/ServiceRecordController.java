@@ -2,8 +2,10 @@ package com.example.backend.controller;
 
 import java.util.List;
 
+import com.example.backend.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +38,8 @@ public class ServiceRecordController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<ServiceRecordResponseDTO>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+        Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
+
+        return ResponseEntity.ok(service.getAllByUserId(userId));
     }
 }

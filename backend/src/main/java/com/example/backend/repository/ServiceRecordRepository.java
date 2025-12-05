@@ -14,6 +14,14 @@ public interface ServiceRecordRepository extends JpaRepository<ServiceRecord, Lo
     List<ServiceRecord> findByDateOfServiceBetween(LocalDate from, LocalDate to);
     List<ServiceRecord> findByVehicleId(Long vehicleId);
 
+    @Query(value = "SELECT sr.* FROM service_record sr " +
+            "JOIN vehicle v ON sr.vehicle_id = v.id " +
+            "WHERE v.owner_id = :userId " +
+            "ORDER BY sr.date_of_service DESC",
+            nativeQuery = true)
+    List<ServiceRecord> findAllByUserId(@Param("userId") Long userId);
+
+
 
     @Query(value = "SELECT EXTRACT(MONTH FROM sr.date_of_service) as month, COALESCE(SUM(sr.cost), 0) as total " +
             "FROM service_record sr " +

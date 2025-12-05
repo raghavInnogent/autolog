@@ -71,8 +71,8 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     }
 
     @Override
-    public List<ServiceRecordResponseDTO> getAll() {
-        return dao.findAll().stream()
+    public List<ServiceRecordResponseDTO> getAllByUserId(Long userId) {
+        return dao.findByUserId(userId).stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }
