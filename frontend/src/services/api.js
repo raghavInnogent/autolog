@@ -21,10 +21,10 @@ api.interceptors.request.use((config) => {
 
 export const vehiclesAPI = {
   getAll: () => api.get('/vehicles/getAll'),
-  get: (id) => api.get(`/vehicles/${id}`),
+  get: (id) => api.get(`/vehicles/getById/${id}`),
   create: (data) => api.post('/vehicles/create', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
-  delete: (id) => api.delete(`/vehicles/${id}`),
+  delete: (id) => api.delete(`/vehicles/deleteById/${id}`),
 }
 
 export const documentsAPI = {
