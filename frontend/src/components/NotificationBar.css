@@ -1,2 +1,0 @@
-.notification-bar{position:fixed;right:20px;bottom:20px;background:linear-gradient(90deg,#ffffff,#f7fafc);padding:12px 18px;border-radius:10px;border:1px solid var(--border);box-shadow:0 10px 30px rgba(2,6,23,0.06);z-index:9999}
-.notification-bar.hide{display:none}

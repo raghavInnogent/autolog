@@ -8,8 +8,8 @@ import AddVehicleModal from '../components/AddVehicleModal'
 import AddServiceModal from '../components/AddServiceModal'
 import DocumentUploadModal from '../components/DocumentUploadModal'
 import DocumentsCarousel from '../components/DocumentsCarousel'
-import UpcomingSchedules from '../components/UpcomingSchedules'
-import { vehiclesAPI, documentsAPI } from '../services/api'
+import NotificationTable from '../components/NotificationTable'
+import { vehiclesAPI, documentsAPI, notificationsAPI } from '../services/api'
 import '../styles/pages/HomePage.css'
 import heroImage1 from '../assets/heroImage1.jpg'
 
@@ -62,22 +62,44 @@ const chartOptions = {
 export default function UserHomePage() {
   const [vehicles, setVehicles] = useState([])
   const [docs, setDocs] = useState([])
+  const [notificationCounts, setNotificationCounts] = useState({ 
+    highPriorityCount: 0,
+    unreadCount: 0,
+    activeCount: 0
+  }) 
   const [showAdd, setShowAdd] = useState(false)
   const [showServiceModal, setShowServiceModal] = useState(false)
   const [showDocumentModal, setShowDocumentModal] = useState(false)
 
   const fetch = async () => {
     try {
+      // Fetch vehicles
       const v = await vehiclesAPI.getAll()
       setVehicles(v.data || [])
+      
+      // Fetch documents
       const d = await documentsAPI.getAll()
       setDocs(d.data || [])
+      
+      // Fetch notification counts
+      try {
+        const n = await notificationsAPI.getCounts()
+        setNotificationCounts(n.data || { 
+          highPriorityCount: 0,
+          unreadCount: 0,
+          activeCount: 0
+        })
+      } catch (notifError) {
+        console.error('Error fetching notification counts:', notifError)
+      
+      }
     } catch (err) {
-      console.error(err)
+      console.error('Error fetching data:', err)
     }
   }
 
   useEffect(() => { fetch() }, [])
+
 
   return (
     <div>
@@ -231,12 +253,9 @@ export default function UserHomePage() {
           )}
         </section>
 
-        {/* Upcoming Schedules Section */}
-        <section style={{ marginBottom: 32 }}>
-          <h2 style={{ marginBottom: 16 }}>Upcoming Schedules</h2>
-          <UpcomingSchedules />
-        </section>
-      </div >
+       {/* Notification Table */}
+        <NotificationTable />
+      </div>
 
       {showAdd && <AddVehicleModal onClose={() => setShowAdd(false)} onCreated={fetch} />}
       {showServiceModal && <AddServiceModal onClose={() => setShowServiceModal(false)} onCreated={fetch} />}

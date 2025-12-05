@@ -18,6 +18,7 @@ public class ServiceCategoriesDao {
     }
 
     public boolean existsByName(String name) {
+
         return serviceCategoriesRepository.existsByName(name);
     }
 
@@ -26,6 +27,7 @@ public class ServiceCategoriesDao {
     }
 
     public List<ServiceCategories> findAll() {
+
         return serviceCategoriesRepository.findAll();
     }
 }

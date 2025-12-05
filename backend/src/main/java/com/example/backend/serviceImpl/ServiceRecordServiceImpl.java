@@ -7,12 +7,14 @@ import com.example.backend.dto.response.ServiceRecordResponseDTO;
 import com.example.backend.entity.ServiceCategories;
 import com.example.backend.entity.ServiceRecord;
 import com.example.backend.entity.Vehicle;
+import com.example.backend.event.ServiceRecordCreatedEvent;  // ADD THIS
 import com.example.backend.mapper.ServiceRecordMapper;
 import com.example.backend.repository.ServiceCategoriesRepository;
 import com.example.backend.repository.VehicleRepository;
 import com.example.backend.service.ServiceRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;  // ADD THIS
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,15 +27,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ServiceRecordServiceImpl implements ServiceRecordService {
     @Autowired
-    private  ServiceRecordDao dao;
+    private ServiceRecordDao serviceRecordDao;
     @Autowired
-    private  VehicleRepository vehicleRepo;
+    private VehicleRepository vehicleRepo;
     @Autowired
-    private  ServiceCategoriesRepository categoryRepo;
+    private ServiceRecordMapper mapper;
     @Autowired
-    private  ServiceRecordMapper mapper;
+    private ServiceCategoriesDao categoryDao;
+
     @Autowired
-    private  ServiceCategoriesDao  categoryDao;
+    private ApplicationEventPublisher eventPublisher;
 
     @Override
     public ServiceRecordResponseDTO create(ServiceRecordRequestDTO dto) {
@@ -46,27 +49,29 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
                 ));
         record.setVehicle(vehicle);
 
-        System.out.println(dto);
-        System.out.println(record);
-        record.getServicedItems().forEach(item-> {
-            Period period =categoryDao.findById(item.getServiceCategoryId()).getExpiryInMonths();
+        record.getServicedItems().forEach(item -> {
+            Period period = categoryDao.findById(item.getServiceCategoryId()).getExpiryInMonths();
             item.setExpirationDate(record.getDateOfService().plus(period));
         });
 
-        ServiceRecord savedRecord = dao.save(record);
+        ServiceRecord savedRecord = serviceRecordDao.save(record);
+
+
+        eventPublisher.publishEvent(new ServiceRecordCreatedEvent(this, savedRecord));
+
         return mapper.toResponseDTO(savedRecord);
     }
 
     @Override
     public ServiceRecordResponseDTO getById(Long id) {
-        ServiceRecord record = dao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"ServiceRecord not found"));
+        ServiceRecord record = serviceRecordDao.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "ServiceRecord not found"));
         return mapper.toResponseDTO(record);
     }
 
     @Override
     public List<ServiceRecordResponseDTO> getAll() {
-        return dao.findAll().stream()
+        return serviceRecordDao.findAll().stream()
                 .map(mapper::toResponseDTO)
                 .toList();
     }

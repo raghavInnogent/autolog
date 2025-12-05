@@ -1,13 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import NotificationBar from './components/NotificationBar'
 import Footer from './components/Footer'
 import UserHomePage from './pages/UserHomePage'
 import VehiclesPage from './pages/VehiclesPage'
 import VehicleDetailsPage from './pages/VehicleDetailsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ServicingsPage from './pages/ServicingsPage'
-// import AnalyticsPage from './pages/AnalyticsPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ProfilePage from './pages/ProfilePage'
@@ -21,7 +19,7 @@ function App() {
       <BrowserRouter>
         <div className="app-root">
           <Navbar />
-          <NotificationBar />
+           
           <main className="app-main">
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -35,7 +33,6 @@ function App() {
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />
-                {/* <Route path="/analytics" element={<AnalyticsPage />} /> */}
                 <Route path="/profile" element={<ProfilePage />} />
               </Route>
             </Routes>
