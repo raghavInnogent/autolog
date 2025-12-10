@@ -7,5 +7,5 @@ import com.example.backend.dto.response.*;
 
 @Service
 public interface OcrService {
-    OcrResponse extractData(MultipartFile file) throws Exception;
+    String extractData(MultipartFile file) throws Exception;
 }

@@ -1,5 +1,6 @@
 package com.example.backend.service;
 
+import com.example.backend.dto.analysis.TopUsedVehicleDTO;
 import com.example.backend.dto.request.VehicleRequestDTO;
 import com.example.backend.dto.response.VehicleResponseDTO;
 import com.example.backend.entity.Vehicle;
@@ -16,4 +17,6 @@ public interface VehicleService {
     Vehicle findVehicleByRegistrationNo(String registrationNo);
     int getVehiclesCountByOwnerId(Long ownerId);
 
+
+    List<TopUsedVehicleDTO> getTop3MostUsedVehicles(Long userId);
 }

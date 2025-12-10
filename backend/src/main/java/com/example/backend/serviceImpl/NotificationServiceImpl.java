@@ -44,8 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
         createOrUpdateNotification(item.getId(), ReferenceType.SERVICED_ITEM, NotificationType.SERVICE_ITEM_EXPIRY,
                 item.getExpirationDate(), userId, vehicleId, "ServicedItem ID: " + item.getId(),
                 daysLeft -> {
-                    ServiceCategories category = serviceCategoriesDao.findById(item.getServiceCategoryId())
-                            .orElse(null);
+                    ServiceCategories category = serviceCategoriesDao.findById(item.getServiceCategoryId());
                     if (category == null) {
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                                 "ServiceCategory not found with ID: " + item.getServiceCategoryId());

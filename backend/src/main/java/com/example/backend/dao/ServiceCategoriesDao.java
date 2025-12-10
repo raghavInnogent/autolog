@@ -22,11 +22,12 @@ public class ServiceCategoriesDao {
         return serviceCategoriesRepository.existsByName(name);
     }
 
-    public java.util.Optional<ServiceCategories> findById(Long id) {
-        return serviceCategoriesRepository.findById(id);
+    public ServiceCategories findById(Long id) {
+        return serviceCategoriesRepository.findById(id).get();
     }
 
     public List<ServiceCategories> findAll() {
+
         return serviceCategoriesRepository.findAll();
     }
 
@@ -36,5 +37,9 @@ public class ServiceCategoriesDao {
 
     public void deleteById(Long id) {
         serviceCategoriesRepository.deleteById(id);
+    }
+
+    public ServiceCategories  findByName(String name) {
+        return serviceCategoriesRepository.findByName(name);
     }
 }

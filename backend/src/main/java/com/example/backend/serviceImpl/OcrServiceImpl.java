@@ -18,7 +18,7 @@ import net.sourceforge.tess4j.Tesseract;
 public class OcrServiceImpl implements OcrService {
 
     @Override
-    public OcrResponse extractData(MultipartFile file) throws Exception {
+    public String extractData(MultipartFile file) throws Exception {
 
         String original = file.getOriginalFilename().toLowerCase();
 
@@ -37,13 +37,12 @@ public class OcrServiceImpl implements OcrService {
     }
 
 
-    private OcrResponse extractFromText(MultipartFile file) throws Exception {
-        String text = new String(file.getBytes());
-        return new OcrResponse(text);
+    private String extractFromText(MultipartFile file) throws Exception {
+        return new String(file.getBytes());
     }
 
 
-    private OcrResponse extractFromImage(MultipartFile file) throws Exception {
+    private String extractFromImage(MultipartFile file) throws Exception {
         Tesseract t = new Tesseract();
         t.setDatapath("C:/Program Files/Tesseract-OCR/tessdata");
         t.setLanguage("eng");
@@ -51,11 +50,11 @@ public class OcrServiceImpl implements OcrService {
         BufferedImage img = ImageIO.read(file.getInputStream());
         String result = t.doOCR(img);
 
-        return new OcrResponse(result);
+        return result;
     }
 
 
-    private OcrResponse extractFromPdf(MultipartFile file) throws Exception {
+    private String extractFromPdf(MultipartFile file) throws Exception {
         PDDocument document = PDDocument.load(file.getBytes());
         PDFRenderer renderer = new PDFRenderer(document);
 
@@ -71,6 +70,6 @@ public class OcrServiceImpl implements OcrService {
         }
 
         document.close();
-        return new OcrResponse(fullText.toString());
+        return fullText.toString();
     }
 }

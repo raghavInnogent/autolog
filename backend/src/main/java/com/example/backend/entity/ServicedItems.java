@@ -25,5 +25,7 @@ public class ServicedItems {
     private LocalDate expirationDate;
 
     private Integer quantity;
+
+    private Integer costPerItem;
 }
 

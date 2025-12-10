@@ -11,4 +11,6 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     java.util.Optional<Vehicle> findByRegistrationNumber(String registrationNumber);
     int getVehicleCountByOwnerId(Long ownerId);
 
+    List<Vehicle> findTop3ByOwnerIdOrderByOdometerReadingDesc(Long ownerId);
+
 }

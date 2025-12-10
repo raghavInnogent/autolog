@@ -7,12 +7,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-@Service
+
 public interface ServiceCategoriesService {
     ServiceCategoriesResponseDTO addCategory(ServiceCategoriesRequestDTO dto);
 
     List<ServiceCategoriesResponseDTO> getAll();
 
+    ServiceCategoriesResponseDTO addNewServiceCategory(ServiceCategoriesRequestDTO dto);
    ResponseEntity< ServiceCategoriesResponseDTO> updateCategory(Long id, ServiceCategoriesRequestDTO dto);
 
     void deleteCategory(Long id);

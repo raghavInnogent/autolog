@@ -6,6 +6,7 @@ import com.example.backend.dto.analysis.VehicleExpenditureDTO;
 import com.example.backend.dto.analysis.VehicleRunningCostDTO;
 import com.example.backend.security.UserPrincipal;
 import com.example.backend.service.ServiceRecordService;
+import com.example.backend.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,9 @@ public class AnalysisController {
 
     @Autowired
     private ServiceRecordService serviceRecordService;
+
+    @Autowired
+    private VehicleService vehicleService;
 
     @GetMapping("/getMonthlyExpenditure")
     public ResponseEntity<MonthlyExpenditureDTO> getMonthlyExpenditure() {
@@ -64,10 +68,8 @@ public class AnalysisController {
         Long userId = ((UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
 
         try {
-            int targetYear = 2025;
-
             List<TopUsedVehicleDTO> topVehicles =
-                    serviceRecordService.getTop3MostUsedVehicles(userId, targetYear);
+                    vehicleService.getTop3MostUsedVehicles(userId);
             return ResponseEntity.ok(topVehicles);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

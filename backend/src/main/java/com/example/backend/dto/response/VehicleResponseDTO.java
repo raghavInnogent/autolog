@@ -25,6 +25,10 @@ public class VehicleResponseDTO {
 
     private String type;
 
+    private Integer odometerReading;
+
+    private Integer purchasePrice;
+
     private List<DocumentSummaryDTO> documents;
 
     private LocalDate purchaseDate;

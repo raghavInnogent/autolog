@@ -5,6 +5,7 @@ import com.example.backend.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,18 +16,15 @@ public class VehicleDao {
     private VehicleRepository vehicleRepository;
 
     public Vehicle save(Vehicle v) {
-
-        return vehicleRepository.save(v);
+    	return vehicleRepository.save(v); 
     	}
     
     public Optional<Vehicle> findById(Long id) {
-
-        return vehicleRepository.findById(id);
+    	return vehicleRepository.findById(id);
     	}
     
     public List<Vehicle> findAll() { 
-
-        return vehicleRepository.findAll();
+    	return vehicleRepository.findAll(); 
     	}
     
     public void delete(Vehicle v) { 
@@ -44,4 +42,8 @@ public class VehicleDao {
     public int getVehiclesCountByOwnerId(Long ownerId) {
         return vehicleRepository.getVehicleCountByOwnerId(ownerId);
     }
+
+	public List<Vehicle> getTop3MostUsedVehicles(Long userId) {
+		return vehicleRepository.findTop3ByOwnerIdOrderByOdometerReadingDesc(userId);
+	}
 }

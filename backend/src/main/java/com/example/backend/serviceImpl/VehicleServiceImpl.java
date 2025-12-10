@@ -2,6 +2,7 @@ package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.UserDao;
 import com.example.backend.dao.VehicleDao;
+import com.example.backend.dto.analysis.TopUsedVehicleDTO;
 import com.example.backend.dto.request.VehicleRequestDTO;
 import com.example.backend.dto.response.VehicleResponseDTO;
 import com.example.backend.entity.User;
@@ -95,4 +96,14 @@ public class VehicleServiceImpl implements VehicleService {
         return vehicleDao.getVehiclesCountByOwnerId(ownerId);
     }
 
+
+    @Override
+    public List<TopUsedVehicleDTO> getTop3MostUsedVehicles(Long userId) {
+        List<TopUsedVehicleDTO> vehicles = vehicleDao.getTop3MostUsedVehicles(userId)
+                .stream()
+                .map(vehicle->new TopUsedVehicleDTO(vehicle.getId(),vehicle.getModel(),vehicle.getRegistrationNumber(),vehicle.getOdometerReading()))
+                .toList();
+
+        return vehicles;
+    }
 }

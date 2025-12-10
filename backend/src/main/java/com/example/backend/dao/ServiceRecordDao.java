@@ -48,7 +48,4 @@ public class ServiceRecordDao {
         return serviceRecordRepository.getRunningCostDataByUser(userId);
     }
 
-    public List<Object[]> getTop3MostUsedVehiclesByYear(Long userId, int year) {
-        return serviceRecordRepository.getTop3MostUsedVehiclesByYear(userId, year);
-    }
 }

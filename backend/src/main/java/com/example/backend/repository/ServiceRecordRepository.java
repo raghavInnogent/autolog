@@ -62,19 +62,4 @@ public interface ServiceRecordRepository extends JpaRepository<ServiceRecord, Lo
             nativeQuery = true)
     List<Object[]> getRunningCostDataByUser(@Param("userId") Long userId);
 
-    @Query(value = "SELECT v.id as vehicleId, " +
-            "CONCAT(v.company, ' ', v.model) as vehicleName, " +
-            "v.registration_number as registrationNumber, " +
-            "COUNT(sr.id) as serviceCount, " +
-            "COALESCE(MAX(sr.mileage) - MIN(sr.mileage), 0) as totalMileageCovered " +
-            "FROM vehicle v " +
-            "INNER JOIN service_record sr ON v.id = sr.vehicle_id " +
-            "WHERE v.owner_id = :userId " +
-            "AND EXTRACT(YEAR FROM sr.date_of_service) = :year " +
-            "GROUP BY v.id, v.company, v.model, v.registration_number " +
-            "ORDER BY totalMileageCovered DESC " +
-            "LIMIT 3",
-            nativeQuery = true)
-    List<Object[]> getTop3MostUsedVehiclesByYear(@Param("userId") Long userId, @Param("year") int year);
-
 }

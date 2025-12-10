@@ -23,6 +23,9 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
     ServiceCategoriesMapper serviceCategoriesMapper;
 
     @Autowired
+    GroqService groq;
+
+    @Autowired
     ServiceCategoriesDao  serviceCategoriesDao;
 
     @Override
@@ -33,25 +36,23 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.CATEGORY_ALREADY_EXISTS.name());
         }
 
-            System.out.println(dto);
             ServiceCategories serviceCategories = serviceCategoriesMapper.toEntity(dto);
             ServiceCategories saved = serviceCategoriesDao.save(serviceCategories);
-            System.out.println(saved);
             return serviceCategoriesMapper.toResponseDTO(saved);
 
     }
 
     @Override
     public List<ServiceCategoriesResponseDTO> getAll() {
-        return serviceCategoriesDao.findAll()
-                .stream()
+
+        return serviceCategoriesDao.findAll().stream()
                 .map(serviceCategoriesMapper::toResponseDTO)
                 .toList();
     }
 
     @Override
     public ResponseEntity<ServiceCategoriesResponseDTO> updateCategory(Long id, ServiceCategoriesRequestDTO dto) {
-        ServiceCategories newServiceCategories = serviceCategoriesDao.findById(id).get();
+        ServiceCategories newServiceCategories = serviceCategoriesDao.findById(id);
         newServiceCategories.setName(dto.getName());
         newServiceCategories.setDescription(dto.getDescription());
         newServiceCategories.setExpiryInMonths(Period.ofMonths(dto.getExpiryInMonths()));
@@ -65,9 +66,39 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
 
     @Override
     public ServiceCategories findById(Long categoryId) {
-        return serviceCategoriesDao.findById(categoryId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.CATEGORY_NOT_FOUND.name()));
+        return serviceCategoriesDao.findById(categoryId);
     }
 
 
+
+    @Override
+    public ServiceCategoriesResponseDTO addNewServiceCategory(ServiceCategoriesRequestDTO  dto)
+    {
+        try {
+            if (serviceCategoriesDao.existsByName(dto.getName())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.CATEGORY_ALREADY_EXISTS.name());
+            }
+
+            String prompt = String.format("""
+                    Given the automotive part or service item name below, 
+                    return ONLY the typical replacement interval in months as a single integer number. 
+                    If the item is a service/labor/washing or doesn't have a replacement interval, return 0. 
+                    No explanations, no text, just the number.
+                    Item: %s
+                    """, dto.getName());
+
+
+            Integer expiry = Integer.parseInt(groq.askGroq(prompt).block());
+            System.out.println("expiry : " + expiry);
+            dto.setExpiryInMonths(expiry);
+
+            ServiceCategories serviceCategories = serviceCategoriesMapper.toEntity(dto);
+            ServiceCategories saved = serviceCategoriesDao.save(serviceCategories);
+            return serviceCategoriesMapper.toResponseDTO(saved);
+        }
+        catch (Exception e)
+        {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "INVALID CATEGORY");
+        }
+    }
 }

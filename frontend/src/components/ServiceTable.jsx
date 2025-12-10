@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { servicesAPI } from '../services/api'
 import AddServiceModal from './AddServiceModal'
+import InvoiceUploadModal from './InvoiceUploadModal'
+import ConfirmServiceModal from './ConfirmServiceModal'
 import '../styles/components/ServiceTable.css'
 
 export default function ServiceTable() {
@@ -9,6 +11,8 @@ export default function ServiceTable() {
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
   const [openAdd, setOpenAdd] = useState(false)
+  const [openUpload, setOpenUpload] = useState(false)
+  const [confirmData, setConfirmData] = useState(null)
 
   const fetch = async () => {
     setLoading(true)
@@ -27,6 +31,13 @@ export default function ServiceTable() {
     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount || 0)
   }
 
+  const handleDataExtracted = (data) => {
+    console.log('Extracted data received:', data)
+    console.log('Setting confirmData state...')
+    setConfirmData(data)
+    console.log('confirmData state set! Modal should appear now.')
+  }
+
   return (
     <div className="service-table">
       <div className="service-filters">
@@ -37,7 +48,8 @@ export default function ServiceTable() {
           <input type="date" value={to} onChange={e => setTo(e.target.value)} />
           <button className="navy-btn" onClick={fetch}>Filter</button>
         </div>
-        <div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="navy-btn" onClick={() => setOpenUpload(true)}>📄 Upload Invoice</button>
           <button className="navy-btn" onClick={() => setOpenAdd(true)}>+ Add Service Record</button>
         </div>
       </div>
@@ -84,6 +96,8 @@ export default function ServiceTable() {
       )}
 
       {openAdd && <AddServiceModal onClose={() => setOpenAdd(false)} onCreated={fetch} />}
+      {openUpload && <InvoiceUploadModal onClose={() => setOpenUpload(false)} onDataExtracted={handleDataExtracted} />}
+      {confirmData && <ConfirmServiceModal data={confirmData} onClose={() => setConfirmData(null)} onCreated={fetch} />}
     </div>
   )
 }

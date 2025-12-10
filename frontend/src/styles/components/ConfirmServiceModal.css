@@ -1,0 +1,204 @@
+.confirm-service-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+    padding-top: 80px;
+    overflow-y: auto;
+}
+
+.confirm-service-modal form {
+    background: var(--bg);
+    padding: 0;
+    border-radius: 16px;
+    max-width: 920px;
+    width: 100%;
+    max-height: calc(100vh - 120px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    margin: 0 auto 20px;
+    overflow-y: auto;
+    border: 1px solid rgba(34, 87, 122, 0.1);
+}
+
+/* Header Section - Fixed at top */
+.confirm-service-modal h3 {
+    background: #22577A;
+    color: white;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 0;
+    padding: 26px 28px 20px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 4px solid #FFD700;
+}
+
+.confirm-service-modal h3+p {
+    background: #22577A;
+    color: rgba(255, 255, 255, 0.95);
+    margin: 0;
+    padding: 0 28px 24px;
+    font-size: 14px;
+    position: sticky;
+    top: 70px;
+    z-index: 10;
+}
+
+/* Form Content */
+.confirm-service-modal form>div:not(:has(h3)) {
+    padding: 0 28px;
+}
+
+.confirm-service-modal form>div:last-child {
+    padding: 20px 28px 24px;
+    background: rgba(34, 87, 122, 0.02);
+    margin-top: 24px;
+    border-top: 1px solid rgba(34, 87, 122, 0.1);
+}
+
+.confirm-service-modal label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #22577A;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+}
+
+.confirm-service-modal input,
+.confirm-service-modal select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #e0e7ee;
+    border-radius: 10px;
+    background: white;
+    color: #333;
+    font-size: 14px;
+    margin-top: 4px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.confirm-service-modal input:hover {
+    border-color: #c5d3e0;
+}
+
+.confirm-service-modal input:focus,
+.confirm-service-modal select:focus {
+    outline: none;
+    border-color: #FFD700;
+    background: #fffef5;
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+}
+
+/* Service Items Section */
+.items-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 12px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 2px solid #e0e7ee;
+}
+
+.items-table thead {
+    background: linear-gradient(135deg, #22577A 0%, #2d6a8a 100%);
+    color: white;
+}
+
+.items-table th {
+    padding: 14px 12px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid #FFD700;
+}
+
+.items-table td {
+    padding: 10px 12px;
+    border-top: 1px solid #e8eef5;
+    background: white;
+}
+
+.items-table tbody tr:hover {
+    background: rgba(34, 87, 122, 0.04);
+}
+
+.items-table tbody tr:nth-child(even) {
+    background: #f8fbfd;
+}
+
+.items-table tbody tr:nth-child(even):hover {
+    background: rgba(34, 87, 122, 0.06);
+}
+
+.items-table input {
+    margin-top: 0;
+    padding: 8px 10px;
+    font-size: 13px;
+    border: 1px solid #d0dae5;
+}
+
+.items-table input:focus {
+    box-shadow: 0 0 0 2px rgba(34, 87, 122, 0.15);
+}
+
+/* Buttons */
+.navy-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #22577A 0%, #2d6a8a 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(34, 87, 122, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.navy-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1a4460 0%, #22577A 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(34, 87, 122, 0.3);
+}
+
+.navy-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(34, 87, 122, 0.2);
+}
+
+.navy-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Add Item Button */
+.confirm-service-modal button[type="button"]:not(.navy-btn):not([style*="background: transparent"]) {
+    background: linear-gradient(135deg, #38A3A5 0%, #57CC99 100%);
+    box-shadow: 0 3px 10px rgba(56, 163, 165, 0.2);
+}
+
+.confirm-service-modal button[type="button"]:not(.navy-btn):not([style*="background: transparent"]):hover {
+    background: linear-gradient(135deg, #2d8284 0%, #47b589 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(56, 163, 165, 0.3);
+}

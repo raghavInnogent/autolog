@@ -2,28 +2,34 @@ package com.example.backend.serviceImpl;
 
 import com.example.backend.dao.ServiceCategoriesDao;
 import com.example.backend.dao.ServiceRecordDao;
+import com.example.backend.dao.VehicleDao;
 import com.example.backend.dto.analysis.MonthlyExpenditureDTO;
 import com.example.backend.dto.analysis.TopUsedVehicleDTO;
 import com.example.backend.dto.analysis.VehicleExpenditureDTO;
 import com.example.backend.dto.analysis.VehicleRunningCostDTO;
+import com.example.backend.dto.ocr.ServiceRecordOCR_DTO;
 import com.example.backend.dto.request.ServiceRecordRequestDTO;
+import com.example.backend.dto.request.ServicedItemRequestDTO;
 import com.example.backend.dto.response.ServiceRecordResponseDTO;
 import com.example.backend.dto.response.UserResponseDTO;
+import com.example.backend.entity.ServiceCategories;
 import com.example.backend.entity.ServiceRecord;
 import com.example.backend.entity.Vehicle;
-import com.example.backend.event.ServiceRecordCreatedEvent;
+import com.example.backend.event.ServiceRecordCreatedEvent;  // ADD THIS
 import com.example.backend.mapper.ServiceRecordMapper;
+import com.example.backend.repository.ServiceCategoriesRepository;
 import com.example.backend.repository.VehicleRepository;
 import com.example.backend.service.ServiceRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisher;  // ADD THIS
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -34,11 +40,14 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
 
     private final ServiceRecordDao dao;
     private final VehicleRepository vehicleRepo;
+    private final ServiceCategoriesRepository categoryRepo;
     private final ServiceRecordMapper mapper;
     private final ServiceCategoriesDao  categoryDao;
     private final AuthServiceImpl authService;
     @Autowired
     private ApplicationEventPublisher eventPublisher;
+    @Autowired
+    private VehicleDao vehicleDao;
 
     @Override
     public ServiceRecordResponseDTO create(ServiceRecordRequestDTO dto) {
@@ -49,13 +58,12 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
                         HttpStatus.NOT_FOUND,
                         String.format("Vehicle not found with id: %d", dto.getVehicleId())
                 ));
+        vehicle.setOdometerReading(dto.getMileage());
         record.setVehicle(vehicle);
-
         record.getServicedItems().forEach(item-> {
-            Period period =categoryDao.findById(item.getServiceCategoryId()).get().getExpiryInMonths();
+            Period period =categoryDao.findById(item.getServiceCategoryId()).getExpiryInMonths();
             item.setExpirationDate(record.getDateOfService().plus(period));
         });
-
 
         ServiceRecord savedRecord = dao.save(record);
         return mapper.toResponseDTO(savedRecord);
@@ -74,6 +82,16 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
                 .map(mapper::toResponseDTO)
                 .toList();
     }
+
+
+    @Override
+    public List<ServiceRecordResponseDTO> getByVehicleId(Long vehicleId) {
+        return dao.findByVehicleId(vehicleId).stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+    }
+
+
 
     @Override
     public MonthlyExpenditureDTO getMonthlyExpenditure() {
@@ -145,23 +163,6 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
         return vehicleRunningCosts;
     }
 
-    public List<TopUsedVehicleDTO> getTop3MostUsedVehicles(Long userId, int year) {
-        List<Object[]> results = dao.getTop3MostUsedVehiclesByYear(userId, year);
-        List<TopUsedVehicleDTO> topVehicles = new ArrayList<>();
-
-        for (Object[] row : results) {
-            TopUsedVehicleDTO dto = new TopUsedVehicleDTO();
-            dto.setVehicleId(((Number) row[0]).longValue());
-            dto.setVehicleName((String) row[1]);
-            dto.setRegistrationNumber((String) row[2]);
-            dto.setServiceCount(((Number) row[3]).intValue());
-            dto.setTotalMileageCovered(((Number) row[4]).intValue());
-            topVehicles.add(dto);
-        }
-
-        return topVehicles;
-    }
-
     public VehicleRunningCostDTO getMostEfficientVehicle(Long userId) {
         List<VehicleRunningCostDTO> allVehicles = this.getRunningCostPerKm(userId);
 
@@ -169,6 +170,48 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
                 .filter(v -> v.getLatestMileage() > 0)
                 .min(Comparator.comparing(VehicleRunningCostDTO::getRunningCostPerKm))
                 .orElse(null);
+    }
+
+
+    @Override
+    public ServiceRecordRequestDTO convertToRequestDTO(ServiceRecordOCR_DTO dto) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dto.getDateOfService(), formatter);
+
+
+        ServiceRecordRequestDTO serviceRecordRequestDTO = new ServiceRecordRequestDTO();
+        serviceRecordRequestDTO.setVehicleId(vehicleDao.findByRegistrationNumber(dto.getVehicleNo()).get().getId());
+        serviceRecordRequestDTO.setCost(dto.getCost());
+        serviceRecordRequestDTO.setDateOfService(date);
+        serviceRecordRequestDTO.setMileage(dto.getMileage());
+        serviceRecordRequestDTO.setType(dto.getType());
+        serviceRecordRequestDTO.setWorkshop(dto.getWorkshop());
+        List<ServicedItemRequestDTO> servicedItems = dto.getServicedItems().stream().map((item)-> {
+            ServicedItemRequestDTO servicedItem = new ServicedItemRequestDTO();
+            servicedItem.setQuantity(item.getQuantity());
+            servicedItem.setCostPerItem(item.getPerItemCost());
+            if (categoryDao.existsByName(item.getItemName()))
+                    {
+                        servicedItem.setServiceCategoryId(categoryDao.findByName(item.getItemName()).getId());
+                        return servicedItem;
+                    }
+            else
+            {
+                ServiceCategories serviceCategories = new ServiceCategories();
+                serviceCategories.setName(item.getItemName());
+                serviceCategories.setExpiryInMonths(Period.ofMonths(item.getExpiryInMonth()));
+                servicedItem.setServiceCategoryId(categoryDao.save(serviceCategories).getId());
+
+            }
+            return servicedItem;
+        }).toList();
+
+        serviceRecordRequestDTO.setServicedItems(servicedItems);
+
+
+        return serviceRecordRequestDTO;
+
     }
 }
 

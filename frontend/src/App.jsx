@@ -7,6 +7,7 @@ import VehicleDetailsPage from './pages/VehicleDetailsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ServicingsPage from './pages/ServicingsPage'
 import AnalysisPage from './pages/AnalysisPage'
+import CompareVehiclesPage from './pages/CompareVehiclesPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ProfilePage from './pages/ProfilePage'
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />
                 <Route path="/analysis" element={<AnalysisPage />} />
+                <Route path="/compare-vehicles" element={<CompareVehiclesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Route>

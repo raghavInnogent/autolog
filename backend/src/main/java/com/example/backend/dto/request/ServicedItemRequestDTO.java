@@ -12,6 +12,8 @@ public class ServicedItemRequestDTO {
 
     private Integer quantity;
 
+    private Integer costPerItem;
+
     @Override
     public String toString() {
         return "ServicedItemRequestDTO{" +

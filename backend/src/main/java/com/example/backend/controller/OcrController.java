@@ -18,7 +18,7 @@ public class OcrController {
 
     public ResponseEntity<?> extract(MultipartFile file) {
         try {
-            OcrResponse result = ocrService.extractData(file);
+            String result = ocrService.extractData(file);
             System.out.println(result);
             return ResponseEntity.ok(result);
         } catch (Exception e) {

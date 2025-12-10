@@ -28,7 +28,7 @@
   top: 4px;
   right: 4px;
   background: #FF5733;
-  color: #ffffff;
+  color: #FFFFFF;
   font-size: 10px;
   font-weight: 700;
   padding: 2px 5px;
@@ -43,9 +43,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(1.1);
   }

@@ -15,6 +15,10 @@ public class VehicleRequestDTO {
 
     private String type;
 
+    private Integer odometerReading;
+
+    private Integer purchasePrice;
+
     @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd")
     private java.time.LocalDate purchaseDate;
 

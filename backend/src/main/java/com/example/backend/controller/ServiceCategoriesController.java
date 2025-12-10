@@ -28,6 +28,13 @@ public class ServiceCategoriesController {
         return serviceCategoriesService.getAll();
     }
 
+
+    @PostMapping("/addNewServiceCategory")
+    public ServiceCategoriesResponseDTO addNewServiceCategory(@RequestBody ServiceCategoriesRequestDTO dto)
+    {
+        return serviceCategoriesService.addNewServiceCategory(dto);
+    }
+
     @PutMapping("/updateCategory/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServiceCategoriesResponseDTO> updateCategory(@PathVariable Long id,

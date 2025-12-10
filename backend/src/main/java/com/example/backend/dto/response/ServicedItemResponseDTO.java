@@ -13,4 +13,6 @@ public class ServicedItemResponseDTO {
     private LocalDate expirationDate;
 
     private Integer quantity;
+
+    private Integer costPerItem;
 }

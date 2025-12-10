@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -45,19 +46,13 @@ export default function AnalysisPage() {
                 console.log('Monthly Expenditure:', monthlyRes.data)
                 console.log('Vehicle Expenditure:', vehicleRes.data)
                 console.log('Cost Per Km:', costPerKmRes.data)
-
-                // backend might return either a single DTO object or an array of DTOs.
-                // Normalize to an array of DTOs.
                 const normalizedMonthly = (() => {
                     const d = monthlyRes.data
                     if (!d) return []
-                    // if it's already an array
                     if (Array.isArray(d)) return d
-                    // if it's an object with year/monthlyExpenditure -> wrap it
                     if (typeof d === 'object' && d.year !== undefined && d.monthlyExpenditure !== undefined) {
                         return [d]
                     }
-                    // fallback: empty
                     return []
                 })()
 
@@ -97,41 +92,25 @@ export default function AnalysisPage() {
 
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
-        // ---------- Robust month label/value processing ----------
-        // Cases handled:
-        // 1) monthlyDataRaw = [] -> no data (chart empty)
-        // 2) monthlyDataRaw = [{year:2024, monthlyExpenditure:[..12]}] -> single-year chart (labels: Jan..Dec or Jan 2024..Dec 2024)
-        // 3) monthlyDataRaw = [ {year:2023,...}, {year:2024,...} ] -> multi-year flattened series (labels: Jan 2023..Dec 2024)
-        // 4) backend might provide fewer than 12 months -> we pad with 0s
-        // 5) backend might send null/undefined months -> treated as 0
-        //
-        // Implementation chooses label style:
-        // - if single year present, we use labels "Jan, Feb, ..." (without year) to keep chart compact
-        // - if multiple years present, labels include year "Jan 2023" to avoid ambiguity
 
         const monthLabels = []
         const monthValues = []
 
-        // nothing to process -> leave arrays empty
         if (monthlyDataRaw.length === 0) {
             console.warn('No monthly expenditure data available.')
         } else {
-            // Ensure every item has year and monthlyExpenditure
             const normalized = monthlyDataRaw
                 .filter(item => item && (item.year !== undefined || item.monthlyExpenditure !== undefined))
                 .map(item => {
-                    // if year missing but monthlyExpenditure exists, mark year as unknown (use index-based)
                     return {
                         year: item.year,
                         monthlyExpenditure: Array.isArray(item.monthlyExpenditure) ? item.monthlyExpenditure : []
                     }
                 })
 
-            // if normalized contains >1 distinct years, treat as multi-year
             const distinctYears = Array.from(new Set(normalized.map(it => it.year).filter(y => y !== undefined)))
             const isMultiYear = distinctYears.length > 1
 
-            // If years are numbers, sort ascending; otherwise preserve original order.
             const sorted = Array.isArray(distinctYears) && distinctYears.length > 0
                 ? [...normalized].sort((a, b) => {
                     const ay = Number(a.year)
@@ -141,16 +120,14 @@ export default function AnalysisPage() {
                 })
                 : [...normalized]
 
-            // If there is exactly one year and it's numeric, we will use month labels without year suffix.
             const singleYearMode = sorted.length === 1 && (sorted[0].year !== undefined)
 
             sorted.forEach(yearObj => {
                 const yearLabel = yearObj.year
                 const rawExpenses = Array.isArray(yearObj.monthlyExpenditure) ? yearObj.monthlyExpenditure : []
 
-                // Force exactly 12 entries, convert to number or 0
+
                 const fixedExpenses = Array.from({ length: 12 }, (_, i) => {
-                    // rawExpenses might have values like null, undefined, string numbers, etc.
                     const v = rawExpenses[i]
                     const num = Number(v)
                     return isNaN(num) ? 0 : num
@@ -227,8 +204,10 @@ export default function AnalysisPage() {
         }
     }, [monthlyExpenditure, vehicleExpenditure, costPerKmData])
 
+    const navigate = useNavigate()
+
     const handleCompareVehicles = () => {
-        alert('Vehicle comparison feature coming soon!')
+        navigate('/compare-vehicles')
     }
 
     const barChartOptions = {

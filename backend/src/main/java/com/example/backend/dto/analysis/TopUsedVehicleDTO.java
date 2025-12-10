@@ -11,6 +11,5 @@ public class TopUsedVehicleDTO {
     private Long vehicleId;
     private String vehicleName;
     private String registrationNumber;
-    private Integer serviceCount;
     private Integer totalMileageCovered;
 }

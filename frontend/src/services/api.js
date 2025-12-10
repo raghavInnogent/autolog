@@ -1,9 +1,6 @@
 import axios from 'axios'
 
-const baseURL =
-  (import.meta.env.MODE === "development")
-    ? "/api"
-    : import.meta.env.VITE_BACKEND_URL;
+const baseURL = import.meta.env.DEV ? '/api' : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080')
 
 const api = axios.create({
   baseURL,
@@ -23,6 +20,7 @@ api.interceptors.request.use((config) => {
 
 export const vehiclesAPI = {
   getAll: () => api.get('/vehicles/getAll'),
+  getAllLegacy: () => api.get('/vehicles'),
   get: (id) => api.get(`/vehicles/getById/${id}`),
   create: (data) => api.post('/vehicles/create', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
@@ -37,6 +35,8 @@ export const documentsAPI = {
 export const servicesAPI = {
   getAll: (params) => api.get('/servicing/getAll', { params }),
   create: (data) => api.post('/servicing/create', data),
+  fetchDataFromImage: (formData) => api.post('/servicing/fetchDataFromImage', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  createServiceViaInvoice: (data) => api.post('/servicing/createServiceViaInvoice', data),
 }
 
 export const categoriesAPI = {
@@ -85,4 +85,5 @@ export const notificationsAPI = {
   markAllAsRead: () => api.patch('/notifications/markAllRead'),
   getByVehicle: (vehicleId) => api.get(`/notifications/getNotificationsByVehicle/${vehicleId}`)
 }
+
 export default api

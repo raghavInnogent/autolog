@@ -1,0 +1,312 @@
+.compare-page {
+    padding: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.compare-header {
+    margin-bottom: 32px;
+}
+
+.compare-header h2 {
+    color: var(--nav-title, #22577A);
+    margin: 8px 0;
+    font-size: 28px;
+    border-left: 5px solid var(--accent, #FFC300);
+    padding-left: 16px;
+}
+
+.compare-header p {
+    color: var(--muted, #64748b);
+    margin: 0;
+    font-size: 16px;
+    padding-left: 21px;
+    /* Align with text start */
+}
+
+/* Back Button */
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--muted, #64748b);
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 16px;
+    padding: 0;
+    transition: color 0.2s;
+}
+
+.back-btn:hover {
+    color: var(--nav-title, #22577A);
+}
+
+/* Selectors Area */
+.compare-selectors {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #22577A 0%, #1a435e 100%);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(34, 87, 122, 0.15), 0 8px 10px -6px rgba(34, 87, 122, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle decorative circle behind VS badge */
+.compare-selectors::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 195, 0, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.selector-box {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.selector-box label {
+    display: block;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: 12px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Custom Select Styling */
+.custom-select-wrapper select,
+.selector-box select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #f8fafc;
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2322577A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+
+.selector-box select:hover {
+    border-color: #cbd5e1;
+}
+
+.selector-box select:focus {
+    border-color: var(--nav-title, #22577A);
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(34, 87, 122, 0.1);
+}
+
+/* VS Badge */
+.vs-badge {
+    background: #FFC300;
+    color: #22577A;
+    font-weight: 800;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    margin-top: 28px;
+    border: 4px solid #fff;
+    z-index: 2;
+    transform: rotate(-10deg);
+}
+
+/* Comparison Content */
+.comparison-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border, #e2e8f0);
+}
+
+.comparison-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.comparison-row {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background-color 0.2s;
+}
+
+.comparison-row:hover:not(.header-row) {
+    background-color: #f8fafc;
+}
+
+.comparison-row:last-child {
+    border-bottom: none;
+}
+
+.comp-cell {
+    flex: 1;
+    padding: 24px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: #334155;
+    position: relative;
+}
+
+.comp-cell.left {
+    border-right: 1px solid #f1f5f9;
+}
+
+.comp-cell.right {
+    border-left: 1px solid #f1f5f9;
+}
+
+/* Header Row */
+.header-row {
+    background: white;
+    border-bottom: 2px solid var(--accent, #FFC300);
+}
+
+.header-row .comp-cell {
+    padding: 30px 20px;
+}
+
+.header-row h3 {
+    margin: 8px 0 4px 0;
+    color: var(--nav-title, #22577A);
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.reg-no {
+    font-size: 12px;
+    color: var(--nav-title, #22577A);
+    font-weight: 600;
+    background: rgba(34, 87, 122, 0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+/* Middle Labels with Connectors */
+.comp-label {
+    width: 220px;
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    font-weight: 600;
+    color: var(--muted, #64748b);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    position: relative;
+}
+
+/* Colors */
+.text-green {
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 4px 12px;
+    border-radius: 6px;
+}
+
+.text-red {
+    color: #ef4444;
+}
+
+.empty-state-compare {
+    text-align: center;
+    padding: 100px 20px;
+    background: #f8fafc;
+    border-radius: 16px;
+    border: 2px dashed #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    color: var(--muted, #64748b);
+}
+
+.loading-state {
+    padding: 100px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .compare-selectors {
+        flex-direction: column;
+        gap: 16px;
+        padding: 20px;
+    }
+
+    .vs-badge {
+        margin-top: 0;
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .comp-label {
+        width: 100px;
+        font-size: 11px;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .comp-cell {
+        font-size: 14px;
+        padding: 16px 8px;
+    }
+
+    .header-row h3 {
+        font-size: 16px;
+    }
+}

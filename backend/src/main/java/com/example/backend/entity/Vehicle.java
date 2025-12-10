@@ -24,6 +24,7 @@
 
             private String registrationNumber;
 
+
             private String model;
 
             private String company;
@@ -37,6 +38,10 @@
             private List<Document> documents;
 
             private LocalDate purchaseDate;
+
+            private Integer odometerReading;
+
+            private Integer purchasePrice;
 
             @Column(columnDefinition = "TEXT")
             private String image;

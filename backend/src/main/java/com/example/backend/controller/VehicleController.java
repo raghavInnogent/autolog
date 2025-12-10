@@ -3,21 +3,24 @@ package com.example.backend.controller;
 
 import com.example.backend.dto.request.VehicleRequestDTO;
 import com.example.backend.dto.response.VehicleResponseDTO;
-import com.example.backend.security.UserPrincipal;
+import com.example.backend.service.CloudinaryService;
 import com.example.backend.service.VehicleService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import com.example.backend.security.UserPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/vehicles")
 public class VehicleController {
-
+    @Autowired
+    CloudinaryService cloudinaryService;
     @Autowired
     private VehicleService vehicleService;
 
@@ -33,19 +36,23 @@ public class VehicleController {
         return ResponseEntity.ok(vehicleService.getById(id, principal.getId()));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<VehicleResponseDTO> create(@RequestBody VehicleRequestDTO dto) {
+
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<VehicleResponseDTO> create(@RequestPart("file") MultipartFile file,
+           @Valid @RequestPart VehicleRequestDTO dto) {
+        String img = cloudinaryService.uploadFile(file,"Vehicle");
+        dto.setImage(img);
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.status(201).body(vehicleService.create(principal.getId(), dto));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/updateById/{id}")
     public ResponseEntity<VehicleResponseDTO> update(@PathVariable Long id, @RequestBody VehicleRequestDTO dto) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(vehicleService.update(id, principal.getId(), dto));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         vehicleService.delete(id, principal.getId());

@@ -104,20 +104,8 @@ export default function UserHomePage() {
     labels: top3Vehicles.map(v => v.vehicleName || v.model || 'Unknown'),
     datasets: [
       {
-        data: top3Vehicles.map(v => v.usagePercentage || v.serviceCount || 0),
-        backgroundColor: ['#FFC300', '#22577A', '#FF5733', '#ffffff'],
-        borderColor: 'rgba(255, 255, 255, 0.2)',
-        borderWidth: 2,
-      },
-    ],
-  }
-
-  const vehicleUsageData = {
-    labels: top3Vehicles.map(v => v.vehicleName || v.model || 'Unknown'),
-    datasets: [
-      {
-        data: top3Vehicles.map(v => v.usagePercentage || v.serviceCount || 0),
-        backgroundColor: ['#FFC300', '#22577A', '#FF5733', '#ffffff'],
+        data: top3Vehicles.map(v => v.usagePercentage || v.totalMileageCovered || 0),
+        backgroundColor: ['#FFC300', '#22577A', '#FF5733', '#FFFFFF'],
         borderColor: 'rgba(255, 255, 255, 0.2)',
         borderWidth: 2,
       },
