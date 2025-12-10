@@ -6,12 +6,15 @@ import VehiclesPage from './pages/VehiclesPage'
 import VehicleDetailsPage from './pages/VehicleDetailsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ServicingsPage from './pages/ServicingsPage'
+import AnalysisPage from './pages/AnalysisPage'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import ProfilePage from './pages/ProfilePage'
 import LandingPage from './pages/LandingPage'
 import { AuthProvider } from './contexts/AuthContext'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
+import AdminPage from './pages/AdminPage'
 
 function App() {
   return (
@@ -19,7 +22,7 @@ function App() {
       <BrowserRouter>
         <div className="app-root">
           <Navbar />
-           
+
           <main className="app-main">
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -33,7 +36,13 @@ function App() {
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />
+                <Route path="/analysis" element={<AnalysisPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+              </Route>
+
+              <Route element={<AdminRoute />}>
+                <Route path="/admin" element={<AdminPage />} />
               </Route>
             </Routes>
           </main>

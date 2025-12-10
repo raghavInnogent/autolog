@@ -15,15 +15,18 @@ public class VehicleDao {
     private VehicleRepository vehicleRepository;
 
     public Vehicle save(Vehicle v) {
-    	return vehicleRepository.save(v); 
+
+        return vehicleRepository.save(v);
     	}
     
     public Optional<Vehicle> findById(Long id) {
-    	return vehicleRepository.findById(id);
+
+        return vehicleRepository.findById(id);
     	}
     
     public List<Vehicle> findAll() { 
-    	return vehicleRepository.findAll(); 
+
+        return vehicleRepository.findAll();
     	}
     
     public void delete(Vehicle v) { 
@@ -37,4 +40,8 @@ public class VehicleDao {
     public Optional<Vehicle> findByRegistrationNumber(String registrationNumber) {
     	return vehicleRepository.findByRegistrationNumber(registrationNumber); 
     	}
+
+    public int getVehiclesCountByOwnerId(Long ownerId) {
+        return vehicleRepository.getVehicleCountByOwnerId(ownerId);
+    }
 }

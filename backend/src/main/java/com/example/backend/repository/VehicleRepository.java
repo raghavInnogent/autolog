@@ -9,4 +9,6 @@ import java.util.List;
 public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     List<Vehicle> findByOwnerId(Long ownerId);
     java.util.Optional<Vehicle> findByRegistrationNumber(String registrationNumber);
+    int getVehicleCountByOwnerId(Long ownerId);
+
 }

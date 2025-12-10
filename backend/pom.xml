@@ -84,7 +84,7 @@
         </dependency>
 
         <!-- ===================== -->
-        <!--  SWAGGER / OPENAPI 3 -->
+        <!-- ⭐ SWAGGER / OPENAPI 3 -->
         <!-- ===================== -->
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -111,7 +111,7 @@
 
 
         <!-- =============== -->
-        <!-- LOGGING API  -->
+        <!-- ⭐ LOGGING API  -->
         <!-- =============== -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -146,6 +146,20 @@
             <groupId>net.sourceforge.tess4j</groupId>
             <artifactId>tess4j</artifactId>
             <version>4.5.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
     </dependencies>

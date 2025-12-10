@@ -71,9 +71,9 @@ export default function NotificationBell() {
 
   return (
     <div className="notification-bell" ref={bellRef}>
-      <button 
-        className="notification-bell__button" 
-        onClick={() => setOpen(!open)} 
+      <button
+        className="notification-bell__button"
+        onClick={() => setOpen(!open)}
         aria-label="Notifications"
       >
         <FiBell size={20} />
@@ -86,7 +86,13 @@ export default function NotificationBell() {
 
       {open && (
         <NotificationBellDropdown
-          notifications={notifications.slice(0, 5)} // Show max 5
+          notifications={notifications
+            .sort((a, b) => {
+              // Sort by priority: HIGH -> MODERATE -> LOW
+              const priorityOrder = { HIGH: 3, MODERATE: 2, LOW: 1 }
+              return (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0)
+            })
+            .slice(0, 5)} // Show max 5, sorted by priority
           loading={loading}
           onMarkAsRead={handleMarkAsRead}
           onMarkAllAsRead={handleMarkAllAsRead}

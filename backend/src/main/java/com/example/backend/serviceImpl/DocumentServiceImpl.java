@@ -5,10 +5,11 @@ import com.example.backend.dao.VehicleDao;
 import com.example.backend.dto.request.DocumentRequestDTO;
 import com.example.backend.dto.response.DocumentResponseDTO;
 import com.example.backend.entity.Document;
+import com.example.backend.exception.AccessDeniedException;
+import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.mapper.DocumentMapper;
 import com.example.backend.service.DocumentService;
-import com.example.backend.exception.ResourceNotFoundException;
-import com.example.backend.exception.AccessDeniedException;
+import com.example.backend.service.NotificationService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,13 +26,27 @@ public class DocumentServiceImpl implements DocumentService {
     @Autowired
     private VehicleDao vehicleDao;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Override
     public DocumentResponseDTO uploadDocument(DocumentRequestDTO document) {
         document.setVehicleId(
                 vehicleDao.findByRegistrationNumber(document.getRegistrationNumber()).get().getId());
         Document originalDocument = documentMapper.toEntity(document);
         originalDocument.setVehicle(vehicleDao.findById(document.getVehicleId()).get());
-        return documentMapper.toResponseDTO(documentDao.save(originalDocument));
+
+        Document savedDocument = documentDao.save(originalDocument);
+
+        try {
+            Long userId = savedDocument.getVehicle().getOwner().getId();
+            notificationService.generateNotificationsForDocument(savedDocument, userId);
+        } catch (Exception e) {
+
+            System.err.println("Failed to generate notification for document: " + e.getMessage());
+        }
+
+        return documentMapper.toResponseDTO(savedDocument);
     }
 
     @Override

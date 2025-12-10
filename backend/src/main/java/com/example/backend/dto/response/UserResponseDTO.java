@@ -16,5 +16,11 @@ public class UserResponseDTO {
 
     private Long contactNo;
 
+    private String role;
+
+    private String status;
+
+    private int totalVehicleCount;
+
     private List<VehicleSummaryDTO> vehicles;
 }

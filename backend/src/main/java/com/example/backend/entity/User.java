@@ -15,20 +15,27 @@ import java.util.List;
 @AllArgsConstructor
 public class User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private String name;
+    private String name;
 
     @Column(unique = true)
     private String email;
 
+    private String image;
+
+    @Column(unique = true)
     private String password;
+
+    private String status;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
-	private Long contactNo;
+    private Long contactNo;
+
+    private String address;
 
 }

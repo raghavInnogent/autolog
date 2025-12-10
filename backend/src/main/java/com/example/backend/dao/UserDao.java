@@ -37,4 +37,8 @@ public class UserDao {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
     }
+
+    public List<User> findAllByRole(com.example.backend.enums.UserRole role) {
+        return userRepository.findByRole(role);
+    }
 }

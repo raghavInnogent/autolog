@@ -23,11 +23,6 @@ public class ServiceCategories {
 
     private String description;
 
-    private Integer price;
-
-    @Column(columnDefinition = "TEXT")
-    private String image;
-
     private Period expiryInMonths;
 
 
@@ -37,8 +32,6 @@ public class ServiceCategories {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", price=" + price +
-                ", image='" + image + '\'' +
                 ", expiryInMonths=" + expiryInMonths +
                 '}';
     }

@@ -9,7 +9,11 @@ public class UserRequestDTO {
 
     private String email;
 
+    private String role;
+
     private String password;
 
     private Long contactNo;
+
+    private String status;
 }

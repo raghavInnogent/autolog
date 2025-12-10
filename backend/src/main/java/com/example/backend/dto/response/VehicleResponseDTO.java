@@ -1,8 +1,10 @@
 package com.example.backend.dto.response;
 
-import lombok.Data;
-import java.util.List;
 import com.example.backend.dto.summary.DocumentSummaryDTO;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Data
 public class VehicleResponseDTO {
@@ -24,5 +26,7 @@ public class VehicleResponseDTO {
     private String type;
 
     private List<DocumentSummaryDTO> documents;
+
+    private LocalDate purchaseDate;
 
 }

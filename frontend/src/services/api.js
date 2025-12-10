@@ -1,12 +1,14 @@
 import axios from 'axios'
 
-const baseURL = import.meta.env.DEV ? '/api' : (import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080')
+const baseURL =
+  (import.meta.env.MODE === "development")
+    ? "/api"
+    : import.meta.env.VITE_BACKEND_URL;
 
 const api = axios.create({
   baseURL,
-  withCredentials: true, 
+  withCredentials: true,
 })
-
 
 api.interceptors.request.use((config) => {
   try {
@@ -15,7 +17,7 @@ api.interceptors.request.use((config) => {
       config.headers = config.headers || {}
       if (!config.headers.Authorization) config.headers.Authorization = `Bearer ${token}`
     }
-  } catch (e) {console.error('Error setting auth token in request:', e) }
+  } catch (e) { console.error('Error setting auth token in request:', e) }
   return config
 })
 
@@ -24,7 +26,7 @@ export const vehiclesAPI = {
   get: (id) => api.get(`/vehicles/getById/${id}`),
   create: (data) => api.post('/vehicles/create', data),
   update: (id, data) => api.put(`/vehicles/${id}`, data),
-  delete: (id) => api.delete(`/vehicles/deleteById/${id}`),
+  delete: (id) => api.delete(`/vehicles/${id}`),
 }
 
 export const documentsAPI = {
@@ -37,8 +39,32 @@ export const servicesAPI = {
   create: (data) => api.post('/servicing/create', data),
 }
 
-export const serviceCategoriesAPI = {
+export const categoriesAPI = {
   getAll: () => api.get('/categories/getAll'),
+  add: (data) => api.post('/categories/addCategory', data),
+  update: (id, data) => api.put(`/categories/updateCategory/${id}`, data),
+  delete: (id) => api.delete(`/categories/deleteCategory/${id}`),
+}
+
+export const adminAPI = {
+  getAllUsers: () => api.get('/users/getAll'),
+  updateUserStatus: (id, status) => api.put(`/admin/updateStatus/${id}?status=${status}`),
+}
+
+export const schedulesAPI = {
+  getUpcoming: (vehicleId) => api.get('/schedules/upcoming', { params: { vehicleId } }),
+}
+
+export const analyticsAPI = {
+  getMonthlyExpenditure: () => api.get('/analysis/getMonthlyExpenditure'),
+  getVehicleWiseExpenditure: () => api.get('/analysis/getVehicleWiseExpenditure'),
+  getCostPerKm: () => api.get('/analysis/getRunningCostPerKm'),
+  getTop3MostUsedVehicles: () => api.get('/analysis/getTop3MostUsedVehicles'),
+  getMostEfficientVehicle: () => api.get('/analysis/getMostEfficientVehicle'),
+  spendByCategory: (vehicleId, period) => api.get('/analytics/spend-by-category', { params: { vehicleId, period } }),
+  costPerKm: (vehicleId, period) => api.get('/analytics/cost-per-km', { params: { vehicleId, period } }),
+  serviceFrequency: (vehicleId, period) => api.get('/analytics/service-frequency', { params: { vehicleId, period } }),
+  ownershipCost: (vehicleId) => api.get('/analytics/ownership-cost', { params: { vehicleId } }),
 }
 
 export const authAPI = {
@@ -52,11 +78,11 @@ export const usersAPI = {
 }
 
 export const notificationsAPI = {
-  getAll: (params) => api.get('/notifications', { params }),
-  getById: (id) => api.get(`/notifications/${id}`),
-  getCounts: () => api.get('/notifications/count'),
-  markAsRead: (id) => api.patch(`/notifications/${id}/mark-read`),
-  markAllAsRead: () => api.patch('/notifications/mark-all-read'),
-  getByVehicle: (vehicleId) => api.get(`/notifications/vehicle/${vehicleId}`)
+  getAll: (params) => api.get('/notifications/getAllNotifications', { params }),
+  getById: (id) => api.get(`/notifications/getNotificationById/${id}`),
+  getCounts: () => api.get('/notifications/getNotificationCounts'),
+  markAsRead: (id) => api.patch(`/notifications/markNotificationAsRead/${id}`),
+  markAllAsRead: () => api.patch('/notifications/markAllRead'),
+  getByVehicle: (vehicleId) => api.get(`/notifications/getNotificationsByVehicle/${vehicleId}`)
 }
 export default api

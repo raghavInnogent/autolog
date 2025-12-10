@@ -88,6 +88,11 @@ public class NotificationDao {
         return repository.countByUserIdAndStatusAndPriority(userId, status, priority);
     }
 
+    public Long countByUserIdAndStatusAndReadStatus(
+            Long userId, NotificationStatus status, ReadStatus readStatus) {
+        return repository.countByUserIdAndStatusAndReadStatus(userId, status, readStatus);
+    }
+
     public List<Notification> findByExpiryDateBetweenAndStatus(
             LocalDate from, LocalDate to, NotificationStatus status) {
         return repository.findByExpiryDateBetweenAndStatus(from, to, status);
@@ -98,7 +103,7 @@ public class NotificationDao {
     }
 
     public int markExpiredAsInactive(LocalDate date, NotificationStatus currentStatus,
-                                     NotificationStatus newStatus) {
+            NotificationStatus newStatus) {
         return repository.markExpiredAsInactive(date, currentStatus, newStatus);
     }
 

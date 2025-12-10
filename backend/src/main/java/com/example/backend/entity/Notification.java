@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @Table(name = "notifications", indexes = {
@@ -50,9 +48,6 @@ public class Notification {
     @Column(name = "expiry_date", nullable = false)
     private LocalDate expiryDate;
 
-    @Column(name = "days_left")
-    private Integer daysLeft;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false)
     private NotificationPriority priority;
@@ -65,10 +60,7 @@ public class Notification {
     @Column(name = "read_status", nullable = false)
     private ReadStatus readStatus;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "notification_channels", joinColumns = @JoinColumn(name = "notification_id"))
-    @Column(name = "channel")
-    private Set<String> notifiedVia = new HashSet<>();
+
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -86,9 +78,7 @@ public class Notification {
         if (status == null) {
             status = NotificationStatus.ACTIVE;
         }
-        if (notifiedVia == null) {
-            notifiedVia = new HashSet<>();
-        }
+
     }
 
     @PreUpdate

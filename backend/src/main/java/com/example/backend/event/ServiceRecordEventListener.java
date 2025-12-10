@@ -3,7 +3,6 @@ package com.example.backend.event;
 import com.example.backend.entity.ServiceRecord;
 import com.example.backend.entity.ServicedItems;
 import com.example.backend.service.NotificationService;
-import com.example.backend.service.ServiceHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ServiceRecordEventListener {
 
-    private final ServiceHistoryService serviceHistoryService;
     private final NotificationService notificationService;
 
     @EventListener
@@ -39,7 +37,7 @@ public class ServiceRecordEventListener {
         for (ServicedItems newItem : record.getServicedItems()) {
             try {
                 // Check for premature replacement and create history
-                serviceHistoryService.checkAndCreatePrematureReplacementHistory(newItem, vehicleId);
+               // serviceHistoryService.checkAndCreatePrematureReplacementHistory(newItem, vehicleId);
 
                 // Generate notifications for the new item
                 notificationService.generateNotificationsForServicedItem(newItem, vehicleId, userId);

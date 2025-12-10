@@ -12,9 +12,5 @@ public class ServiceCategoriesResponseDTO {
 
     private String description;
 
-    private Integer price;
-
-    private String image;
-
     private Integer expiryInMonths;
 }

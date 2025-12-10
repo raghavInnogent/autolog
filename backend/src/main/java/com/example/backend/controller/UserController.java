@@ -3,10 +3,12 @@ package com.example.backend.controller;
 import com.example.backend.dto.request.UserRequestDTO;
 import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.dto.request.PasswordUpdateRequestDTO;
+import com.example.backend.enums.UserRole;
 import com.example.backend.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
@@ -34,20 +36,17 @@ public class UserController {
         return ResponseEntity.ok(userService.getById(id));
     }
 
-
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<UserResponseDTO>> getAll() {
-
-        return ResponseEntity.ok(userService.getAll());
+        return ResponseEntity.ok(userService.getAllByRole(UserRole.USER));
     }
-
 
     @PutMapping("/updateById/{id}")
     public ResponseEntity<UserResponseDTO> update(@PathVariable Long id,
-                                                  @RequestBody UserRequestDTO dto) {
+            @RequestBody UserRequestDTO dto) {
         return ResponseEntity.ok(userService.update(id, dto));
     }
-
 
     @DeleteMapping("/deleteById/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
@@ -56,9 +55,10 @@ public class UserController {
     }
 
     @PutMapping("/updatePassword")
-    public ResponseEntity<Void> changePassword(@Valid @RequestBody PasswordUpdateRequestDTO dto){
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody PasswordUpdateRequestDTO dto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth==null || !auth.isAuthenticated()) return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
+        if (auth == null || !auth.isAuthenticated())
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).build();
         userService.updatePassword(auth.getName(), dto.getOldPassword(), dto.getNewPassword());
         return ResponseEntity.ok().build();
     }

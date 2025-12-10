@@ -7,9 +7,6 @@ public class ServiceCategoriesRequestDTO {
 
     private String name;
     private String description;
-    private Integer price;
-    private String image;
-
     private Integer expiryInMonths;
 }
 

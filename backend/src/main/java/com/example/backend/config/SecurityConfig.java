@@ -27,11 +27,15 @@ public class SecurityConfig {
         .sessionManagement(sm->sm.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth->auth
             .requestMatchers("/auth/**", "/users/create").permitAll()
+                .requestMatchers("/admin/create").permitAll()
                 .requestMatchers("/vehicles/**").authenticated()
                 .requestMatchers("/categories/**").authenticated()
                 .requestMatchers("/servicing/**").authenticated()
                 .requestMatchers("/documents/**").authenticated()
-            .anyRequest().authenticated()
+                .requestMatchers("/groq/**").permitAll()
+                .requestMatchers("/email/**").permitAll()
+                .requestMatchers("/analysis/**").permitAll()
+                .anyRequest().authenticated()
         )
         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();

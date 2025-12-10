@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@EnableMethodSecurity
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
   private final JwtUtil jwtUtil;
   public JwtAuthenticationFilter(JwtUtil jwtUtil){ this.jwtUtil = jwtUtil; }
@@ -32,10 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         UserPrincipal principal = new UserPrincipal(uid, email, role);
         
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(principal, null,
-            role!=null ? List.of(new SimpleGrantedAuthority("ROLE_"+role)) : List.of());
+        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                principal, null, role!=null ? List.of(new SimpleGrantedAuthority("ROLE_"+role)) : List.of());
         SecurityContextHolder.getContext().setAuthentication(authToken);
-      }catch(Exception ignored){}
+      }
+      catch(Exception exp){
+          exp.printStackTrace();
+      }
     }
     chain.doFilter(req, res);
   }

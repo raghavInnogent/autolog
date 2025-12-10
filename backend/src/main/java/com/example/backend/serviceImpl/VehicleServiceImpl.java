@@ -89,4 +89,10 @@ public class VehicleServiceImpl implements VehicleService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Vehicle not found with registration number: " + registrationNo));
     }
+
+    @Override
+    public int getVehiclesCountByOwnerId(Long ownerId) {
+        return vehicleDao.getVehiclesCountByOwnerId(ownerId);
+    }
+
 }

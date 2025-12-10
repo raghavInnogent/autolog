@@ -34,16 +34,17 @@ export default function Navbar() {
         </Link>
 
         <nav className="nav-links">
-          {isAuth ? (
+          {isAuth && (!useAuth().user?.role || useAuth().user?.role !== 'ADMIN') ? (
             <>
               <NavLink to="/home" className="nav-link">Dashboard</NavLink>
               <NavLink to="/vehicles" className="nav-link">Vehicles</NavLink>
               <NavLink to="/documents" className="nav-link">Documents</NavLink>
               <NavLink to="/servicings" className="nav-link">Servicings</NavLink>
+              <NavLink to="/analysis" className="nav-link">Analysis</NavLink>
             </>
           ) : (
             <>
-              <NavLink to="/" className="nav-link">Home</NavLink>
+              <NavLink to={isAuth ? "/admin" : "/"} className="nav-link">Home</NavLink>
               <NavLink to="#" className="nav-link">About</NavLink>
               <NavLink to="#" className="nav-link">Contact</NavLink>
             </>

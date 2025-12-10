@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
+import { authAPI } from '../services/api'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -20,7 +21,12 @@ export default function LoginPage() {
     setLoading(true)
     try {
       await login({ email, password })
-      nav('/home')
+
+      // Get current user to check role
+      const res = await authAPI.getCurrentUser() // or check local storage/context if available immediately
+      if (res.data.role === 'ADMIN') nav('/admin')
+      else nav('/home')
+
     } catch (err) {
       const msg = err?.response?.data?.message || err?.response?.data || 'Login failed. Check credentials.'
       setError(String(msg))

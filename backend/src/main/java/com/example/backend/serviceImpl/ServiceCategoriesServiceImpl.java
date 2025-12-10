@@ -9,9 +9,11 @@ import com.example.backend.mapper.ServiceCategoriesMapper;
 import com.example.backend.service.ServiceCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Period;
 import java.util.List;
 
 @Service
@@ -31,17 +33,41 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.CATEGORY_ALREADY_EXISTS.name());
         }
 
+            System.out.println(dto);
             ServiceCategories serviceCategories = serviceCategoriesMapper.toEntity(dto);
             ServiceCategories saved = serviceCategoriesDao.save(serviceCategories);
+            System.out.println(saved);
             return serviceCategoriesMapper.toResponseDTO(saved);
 
     }
 
     @Override
     public List<ServiceCategoriesResponseDTO> getAll() {
-
-        return serviceCategoriesDao.findAll().stream()
+        return serviceCategoriesDao.findAll()
+                .stream()
                 .map(serviceCategoriesMapper::toResponseDTO)
                 .toList();
     }
+
+    @Override
+    public ResponseEntity<ServiceCategoriesResponseDTO> updateCategory(Long id, ServiceCategoriesRequestDTO dto) {
+        ServiceCategories newServiceCategories = serviceCategoriesDao.findById(id).get();
+        newServiceCategories.setName(dto.getName());
+        newServiceCategories.setDescription(dto.getDescription());
+        newServiceCategories.setExpiryInMonths(Period.ofMonths(dto.getExpiryInMonths()));
+        return ResponseEntity.ok(serviceCategoriesMapper.toResponseDTO(serviceCategoriesDao.save(newServiceCategories)));
+    }
+
+    @Override
+    public void deleteCategory(Long id) {
+        serviceCategoriesDao.deleteById(id);
+    }
+
+    @Override
+    public ServiceCategories findById(Long categoryId) {
+        return serviceCategoriesDao.findById(categoryId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.CATEGORY_NOT_FOUND.name()));
+    }
+
+
 }

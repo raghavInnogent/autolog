@@ -9,9 +9,18 @@ import java.util.List;
 @Service
 public interface UserService {
     public UserResponseDTO create(UserRequestDTO dto);
+
     public UserResponseDTO getById(Long id);
+
     public List<UserResponseDTO> getAll();
+
     public UserResponseDTO update(Long id, UserRequestDTO dto);
+
     public UserResponseDTO delete(Long id);
+
     public void updatePassword(String email, String oldPassword, String newPassword);
+
+    public UserResponseDTO updateStatus(Long id, String status);
+
+    public List<UserResponseDTO> getAllByRole(com.example.backend.enums.UserRole role);
 }

@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +25,6 @@ public class NotificationResponseDTO {
     private NotificationPriority priority;
     private NotificationStatus status;
     private ReadStatus readStatus;
-    private Set<String> notifiedVia;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

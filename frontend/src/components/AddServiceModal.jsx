@@ -1,101 +1,114 @@
-import { useState, useEffect } from 'react'
-import { servicesAPI, vehiclesAPI, serviceCategoriesAPI } from '../services/api'
+import React, { useState, useEffect } from 'react'
+import { servicesAPI, vehiclesAPI, categoriesAPI } from '../services/api'
 import '../styles/components/AddServiceModal.css'
 
 export default function AddServiceModal({ onClose, onCreated }) {
+  // Basic fields
+  const [vehicleId, setVehicleId] = useState('')
+  const [dateOfService, setDateOfService] = useState('')
+  const [workshop, setWorkshop] = useState('')
+  const [mileage, setMileage] = useState('')
+  const [cost, setCost] = useState('')
+  const [type, setType] = useState('')
+  
+  // Invoice handling
+  const [invoiceFile, setInvoiceFile] = useState(null)
+  const [invoiceUrl, setInvoiceUrl] = useState('')
+  const [inputMode, setInputMode] = useState('manual') // 'manual' or 'upload'
+  
+  // Service items
+  const [servicedItems, setServicedItems] = useState([])
+  const [selectedCategoryId, setSelectedCategoryId] = useState('')
+  const [selectedQuantity, setSelectedQuantity] = useState('1')
+  
+  // Data fetching
   const [vehicles, setVehicles] = useState([])
-  const [serviceCategories, setServiceCategories] = useState([])
-  const [form, setForm] = useState({
-    vehicleId: '',
-    dateOfService: '',
-    workshop: '',
-    mileage: '',
-    cost: '',
-    invoice: '',
-    type: ''
-  })
-  const [selectedItems, setSelectedItems] = useState([])
-  const [currentItem, setCurrentItem] = useState({ serviceCategoryId: '', quantity: 1 })
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    vehiclesAPI.getAll().then(res => setVehicles(res.data || [])).catch(console.error)
-    serviceCategoriesAPI.getAll()
-      .then(res => {
-        console.log('Categories response:', res)
-        const categories = res.data?.data || res.data || []
-        console.log('Categories:', categories)
-        setServiceCategories(Array.isArray(categories) ? categories : [])
-      })
-      .catch(console.error)
+    fetchData()
   }, [])
 
-  const addItem = () => {
-    if (!currentItem.serviceCategoryId || Number(currentItem.quantity) <= 0) {
-      setError('Please select an item and enter a valid quantity')
-      return
+  const fetchData = async () => {
+    try {
+      const [vehiclesRes, categoriesRes] = await Promise.all([
+        vehiclesAPI.getAll(),
+        categoriesAPI.getAll()
+      ])
+      setVehicles(vehiclesRes.data || [])
+      setCategories(categoriesRes.data || [])
+    } catch (err) {
+      console.error('Failed to fetch data:', err)
+      setError('Failed to load vehicles or service categories')
     }
-
-    if (selectedItems.some(item => item.serviceCategoryId === currentItem.serviceCategoryId)) {
-      setError('This item is already added')
-      return
-    }
-
-    setSelectedItems([...selectedItems, {
-      serviceCategoryId: Number(currentItem.serviceCategoryId),
-      quantity: Number(currentItem.quantity)
-    }])
-    setCurrentItem({ serviceCategoryId: '', quantity: 1 })
-    setError('')
   }
 
-  const removeItem = (serviceCategoryId) => {
-    setSelectedItems(selectedItems.filter(item => item.serviceCategoryId !== serviceCategoryId))
+  const addServiceItem = () => {
+    if (!selectedCategoryId) {
+      alert('Please select a service category')
+      return
+    }
+    
+    const category = categories.find(c => c.id === Number(selectedCategoryId))
+    if (!category) return
+
+    const newItem = {
+      serviceCategoryId: Number(selectedCategoryId),
+      quantity: Number(selectedQuantity) || 1,
+      expirationDate: null // Backend calculates this
+    }
+
+    setServicedItems([...servicedItems, newItem])
+    setSelectedCategoryId('')
+    setSelectedQuantity('1')
   }
 
-  const getItemName = (serviceCategoryId) => {
-    const item = serviceCategories.find(cat => cat.id === Number(serviceCategoryId))
-    return item ? item.name : 'Unknown'
+  const removeServiceItem = (index) => {
+    setServicedItems(servicedItems.filter((_, i) => i !== index))
   }
 
   const submit = async (e) => {
     e.preventDefault()
-
-    if (selectedItems.length === 0) {
-      setError('Please add at least one service item')
-      return
-    }
-
     setLoading(true)
     setError('')
+    
     try {
-      const servicedItems = selectedItems.map(item => ({
-        serviceCategoryId: Number(item.serviceCategoryId),
-        quantity: Number(item.quantity)
-      }))
+      if (!vehicleId) throw new Error('Please select a vehicle')
+      if (!dateOfService) throw new Error('Please select a service date')
+      if (servicedItems.length === 0) throw new Error('Please add at least one service item')
+      if (inputMode === 'manual' && !invoiceUrl) throw new Error('Please provide invoice URL')
+      if (inputMode === 'upload' && !invoiceFile) throw new Error('Please upload an invoice file')
 
-      const payload = {
-        vehicleId: Number(form.vehicleId),
-        cost: form.cost ? Number(form.cost) : undefined,
-        dateOfService: form.dateOfService,
-        workshop: form.workshop,
-        mileage: form.mileage ? Number(form.mileage) : undefined,
-        invoice: form.invoice,
-        type: form.type,
-        servicedItems: servicedItems
+      let finalInvoice = invoiceUrl
+
+      // If file upload mode, upload the file first
+      if (inputMode === 'upload' && invoiceFile) {
+        const formData = new FormData()
+        formData.append('file', invoiceFile)
+        // TODO: You might want to upload this to a storage service and get the URL
+        // For now, we'll use the file name as placeholder
+        finalInvoice = invoiceFile.name
       }
 
-      console.log('Payload being sent:', JSON.stringify(payload, null, 2))
-      console.log('ServicedItems:', servicedItems)
+      const payload = {
+        vehicleId: Number(vehicleId),
+        dateOfService,
+        workshop: workshop || null,
+        mileage: mileage ? Number(mileage) : null,
+        cost: cost ? Number(cost) : null,
+        invoice: finalInvoice || null,
+        type: type || null,
+        servicedItems
+      }
 
       await servicesAPI.create(payload)
       onCreated && onCreated()
       onClose && onClose()
     } catch (err) {
-      console.error('Error creating service:', err)
-      console.error('Error response:', err?.response?.data)
-      setError(err?.response?.data?.message || 'Failed to add service record')
+      console.error('Error:', err)
+      setError(err.message || 'Failed to create service record')
     } finally {
       setLoading(false)
     }
@@ -103,193 +116,156 @@ export default function AddServiceModal({ onClose, onCreated }) {
 
   return (
     <div className="add-service-modal">
-      <form onSubmit={submit} style={{ display: 'grid', gap: 12 }}>
-        <h3 style={{ margin: 0 }}>Add Service Record</h3>
+      <form onSubmit={submit}>
+        <h3>Add Service Record</h3>
+        
+        {error && <div style={{ color: 'crimson', fontSize: 13, marginBottom: 12, padding: 8, background: 'rgba(220,20,60,0.1)', borderRadius: 4 }}>{error}</div>}
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <label>Vehicle
-            <select
-              value={form.vehicleId}
-              onChange={e => setForm({ ...form, vehicleId: e.target.value })}
-              required
-              style={{ width: '100%' }}
-            >
-              <option value="">Select Vehicle</option>
-              {vehicles.map(v => (
-                <option key={v.id} value={v.id}>
-                  {v.company} {v.model} - {v.registrationNumber}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>Service Date
-            <input
-              type="date"
-              value={form.dateOfService}
-              onChange={e => setForm({ ...form, dateOfService: e.target.value })}
-              required
-            />
-          </label>
-        </div>
+        {/* Vehicle Selection */}
+        <label>Vehicle *</label>
+        <select value={vehicleId} onChange={e => setVehicleId(e.target.value)} required style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}>
+          <option value="">Select a vehicle</option>
+          {vehicles.map(v => (
+            <option key={v.id} value={v.id}>
+              {v.company} {v.model} ({v.registrationNumber})
+            </option>
+          ))}
+        </select>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <label>Workshop
-            <input
-              value={form.workshop}
-              onChange={e => setForm({ ...form, workshop: e.target.value })}
-              placeholder="e.g. Service Center Name"
-              required
-            />
-          </label>
-          <label>Service Type
-            <input
-              value={form.type}
-              onChange={e => setForm({ ...form, type: e.target.value })}
-              placeholder="e.g. Full Service"
-              required
-            />
-          </label>
-        </div>
+        {/* Service Date */}
+        <label>Service Date *</label>
+        <input type="date" value={dateOfService} onChange={e => setDateOfService(e.target.value)} required style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }} />
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-          <label>Mileage (km)
-            <input
-              type="number"
-              value={form.mileage}
-              onChange={e => setForm({ ...form, mileage: e.target.value })}
-              placeholder="e.g. 15000"
-            />
-          </label>
-          <label>Cost
-            <input
-              type="number"
-              value={form.cost}
-              onChange={e => setForm({ ...form, cost: e.target.value })}
-              placeholder="e.g. 5000"
-            />
-          </label>
-        </div>
+        {/* Service Type */}
+        <label>Service Type</label>
+        <select value={type} onChange={e => setType(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}>
+          <option value="">Select type</option>
+          <option value="Regular">Regular</option>
+          <option value="Breakdown">Breakdown</option>
+          <option value="Periodic">Periodic</option>
+          <option value="Preventive">Preventive</option>
+        </select>
 
-        <label>Invoice Number/URL
-          <input
-            value={form.invoice}
-            onChange={e => setForm({ ...form, invoice: e.target.value })}
-            placeholder="e.g. INV-2025-55672"
+        {/* Service Items */}
+        <label style={{ marginTop: 12 }}>Service Items *</label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 80px auto', gap: 8, alignItems: 'end', marginTop: 6 }}>
+          <select value={selectedCategoryId} onChange={e => setSelectedCategoryId(e.target.value)} style={{ padding: 10, borderRadius: 8, border: '1px solid var(--border)' }}>
+            <option value="">Select service category</option>
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name} (₹{c.price})
+              </option>
+            ))}
+          </select>
+          <input 
+            type="number" 
+            value={selectedQuantity} 
+            onChange={e => setSelectedQuantity(e.target.value)}
+            min="1"
+            style={{ padding: 10, borderRadius: 8, border: '1px solid var(--border)' }}
           />
-        </label>
+          <button type="button" className="navy-btn" onClick={addServiceItem} style={{ padding: '10px 12px', minWidth: 'auto' }}>
+            Add
+          </button>
+        </div>
 
-        <div style={{ marginTop: 8 }}>
-          <label style={{ marginBottom: 8 }}>Service Items</label>
-
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr auto', gap: 8, alignItems: 'end' }}>
-            <div>
-              <select
-                value={currentItem.serviceCategoryId}
-                onChange={e => setCurrentItem({ ...currentItem, serviceCategoryId: e.target.value })}
-                style={{ width: '100%', marginTop: 8 }}
-              >
-                <option value="">Select Service Item</option>
-                {serviceCategories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <input
-                type="number"
-                min="1"
-                value={currentItem.quantity}
-                onChange={e => setCurrentItem({ ...currentItem, quantity: e.target.value })}
-                placeholder="Qty"
-                style={{ width: '100%', marginTop: 8 }}
-              />
-            </div>
-            <button
-              type="button"
-              onClick={addItem}
-              className="add-item-btn"
-              style={{
-                padding: '12px 20px',
-                background: '#22577A',
-                color: 'white',
-                border: 'none',
-                borderRadius: 8,
-                cursor: 'pointer',
-                fontWeight: 600,
-                fontSize: 14,
-                marginTop: 8
-              }}
-            >
-              Add
-            </button>
-          </div>
-
-
-          {selectedItems.length > 0 && (
-            <div style={{
-              marginTop: 12,
-              padding: 12,
-              background: '#f8f9fa',
-              borderRadius: 8,
-              border: '1px solid #e0e0e0'
-            }}>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#22577A', marginBottom: 8 }}>
-                Selected Items:
-              </div>
-              {selectedItems.map((item, index) => (
-                <div
-                  key={index}
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '8px 12px',
-                    background: 'white',
-                    borderRadius: 6,
-                    marginBottom: 6,
-                    border: '1px solid #e0e0e0'
-                  }}
-                >
-                  <span style={{ fontSize: 14, color: '#333' }}>
-                    {getItemName(item.serviceCategoryId)} <span style={{ color: '#666' }}>× {item.quantity}</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(item.serviceCategoryId)}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: '#dc3545',
-                      cursor: 'pointer',
-                      fontSize: 18,
-                      padding: '0 4px',
-                      fontWeight: 600
-                    }}
-                  >
-                    ×
+        {/* Added Service Items List */}
+        {servicedItems.length > 0 && (
+          <div style={{ marginTop: 12, padding: 12, background: 'var(--hover)', borderRadius: 8, border: '1px solid var(--border)' }}>
+            <strong style={{ fontSize: 13 }}>Added Items:</strong>
+            {servicedItems.map((item, idx) => {
+              const category = categories.find(c => c.id === item.serviceCategoryId)
+              return (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0', fontSize: 13, borderBottom: idx < servicedItems.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                  <span>{category?.name} × {item.quantity}</span>
+                  <button type="button" onClick={() => removeServiceItem(idx)} style={{ background: 'none', border: 'none', color: 'crimson', cursor: 'pointer', padding: '4px 8px' }}>
+                    Remove
                   </button>
                 </div>
-              ))}
-            </div>
+              )
+            })}
+          </div>
+        )}
 
-          )}
+        {/* Workshop & Mileage */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 12 }}>
+          <label>Workshop
+            <input value={workshop} onChange={e => setWorkshop(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }} />
+          </label>
+          <label>Mileage (km)
+            <input type="number" value={mileage} onChange={e => setMileage(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }} />
+          </label>
         </div>
 
-        {error && <div style={{ color: 'crimson', fontSize: 13, marginTop: 8 }}>{error}</div>}
+        {/* Cost */}
+        <label>Cost (₹)</label>
+        <input type="number" value={cost} onChange={e => setCost(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }} />
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
-          <button
-            type="button"
-            onClick={onClose}
-            className="navy-btn"
-            style={{ background: 'var(--card)', color: 'var(--text)', border: '1px solid var(--border)' }}
+        {/* Invoice Input - Toggle between Manual and Upload */}
+        <label style={{ marginTop: 12 }}>Invoice</label>
+        <div style={{ display: 'flex', gap: 8, marginTop: 6, marginBottom: 12 }}>
+          <button 
+            type="button" 
+            onClick={() => setInputMode('manual')}
+            style={{ 
+              flex: 1, 
+              padding: 8, 
+              borderRadius: 6, 
+              border: `2px solid ${inputMode === 'manual' ? 'var(--primary)' : 'var(--border)'}`,
+              background: inputMode === 'manual' ? 'var(--primary)' : 'var(--card)',
+              color: inputMode === 'manual' ? 'white' : 'var(--text)',
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 500
+            }}
           >
+            Manual URL
+          </button>
+          <button 
+            type="button" 
+            onClick={() => setInputMode('upload')}
+            style={{ 
+              flex: 1, 
+              padding: 8, 
+              borderRadius: 6, 
+              border: `2px solid ${inputMode === 'upload' ? 'var(--primary)' : 'var(--border)'}`,
+              background: inputMode === 'upload' ? 'var(--primary)' : 'var(--card)',
+              color: inputMode === 'upload' ? 'white' : 'var(--text)',
+              cursor: 'pointer',
+              fontSize: 13,
+              fontWeight: 500
+            }}
+          >
+            Upload File
+          </button>
+        </div>
+
+        {inputMode === 'manual' && (
+          <input 
+            type="url" 
+            value={invoiceUrl} 
+            onChange={e => setInvoiceUrl(e.target.value)}
+            placeholder="https://example.com/invoice.pdf"
+            style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}
+          />
+        )}
+
+        {inputMode === 'upload' && (
+          <input 
+            type="file" 
+            onChange={e => setInvoiceFile(e.target.files?.[0] || null)}
+            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+            style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}
+          />
+        )}
+
+        {/* Buttons */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>
+          <button type="button" className="navy-btn" onClick={onClose} style={{ background: 'var(--card)', color: 'var(--text)', border: '1px solid var(--border)' }}>
             Cancel
           </button>
-          <button type="submit" className="navy-btn">
-            {loading ? 'Saving...' : 'Add Service'}
+          <button type="submit" className="navy-btn" disabled={loading}>
+            {loading ? 'Saving...' : 'Create Service Record'}
           </button>
         </div>
       </form>

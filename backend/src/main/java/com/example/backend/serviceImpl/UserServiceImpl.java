@@ -3,9 +3,9 @@ package com.example.backend.serviceImpl;
 import com.example.backend.dao.UserDao;
 import com.example.backend.dto.request.UserRequestDTO;
 import com.example.backend.dto.response.UserResponseDTO;
-import com.example.backend.dto.summary.VehicleSummaryDTO;
 import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
+import com.example.backend.enums.UserRole;
 import com.example.backend.mapper.UserMapper;
 import com.example.backend.service.UserService;
 import jakarta.transaction.Transactional;
@@ -29,7 +29,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    public UserResponseDTO create(UserRequestDTO dto) {
+    @Autowired
+    private com.example.backend.dao.VehicleDao vehicleDao;
+
+    public com.example.backend.dto.response.UserResponseDTO create(UserRequestDTO dto) {
 
         if (userDao.existsByEmail(dto.getEmail())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.EMAIL_ALREADY_EXISTS.name());
@@ -37,8 +40,11 @@ public class UserServiceImpl implements UserService {
 
         User user = userMapper.toEntity(dto);
         user.setPassword(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(dto.getPassword()));
-        user.setRole(com.example.backend.enums.UserRole.USER);
-
+        if (dto.getRole() == null)
+            user.setRole(com.example.backend.enums.UserRole.USER);
+        else
+            user.setRole(com.example.backend.enums.UserRole.ADMIN);
+        user.setStatus("ACTIVE");
         User saved = userDao.save(user);
         return userMapper.toResponseDTO(saved);
     }
@@ -46,13 +52,19 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO getById(Long id) {
         User user = userDao.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
-        return userMapper.toResponseDTO(user);
+        UserResponseDTO dto = userMapper.toResponseDTO(user);
+        dto.setTotalVehicleCount(vehicleDao.findByOwnerId(user.getId()).size());
+        return dto;
     }
 
     public List<UserResponseDTO> getAll() {
         return userDao.findAll()
                 .stream()
-                .map(user-> userMapper.toResponseDTO(user))
+                .map(user -> {
+                    UserResponseDTO dto = userMapper.toResponseDTO(user);
+                    dto.setTotalVehicleCount(vehicleDao.findByOwnerId(user.getId()).size());
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
@@ -72,38 +84,42 @@ public class UserServiceImpl implements UserService {
 
     public UserResponseDTO delete(Long id) {
         User user = userDao.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,MessageKey.USER_NOT_FOUND.name()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
         UserResponseDTO dto = userMapper.toResponseDTO(user);
         userDao.delete(user);
         return dto;
 
     }
+
     @Override
     public void updatePassword(String email, String oldPassword, String newPassword) {
         User user = userDao.findByEmail(email);
-        if (user == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name());
+        if (user == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name());
         PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        if (!encoder.matches(oldPassword, user.getPassword())) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.INVALID_CREDENTIALS.name());
+        if (!encoder.matches(oldPassword, user.getPassword()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, MessageKey.INVALID_CREDENTIALS.name());
         user.setPassword(encoder.encode(newPassword));
         userDao.save(user);
     }
 
-//    private UserResponseDTO convert(User user) {
-//        UserResponseDTO dto = userMapper.toResponseDTO(user);
-//
-//        if (user.getVehicles() != null) {
-//            dto.setVehicles(
-//                    user.getVehicles().stream()
-//                            .map(v -> new VehicleSummaryDTO(
-//                                    v.getId(),
-//                                    v.getCompany(),
-//                                    v.getModel(),
-//                                    v.getRegistrationNumber()
-//                            ))
-//                            .collect(Collectors.toList())
-//            );
-//        }
-//
-//        return dto;
-//    }
+    @Override
+    public UserResponseDTO updateStatus(Long id, String status) {
+        User user = userDao.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
+        user.setStatus(status);
+        return userMapper.toResponseDTO(userDao.save(user));
+    }
+
+    @Override
+    public List<UserResponseDTO> getAllByRole(UserRole role) {
+        return userDao.findAllByRole(role)
+                .stream()
+                .map(user -> {
+                    UserResponseDTO dto = userMapper.toResponseDTO(user);
+                    dto.setTotalVehicleCount(vehicleDao.findByOwnerId(user.getId()).size());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+    }
 }

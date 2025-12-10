@@ -4,7 +4,7 @@ import { notificationsAPI } from '../services/api'
 import '../styles/components/NotificationTable.css'
 
 export default function NotificationTable() {
-  const [notifications, setNotifications] = useState([])
+  const [allNotifications, setAllNotifications] = useState([])
   const [loading, setLoading] = useState(false)
   const [filters, setFilters] = useState({
     priority: '',
@@ -15,13 +15,9 @@ export default function NotificationTable() {
   const fetchNotifications = async () => {
     try {
       setLoading(true)
-      const params = {}
-      if (filters.priority) params.priority = filters.priority
-      if (filters.status) params.status = filters.status
-      if (filters.readStatus) params.readStatus = filters.readStatus
-
-      const response = await notificationsAPI.getAll(params)
-      setNotifications(response.data || [])
+      // Fetch ALL notifications without backend filtering
+      const response = await notificationsAPI.getAll({})
+      setAllNotifications(response.data || [])
     } catch (error) {
       console.error('Error fetching notifications:', error)
     } finally {
@@ -31,7 +27,18 @@ export default function NotificationTable() {
 
   useEffect(() => {
     fetchNotifications()
-  }, [filters])
+  }, []) // Only fetch once on mount
+
+  // Client-side filtering
+  const notifications = allNotifications.filter(notif => {
+    // Filter by priority
+    if (filters.priority && notif.priority !== filters.priority) return false
+    // Filter by status
+    if (filters.status && notif.status !== filters.status) return false
+    // Filter by read status
+    if (filters.readStatus && notif.readStatus !== filters.readStatus) return false
+    return true
+  })
 
   const getPriorityIcon = (priority) => {
     switch (priority) {
@@ -72,7 +79,7 @@ export default function NotificationTable() {
     <section className="notification-table-section" id="notifications">
       <div className="notification-table-header">
         <h2 style={{ margin: 0 }}>Upcoming Notifications</h2>
-        <button 
+        <button
           className="notification-table-refresh-btn"
           onClick={handleRefresh}
           disabled={loading}
@@ -88,8 +95,8 @@ export default function NotificationTable() {
           <div className="notification-table-filter-group">
             <FiFilter size={16} />
             <span className="notification-table-filter-label">Filters:</span>
-            
-            <select 
+
+            <select
               className="notification-table-select"
               value={filters.priority}
               onChange={(e) => handleFilterChange('priority', e.target.value)}
@@ -100,7 +107,7 @@ export default function NotificationTable() {
               <option value="LOW">🟢 Low</option>
             </select>
 
-            <select 
+            <select
               className="notification-table-select"
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
@@ -108,10 +115,9 @@ export default function NotificationTable() {
               <option value="">All Status</option>
               <option value="ACTIVE">Active</option>
               <option value="INACTIVE">Expired</option>
-              <option value="ACKNOWLEDGED">Acknowledged</option>
             </select>
 
-            <select 
+            <select
               className="notification-table-select"
               value={filters.readStatus}
               onChange={(e) => handleFilterChange('readStatus', e.target.value)}
@@ -153,13 +159,13 @@ export default function NotificationTable() {
               </thead>
               <tbody>
                 {notifications.map((notif) => (
-                  <tr 
+                  <tr
                     key={notif.id}
                     className={`notification-table-row ${notif.readStatus === 'UNREAD' ? 'unread' : ''}`}
                     onClick={() => notif.readStatus === 'UNREAD' && handleMarkAsRead(notif.id)}
                   >
                     <td>
-                      <span 
+                      <span
                         className="notification-table-priority"
                         style={{ color: getPriorityColor(notif.priority) }}
                         title={notif.priority}

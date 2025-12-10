@@ -6,7 +6,6 @@ import com.example.backend.dto.response.NotificationDetailDTO;
 import com.example.backend.dto.response.NotificationResponseDTO;
 import com.example.backend.dto.summary.DocumentSummaryDTO;
 import com.example.backend.dto.summary.ServiceItemSummaryDTO;
-import com.example.backend.dto.summary.VehicleSummaryDTO;
 import com.example.backend.entity.*;
 import com.example.backend.enums.*;
 import com.example.backend.mapper.NotificationMapper;
@@ -21,7 +20,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,128 +34,120 @@ public class NotificationServiceImpl implements NotificationService {
     private final VehicleDao vehicleDao;
     private final UserDao userDao;
     private final ServiceCategoriesDao serviceCategoriesDao;
+    private final ServiceRecordDao serviceRecordDao;
     private final DocumentDao documentDao;
     private final NotificationMapper notificationMapper;
     private final VehicleMapper vehicleMapper;
 
     @Override
     public void generateNotificationsForServicedItem(ServicedItems item, Long vehicleId, Long userId) {
-        log.info("Generating notification for ServicedItem ID: {}, Vehicle ID: {}", item.getId(), vehicleId);
-
-        if (item.getExpirationDate() == null) {
-            log.warn("ServicedItem ID: {} has no expiration date. Skipping notification generation.", item.getId());
-            return;
-        }
-
-        // Check if notification already exists for this item
-        Optional<Notification> existingNotification = notificationDao.findByReferenceIdAndReferenceTypeAndStatus(
-                item.getId(), ReferenceType.SERVICED_ITEM, NotificationStatus.ACTIVE
-        );
-
-        if (existingNotification.isPresent()) {
-            log.info("Notification already exists for ServicedItem ID: {}. Updating...", item.getId());
-            updateNotification(existingNotification.get(), item.getExpirationDate());
-            return;
-        }
-
-        // Create new notification
-        Notification notification = new Notification();
-        notification.setUserId(userId);
-        notification.setVehicleId(vehicleId);
-        notification.setNotificationType(NotificationType.SERVICE_ITEM_EXPIRY);
-        notification.setReferenceId(item.getId());
-        notification.setReferenceType(ReferenceType.SERVICED_ITEM);
-        notification.setExpiryDate(item.getExpirationDate());
-
-        // Calculate days left and priority
-        updateNotificationDaysAndPriority(notification);
-
-        // Generate message
-        // NEW CODE (FIXED)
-        ServiceCategories category = serviceCategoriesDao.findById(item.getServiceCategoryId());
-        if (category == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-                    "ServiceCategory not found with ID: " + item.getServiceCategoryId());
-        }
-        Vehicle vehicle = vehicleDao.findById(vehicleId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Vehicle not found with ID: " + vehicleId));
-
-        notification.setMessage(buildServiceItemMessage(category.getName(), vehicle, notification.getDaysLeft()));
-        notification.setStatus(NotificationStatus.ACTIVE);
-        notification.setReadStatus(ReadStatus.UNREAD);
-        notification.getNotifiedVia().add("IN_APP");
-
-        notificationDao.save(notification);
-        log.info("Notification created successfully for ServicedItem ID: {}", item.getId());
-
-        // Send email for high priority
-        if (notification.getPriority() == NotificationPriority.HIGH) {
-            sendHighPriorityNotificationEmail(notification);
-        }
+        createOrUpdateNotification(item.getId(), ReferenceType.SERVICED_ITEM, NotificationType.SERVICE_ITEM_EXPIRY,
+                item.getExpirationDate(), userId, vehicleId, "ServicedItem ID: " + item.getId(),
+                daysLeft -> {
+                    ServiceCategories category = serviceCategoriesDao.findById(item.getServiceCategoryId())
+                            .orElse(null);
+                    if (category == null) {
+                        throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                "ServiceCategory not found with ID: " + item.getServiceCategoryId());
+                    }
+                    Vehicle vehicle = vehicleDao.findById(vehicleId)
+                            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                    "Vehicle not found with ID: " + vehicleId));
+                    return buildServiceItemMessage(category.getName(), vehicle, daysLeft);
+                });
     }
 
     @Override
     public void generateNotificationsForDocument(Document document, Long userId) {
-        log.info("Generating notification for Document ID: {}", document.getId());
+        createOrUpdateNotification(
+                Long.valueOf(document.getId()),
+                ReferenceType.DOCUMENT,
+                NotificationType.DOCUMENT_EXPIRY,
+                document.getExpirationDate(),
+                userId,
+                document.getVehicle().getId(),
+                "Document ID: " + document.getId(),
+                daysLeft -> buildDocumentMessage(document.getDocName(), document.getVehicle(), daysLeft));
+    }
 
-        if (document.getExpirationDate() == null) {
-            log.warn("Document ID: {} has no expiration date. Skipping notification generation.", document.getId());
+    private void createOrUpdateNotification(Long referenceId, ReferenceType referenceType,
+            NotificationType notificationType, LocalDate expiryDate, Long userId, Long vehicleId,
+            String logIdentifier, java.util.function.Function<Integer, String> messageBuilder) {
+        log.info("Generating notification for {}", logIdentifier);
+
+        if (expiryDate == null) {
+            log.warn("{} has no expiration date. Skipping notification generation.", logIdentifier);
             return;
         }
 
-        // Check if notification already exists
         Optional<Notification> existingNotification = notificationDao.findByReferenceIdAndReferenceTypeAndStatus(
-                Long.valueOf(document.getId()), ReferenceType.DOCUMENT, NotificationStatus.ACTIVE
-        );
+                referenceId, referenceType, NotificationStatus.ACTIVE);
 
         if (existingNotification.isPresent()) {
-            log.info("Notification already exists for Document ID: {}. Updating...", document.getId());
-            updateNotification(existingNotification.get(), document.getExpirationDate());
+            log.info("Notification already exists for {}. Updating...", logIdentifier);
+            updateNotification(existingNotification.get(), expiryDate);
             return;
         }
 
-        // Create new notification
         Notification notification = new Notification();
         notification.setUserId(userId);
-        notification.setVehicleId(document.getVehicle().getId());
-        notification.setNotificationType(NotificationType.DOCUMENT_EXPIRY);
-        notification.setReferenceId(Long.valueOf(document.getId()));
-        notification.setReferenceType(ReferenceType.DOCUMENT);
-        notification.setExpiryDate(document.getExpirationDate());
+        notification.setVehicleId(vehicleId);
+        notification.setNotificationType(notificationType);
+        notification.setReferenceId(referenceId);
+        notification.setReferenceType(referenceType);
+        notification.setExpiryDate(expiryDate);
 
-        // Calculate days left and priority
-        updateNotificationDaysAndPriority(notification);
+        int daysLeft = updateNotificationDaysAndPriority(notification);
 
-        // Generate message
-        notification.setMessage(buildDocumentMessage(document.getDocName(),
-                document.getVehicle(), notification.getDaysLeft()));
+        notification.setMessage(messageBuilder.apply(daysLeft));
         notification.setStatus(NotificationStatus.ACTIVE);
         notification.setReadStatus(ReadStatus.UNREAD);
-        notification.getNotifiedVia().add("IN_APP");
 
         notificationDao.save(notification);
-        log.info("Notification created successfully for Document ID: {}", document.getId());
+        log.info("Notification created successfully for {}", logIdentifier);
 
-        // Send email for high priority
         if (notification.getPriority() == NotificationPriority.HIGH) {
             sendHighPriorityNotificationEmail(notification);
         }
     }
 
     @Override
-    public void generateNotificationsForAllExpiringSoon() {
-        log.info("Starting batch notification generation for all expiring items...");
+    public void scanAndGenerateNotificationsForUser(Long userId) {
+        log.info("Scanning for expiring items for User ID: {}", userId);
 
-        LocalDate today = LocalDate.now();
-        LocalDate thirtyDaysLater = today.plusDays(30);
+        List<Vehicle> vehicles = vehicleDao.findByOwnerId(userId);
 
-        // Process all serviced items expiring in next 30 days
-        // Note: This requires a custom query - we'll get all service records and filter
-        log.info("Processing serviced items...");
-        // Implementation will be in scheduler
+        for (Vehicle vehicle : vehicles) {
+            // 1. Check Documents
+            if (vehicle.getDocuments() != null) {
+                for (Document doc : vehicle.getDocuments()) {
+                    try {
+                        generateNotificationsForDocument(doc, userId);
+                    } catch (Exception e) {
+                        log.error("Error scanning document ID: {} - {}", doc.getId(), e.getMessage());
+                    }
+                }
+            }
 
-        log.info("Batch notification generation completed.");
+            // 2. Check Serviced Items (via ServiceRecords)
+            try {
+                List<ServiceRecord> records = serviceRecordDao.findByVehicleId(vehicle.getId());
+                for (ServiceRecord record : records) {
+                    if (record.getServicedItems() != null) {
+                        for (ServicedItems item : record.getServicedItems()) {
+                            try {
+                                generateNotificationsForServicedItem(item, vehicle.getId(), userId);
+                            } catch (Exception e) {
+                                log.error("Error scanning ServicedItem ID: {} - {}", item.getId(), e.getMessage());
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                log.error("Error fetching service records for vehicle ID: {} - {}", vehicle.getId(), e.getMessage());
+            }
+        }
+        log.info("Completed scan for User ID: {}", userId);
     }
 
     @Override
@@ -173,23 +165,15 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationResponseDTO> getAllByUser(Long userId, NotificationStatus status,
-                                                      ReadStatus readStatus, NotificationPriority priority) {
-        List<Notification> notifications;
+            ReadStatus readStatus, NotificationPriority priority) {
+        // Fetch all notifications for the user
+        List<Notification> notifications = notificationDao.findByUserIdOrderByPriorityDescCreatedAtDesc(userId);
 
-        if (status != null && readStatus != null) {
-            notifications = notificationDao.findByUserIdAndStatusAndReadStatusOrderByPriorityDescCreatedAtDesc(
-                    userId, status, readStatus);
-        } else if (status != null) {
-            notifications = notificationDao.findByUserIdAndStatusOrderByPriorityDescCreatedAtDesc(userId, status);
-        } else if (readStatus != null) {
-            notifications = notificationDao.findByUserIdAndReadStatusOrderByPriorityDescCreatedAtDesc(userId, readStatus);
-        } else if (priority != null) {
-            notifications = notificationDao.findByUserIdAndPriorityOrderByCreatedAtDesc(userId, priority);
-        } else {
-            notifications = notificationDao.findByUserIdOrderByPriorityDescCreatedAtDesc(userId);
-        }
-
+        // Apply filters using stream operations to support all combinations
         return notifications.stream()
+                .filter(n -> status == null || n.getStatus() == status)
+                .filter(n -> readStatus == null || n.getReadStatus() == readStatus)
+                .filter(n -> priority == null || n.getPriority() == priority)
                 .map(notificationMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -213,7 +197,10 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationCountDTO getCounts(Long userId) {
-        Long unreadCount = notificationDao.countByUserIdAndReadStatus(userId, ReadStatus.UNREAD);
+        // Count only ACTIVE + UNREAD notifications (for bell badge)
+        Long unreadCount = notificationDao.countByUserIdAndStatusAndReadStatus(
+                userId, NotificationStatus.ACTIVE, ReadStatus.UNREAD);
+
         Long activeCount = notificationDao.countByUserIdAndStatus(userId, NotificationStatus.ACTIVE);
         Long highPriorityCount = notificationDao.countByUserIdAndStatusAndPriority(
                 userId, NotificationStatus.ACTIVE, NotificationPriority.HIGH);
@@ -244,8 +231,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public void markAllAsRead(Long userId) {
-        List<Notification> unreadNotifications = notificationDao.findByUserIdAndReadStatusOrderByPriorityDescCreatedAtDesc(
-                userId, ReadStatus.UNREAD);
+        List<Notification> unreadNotifications = notificationDao
+                .findByUserIdAndReadStatusOrderByPriorityDescCreatedAtDesc(
+                        userId, ReadStatus.UNREAD);
 
         for (Notification notification : unreadNotifications) {
             notification.setReadStatus(ReadStatus.READ);
@@ -271,26 +259,6 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void updateNotificationPrioritiesAndStatus() {
-        log.info("Updating notification priorities and statuses...");
-
-        List<Notification> activeNotifications = notificationDao.findByUserIdAndStatusOrderByPriorityDescCreatedAtDesc(
-                null, NotificationStatus.ACTIVE);
-
-        // This is inefficient - we'll use a better approach in scheduler
-        // For now, this is a placeholder
-    }
-
-    @Override
-    public void markExpiredNotificationsAsInactive() {
-        LocalDate today = LocalDate.now();
-        int updatedCount = notificationDao.markExpiredAsInactive(
-                today, NotificationStatus.ACTIVE, NotificationStatus.INACTIVE);
-
-        log.info("Marked {} expired notifications as INACTIVE", updatedCount);
-    }
-
-    @Override
     public void sendHighPriorityNotificationEmail(Notification notification) {
         try {
             User user = userDao.findById(notification.getUserId())
@@ -303,7 +271,6 @@ public class NotificationServiceImpl implements NotificationService {
             // Assuming EmailService interface
             // emailService.sendEmail(user.getEmail(), subject, message);
 
-            notification.getNotifiedVia().add("EMAIL_SENT");
             notificationDao.save(notification);
 
             log.info("HIGH priority email sent to User ID: {} for Notification ID: {}",
@@ -321,10 +288,9 @@ public class NotificationServiceImpl implements NotificationService {
         notificationDao.save(notification);
     }
 
-    private void updateNotificationDaysAndPriority(Notification notification) {
+    private int updateNotificationDaysAndPriority(Notification notification) {
         LocalDate today = LocalDate.now();
         long daysLeft = ChronoUnit.DAYS.between(today, notification.getExpiryDate());
-        notification.setDaysLeft((int) daysLeft);
 
         if (daysLeft < 0) {
             notification.setStatus(NotificationStatus.INACTIVE);
@@ -339,6 +305,7 @@ public class NotificationServiceImpl implements NotificationService {
             // Don't create notification yet if more than 30 days
             notification.setStatus(NotificationStatus.INACTIVE);
         }
+        return (int) daysLeft;
     }
 
     private String buildServiceItemMessage(String categoryName, Vehicle vehicle, Integer daysLeft) {
@@ -374,7 +341,10 @@ public class NotificationServiceImpl implements NotificationService {
         email.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
         email.append("Message: ").append(notification.getMessage()).append("\n");
         email.append("Expiry Date: ").append(notification.getExpiryDate()).append("\n");
-        email.append("Days Left: ").append(notification.getDaysLeft()).append(" day(s)\n");
+
+        long daysLeft = ChronoUnit.DAYS.between(LocalDate.now(), notification.getExpiryDate());
+        email.append("Days Left: ").append(daysLeft).append(" day(s)\n");
+
         email.append("Priority: ").append(notification.getPriority()).append("\n");
         email.append("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n");
         email.append("Please schedule a service appointment soon to avoid vehicle damage.\n\n");
@@ -386,17 +356,14 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationDetailDTO enrichNotificationDetail(Notification notification) {
         NotificationDetailDTO dto = notificationMapper.toDetailDTO(notification);
 
-        // Enrich with vehicle data
         Vehicle vehicle = vehicleDao.findById(notification.getVehicleId())
                 .orElse(null);
         if (vehicle != null) {
             dto.setVehicle(vehicleMapper.toSummaryDTO(vehicle));
         }
 
-        // Enrich with item/document data based on type
         if (notification.getReferenceType() == ReferenceType.SERVICED_ITEM) {
-            // We'll need to query ServiceRecord to get ServicedItem
-            // For now, basic implementation
+
             ServiceItemSummaryDTO itemSummary = new ServiceItemSummaryDTO();
             itemSummary.setId(notification.getReferenceId());
             itemSummary.setExpirationDate(notification.getExpiryDate());
