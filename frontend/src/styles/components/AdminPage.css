@@ -173,7 +173,8 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background-color: #2563eb;
+    background-color: #22577A;
+    /* Navy blue - matches table heading */
     color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
@@ -184,7 +185,8 @@
 }
 
 .btn-primary:hover {
-    background-color: #1d4ed8;
+    background-color: #2a6a94;
+    /* Slightly lighter on hover */
 }
 
 /* Tables */
@@ -195,10 +197,14 @@
 .admin-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    /* Enable even column spacing */
 }
 
+
+
 .admin-table th {
-    text-align: left;
+    text-align: center;
     padding: 1rem;
     background-color: #22577A;
     /* Notification Table Blue */
@@ -213,6 +219,7 @@
 }
 
 .admin-table td {
+    text-align: center;
     padding: 1rem;
     vertical-align: middle;
     border-bottom: 1px solid #f3f4f6;
@@ -286,28 +293,46 @@
     background-color: #dcfce7;
 }
 
+/* Enhanced Action Buttons for Category Table */
 .btn-icon {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.5rem;
+    padding: 0.75rem;
+    /* Increased from 0.5rem for better spacing */
     border-radius: 0.5rem;
     color: #4b5563;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.25rem;
+    /* Add spacing between buttons */
 }
 
 .btn-icon:hover {
     background-color: #f3f4f6;
+    transform: translateY(-2px);
+}
+
+.btn-icon.edit {
+    color: #6b7280;
 }
 
 .btn-icon.edit:hover {
     color: #2563eb;
     background-color: #eff6ff;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn-icon.delete {
+    color: #6b7280;
 }
 
 .btn-icon.delete:hover {
     color: #dc2626;
     background-color: #fef2f2;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 /* Modal */

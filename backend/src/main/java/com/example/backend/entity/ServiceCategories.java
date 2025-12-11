@@ -21,8 +21,6 @@ public class ServiceCategories {
     @Column(unique = true)
     private String name;
 
-    private String description;
-
     private Period expiryInMonths;
 
 
@@ -31,7 +29,6 @@ public class ServiceCategories {
         return "ServiceCategories{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 ", expiryInMonths=" + expiryInMonths +
                 '}';
     }

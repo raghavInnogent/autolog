@@ -39,7 +39,7 @@ public class VehicleController {
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<VehicleResponseDTO> create(@RequestPart("file") MultipartFile file,
-           @Valid @RequestPart VehicleRequestDTO dto) {
+                                                     @Valid @RequestPart VehicleRequestDTO dto) {
         String img = cloudinaryService.uploadFile(file,"Vehicle");
         dto.setImage(img);
         UserPrincipal principal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

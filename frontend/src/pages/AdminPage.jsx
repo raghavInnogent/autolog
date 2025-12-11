@@ -122,12 +122,11 @@ function AdminPage() {
             setEditingCategory(category)
             setCategoryForm({
                 name: category.name,
-                description: category.description || '',
                 expiryInMonths: category.expiryInMonths || ''
             })
         } else {
             setEditingCategory(null)
-            setCategoryForm({ name: '', description: '', expiryInMonths: '' })
+            setCategoryForm({ name: '', expiryInMonths: '' })
         }
         setIsCategoryModalOpen(true)
     }
@@ -206,7 +205,7 @@ function AdminPage() {
                                         <th>Role</th>
                                         <th>Vehicles</th>
                                         <th>Status</th>
-                                        <th style={{ textAlign: 'right' }}>Action</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -218,7 +217,7 @@ function AdminPage() {
                                         <tr key={u.id}>
                                             <td style={{ fontWeight: '500' }}>#{u.id}</td>
                                             <td>{u.name}</td>
-                                            <td style={{ color: '#666' }}>{u.email}</td>
+                                            <td>{u.email}</td>
                                             <td>
                                                 <span className={`badge ${u.role === 'ADMIN' ? 'badge-admin' : 'badge-user'}`}>
                                                     {u.role}
@@ -231,7 +230,7 @@ function AdminPage() {
                                                     {u.status}
                                                 </span>
                                             </td>
-                                            <td style={{ textAlign: 'right' }}>
+                                            <td>
                                                 {u.role !== 'ADMIN' && (
                                                     <button
                                                         onClick={() => toggleUserStatus(u.id, u.status)}
@@ -277,9 +276,8 @@ function AdminPage() {
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>Description</th>
                                         <th>Expiry (Months)</th>
-                                        <th style={{ textAlign: 'right' }}>Actions</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -291,9 +289,8 @@ function AdminPage() {
                                         <tr key={c.id}>
                                             <td style={{ fontWeight: '500' }}>#{c.id}</td>
                                             <td>{c.name}</td>
-                                            <td style={{ color: '#666', fontSize: '0.85em' }}>{c.description || '-'}</td>
                                             <td>{c.expiryInMonths !== undefined ? c.expiryInMonths : '-'}</td>
-                                            <td style={{ textAlign: 'right' }}>
+                                            <td>
                                                 <button
                                                     onClick={() => openCategoryModal(c)}
                                                     className="btn-icon edit"

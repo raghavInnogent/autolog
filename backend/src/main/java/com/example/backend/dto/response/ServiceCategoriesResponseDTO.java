@@ -10,7 +10,5 @@ public class ServiceCategoriesResponseDTO {
 
     private String name;
 
-    private String description;
-
     private Integer expiryInMonths;
 }

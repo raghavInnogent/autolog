@@ -6,7 +6,6 @@ import lombok.Data;
 public class ServiceCategoriesRequestDTO {
 
     private String name;
-    private String description;
     private Integer expiryInMonths;
 }
 

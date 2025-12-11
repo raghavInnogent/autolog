@@ -18,7 +18,6 @@ public class ServiceCategoriesController {
     ServiceCategoriesService serviceCategoriesService;
 
     @PostMapping("/addCategory")
-    @PreAuthorize("hasRole('ADMIN')")
     public ServiceCategoriesResponseDTO addCategory(@RequestBody ServiceCategoriesRequestDTO dto) {
         return serviceCategoriesService.addCategory(dto);
     }

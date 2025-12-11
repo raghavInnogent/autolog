@@ -54,7 +54,6 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
     public ResponseEntity<ServiceCategoriesResponseDTO> updateCategory(Long id, ServiceCategoriesRequestDTO dto) {
         ServiceCategories newServiceCategories = serviceCategoriesDao.findById(id);
         newServiceCategories.setName(dto.getName());
-        newServiceCategories.setDescription(dto.getDescription());
         newServiceCategories.setExpiryInMonths(Period.ofMonths(dto.getExpiryInMonths()));
         return ResponseEntity.ok(serviceCategoriesMapper.toResponseDTO(serviceCategoriesDao.save(newServiceCategories)));
     }
@@ -68,8 +67,6 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
     public ServiceCategories findById(Long categoryId) {
         return serviceCategoriesDao.findById(categoryId);
     }
-
-
 
     @Override
     public ServiceCategoriesResponseDTO addNewServiceCategory(ServiceCategoriesRequestDTO  dto)

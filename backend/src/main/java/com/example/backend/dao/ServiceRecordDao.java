@@ -28,7 +28,6 @@ public class ServiceRecordDao {
     }
 
     public List<ServiceRecord> findAll() {
-
         return serviceRecordRepository.findAll();
     }
 
