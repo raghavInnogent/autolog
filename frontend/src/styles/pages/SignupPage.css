@@ -1,4 +1,4 @@
-/* Modern Login Page Design */
+/* Modern Signup Page Design */
 
 :root {
     --primary-blue: #22577A;
@@ -10,15 +10,15 @@
     --text-light: #666;
 }
 
-.login-page {
+.signup-page {
     min-height: 100vh;
     display: flex;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     font-family: 'Inter', sans-serif;
 }
 
-/* Left Branding Section */
-.login-branding {
+/* Left Branding Section - Same as Login */
+.signup-branding {
     flex: 1;
     background: linear-gradient(135deg, var(--primary-blue) 0%, #1a4359 100%);
     display: flex;
@@ -31,7 +31,7 @@
     overflow: hidden;
 }
 
-.login-branding::before {
+.signup-branding::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -42,21 +42,7 @@
     animation: pulse 15s ease-in-out infinite;
 }
 
-@keyframes pulse {
-
-    0%,
-    100% {
-        transform: scale(1);
-        opacity: 0.5;
-    }
-
-    50% {
-        transform: scale(1.1);
-        opacity: 0.8;
-    }
-}
-
-.login-logo {
+.signup-logo {
     font-size: 48px;
     font-weight: 800;
     margin-bottom: 16px;
@@ -64,7 +50,7 @@
     text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.login-tagline {
+.signup-tagline {
     font-size: 20px;
     margin-bottom: 60px;
     opacity: 0.95;
@@ -73,13 +59,13 @@
     max-width: 400px;
 }
 
-.login-features {
+.signup-features {
     z-index: 1;
     width: 100%;
     max-width: 400px;
 }
 
-.feature-item {
+.signup-feature-item {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -91,12 +77,12 @@
     transition: all 0.3s ease;
 }
 
-.feature-item:hover {
+.signup-feature-item:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateX(8px);
 }
 
-.feature-icon {
+.signup-feature-icon {
     font-size: 32px;
     min-width: 48px;
     height: 48px;
@@ -108,75 +94,64 @@
     color: var(--primary-blue);
 }
 
-.feature-text h3 {
+.signup-feature-text h3 {
     margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 600;
 }
 
-.feature-text p {
+.signup-feature-text p {
     margin: 0;
     font-size: 13px;
     opacity: 0.9;
 }
 
 /* Right Form Section */
-.login-form-section {
+.signup-form-section {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 40px;
     background: var(--white);
+    overflow-y: auto;
 }
 
-.login-form-container {
+.signup-form-container {
     width: 100%;
-    max-width: 440px;
+    max-width: 480px;
     animation: fadeInUp 0.6s ease-out;
 }
 
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.login-form-header {
+.signup-form-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
 }
 
-.login-form-header h2 {
+.signup-form-header h2 {
     font-size: 32px;
     color: var(--primary-blue);
     margin: 0 0 8px 0;
     font-weight: 700;
 }
 
-.login-form-header p {
+.signup-form-header p {
     color: var(--text-light);
     margin: 0;
     font-size: 15px;
 }
 
-.login-form {
+.signup-form {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
 }
 
-.form-group {
+.signup-form-group {
     position: relative;
 }
 
-.form-group label {
+.signup-form-group label {
     display: block;
     font-size: 14px;
     font-weight: 600;
@@ -184,13 +159,13 @@
     margin-bottom: 8px;
 }
 
-.input-wrapper {
+.signup-input-wrapper {
     position: relative;
     display: flex;
     align-items: center;
 }
 
-.input-icon {
+.signup-input-icon {
     position: absolute;
     left: 16px;
     color: var(--text-light);
@@ -200,9 +175,9 @@
     z-index: 1;
 }
 
-.form-group input {
+.signup-form-group input {
     width: 100%;
-    padding: 14px 16px;
+    padding: 14px 16px 14px 48px;
     border: 2px solid var(--border-color);
     border-radius: 12px;
     font-size: 15px;
@@ -212,47 +187,33 @@
     box-sizing: border-box;
 }
 
-.form-group input:focus {
+.signup-form-group input:focus {
     outline: none;
     border-color: var(--accent-yellow);
     box-shadow: 0 0 0 4px rgba(255, 195, 0, 0.1);
 }
 
-.form-group input:focus~.input-icon {
+.signup-form-group input:focus~.signup-input-icon {
     color: var(--accent-yellow);
 }
 
-.form-options {
+.signup-form-group input:disabled {
+    background: var(--light-gray);
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.signup-form-group input.error {
+    border-color: crimson;
+}
+
+.field-error {
+    color: crimson;
+    font-size: 12px;
+    margin-top: 6px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    font-size: 14px;
-}
-
-.remember-me {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.remember-me input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: var(--accent-yellow);
-}
-
-.forgot-password {
-    color: var(--primary-blue);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.forgot-password:hover {
-    color: var(--accent-yellow);
+    gap: 4px;
 }
 
 .error-message {
@@ -265,23 +226,7 @@
     animation: shake 0.5s ease;
 }
 
-@keyframes shake {
-
-    0%,
-    100% {
-        transform: translateX(0);
-    }
-
-    25% {
-        transform: translateX(-10px);
-    }
-
-    75% {
-        transform: translateX(10px);
-    }
-}
-
-.login-button {
+.signup-button {
     background: linear-gradient(135deg, var(--primary-blue) 0%, #1a4359 100%);
     color: var(--accent-yellow);
     border: none;
@@ -294,105 +239,241 @@
     box-shadow: 0 4px 12px rgba(34, 87, 122, 0.3);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    margin-top: 8px;
 }
 
-.login-button:hover:not(:disabled) {
+.signup-button:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(34, 87, 122, 0.4);
 }
 
-.login-button:active:not(:disabled) {
+.signup-button:active:not(:disabled) {
     transform: translateY(0);
 }
 
-.login-button:disabled {
+.signup-button:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }
 
-.signup-link {
+.login-link {
     text-align: center;
     margin-top: 24px;
     font-size: 15px;
     color: var(--text-light);
 }
 
-.signup-link a {
+.login-link a {
     color: var(--primary-blue);
     font-weight: 600;
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.signup-link a:hover {
+.login-link a:hover {
     color: var(--accent-yellow);
+}
+
+/* OTP Modal */
+.otp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.otp-modal {
+    background: var(--white);
+    padding: 40px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.otp-modal h3 {
+    margin: 0 0 12px 0;
+    color: var(--primary-blue);
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.otp-modal p {
+    margin: 0 0 24px 0;
+    color: var(--text-light);
+    font-size: 15px;
+    text-align: center;
+}
+
+.otp-input {
+    width: 100%;
+    padding: 16px;
+    font-size: 24px;
+    text-align: center;
+    letter-spacing: 8px;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    margin-bottom: 24px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.otp-input:focus {
+    outline: none;
+    border-color: var(--accent-yellow);
+    box-shadow: 0 0 0 4px rgba(255, 195, 0, 0.1);
+}
+
+.otp-modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.otp-cancel-button {
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    background: transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-dark);
+    transition: all 0.3s ease;
+}
+
+.otp-cancel-button:hover {
+    background: var(--light-gray);
+    border-color: var(--text-light);
+}
+
+.otp-verify-button {
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary-blue) 0%, #1a4359 100%);
+    color: var(--accent-yellow);
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.otp-verify-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(34, 87, 122, 0.3);
+}
+
+.otp-verify-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-    .login-branding {
+    .signup-branding {
         padding: 40px;
     }
 
-    .login-logo {
+    .signup-logo {
         font-size: 40px;
     }
 
-    .login-tagline {
+    .signup-tagline {
         font-size: 18px;
     }
 }
 
 @media (max-width: 768px) {
-    .login-page {
+    .signup-page {
         flex-direction: column;
     }
 
-    .login-branding {
+    .signup-branding {
         padding: 40px 24px;
-        min-height: 40vh;
+        min-height: 30vh;
     }
 
-    .login-logo {
+    .signup-logo {
         font-size: 36px;
     }
 
-    .login-tagline {
+    .signup-tagline {
         font-size: 16px;
         margin-bottom: 32px;
     }
 
-    .login-features {
+    .signup-features {
         display: none;
     }
 
-    .login-form-section {
+    .signup-form-section {
         padding: 32px 24px;
     }
 
-    .login-form-header h2 {
+    .signup-form-header h2 {
         font-size: 28px;
+    }
+
+    .otp-modal {
+        padding: 32px 24px;
+        margin: 20px;
     }
 }
 
 @media (max-width: 480px) {
-    .login-form-section {
+    .signup-form-section {
         padding: 24px 16px;
     }
 
-    .login-form-container {
+    .signup-form-container {
         max-width: 100%;
     }
 
-    .login-form-header h2 {
+    .signup-form-header h2 {
         font-size: 24px;
     }
 
-    .form-group input {
+    .signup-form-group input {
         padding: 12px 14px 12px 44px;
     }
 
-    .login-button {
+    .signup-button {
         padding: 14px;
+    }
+
+    .otp-modal {
+        padding: 24px 20px;
+    }
+
+    .otp-modal h3 {
+        font-size: 24px;
     }
 }

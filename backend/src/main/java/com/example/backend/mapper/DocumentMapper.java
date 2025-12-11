@@ -20,6 +20,8 @@ public interface DocumentMapper {
     Document toEntity(DocumentRequestDTO dto);
 
     @Mapping(source="vehicle.id",target = "vehicleId")
+    @Mapping(source="vehicle.company",target = "vehicleCompany")
+    @Mapping(source="vehicle.model",target = "vehicleModel")
     @Mapping(source="docName",target="docName")
     DocumentResponseDTO toResponseDTO(Document entity);
 

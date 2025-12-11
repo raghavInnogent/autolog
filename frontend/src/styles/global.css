@@ -74,18 +74,19 @@ h2 {
 /* Global Button Styling */
 .navy-btn {
   background: #22577A;
-  color: white;
+  color: #FFC300;
   padding: 0.8em 1.5em;
   border-radius: 6px;
   font-weight: 600;
   border: 1px solid #22577A;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .navy-btn:hover {
-  background: white;
+  background: #FFC300;
   color: #22577A;
+  border-color: #FFC300;
 }
 
 @media (max-width: 900px) {

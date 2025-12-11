@@ -54,7 +54,7 @@
 }
 
 .back-btn:hover {
-    color: var(--nav-title, #22577A);
+    color: #22577A;
 }
 
 /* Selectors Area */
@@ -72,7 +72,6 @@
     overflow: hidden;
 }
 
-/* Subtle decorative circle behind VS badge */
 .compare-selectors::before {
     content: '';
     position: absolute;
@@ -84,6 +83,38 @@
     background: radial-gradient(circle, rgba(255, 195, 0, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
     border-radius: 50%;
     pointer-events: none;
+}
+
+/* Type Error Message */
+.type-error-message {
+    background: rgba(220, 20, 60, 0.1);
+    border-left: 4px solid crimson;
+    color: crimson;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 15px;
+    font-weight: 600;
+    animation: shake 0.5s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
 }
 
 .selector-box {
@@ -133,7 +164,6 @@
     box-shadow: 0 0 0 4px rgba(34, 87, 122, 0.1);
 }
 
-/* VS Badge */
 .vs-badge {
     background: #FFC300;
     color: #22577A;

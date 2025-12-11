@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
 import { Doughnut } from 'react-chartjs-2'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 import { FaCar, FaTrophy } from 'react-icons/fa'
 import { FiFileText, FiTool, FiAlertTriangle } from 'react-icons/fi'
 import VehicleCard from '../components/VehicleCard'
@@ -13,39 +14,7 @@ import { vehiclesAPI, documentsAPI, notificationsAPI, analyticsAPI } from '../se
 import '../styles/pages/HomePage.css'
 import heroImage1 from '../assets/heroImage1.jpg'
 
-ChartJS.register(ArcElement, Tooltip, Legend)
-
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: true,
-  aspectRatio: 1,
-  layout: {
-    padding: {
-      right: 180
-    }
-  },
-  plugins: {
-    legend: {
-      position: 'right',
-      align: 'center',
-      labels: {
-        color: '#fff',
-        font: { size: 20, weight: '600' },
-        boxWidth: 32,
-        boxHeight: 32,
-      },
-    },
-    tooltip: {
-      callbacks: {
-        label: function (context) {
-          return `${context.label}: ${context.parsed}%`
-        },
-      },
-      bodyFont: { size: 16 },
-    },
-  },
-  cutout: '58%',
-}
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels)
 
 export default function UserHomePage() {
   const [vehicles, setVehicles] = useState([])
@@ -72,10 +41,8 @@ export default function UserHomePage() {
 
       setVehicles(v.data || [])
 
-      // Fetch documents
       setDocs(d.data || [])
 
-      // Fetch notification counts
       try {
         const n = await notificationsAPI.getCounts()
         setNotificationCounts(n.data || {
@@ -99,7 +66,55 @@ export default function UserHomePage() {
 
   useEffect(() => { fetch() }, [])
 
-  // Generate dynamic vehicle usage data for chart
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 1,
+    layout: {
+      padding: {
+        right: 20
+      }
+    },
+    plugins: {
+      legend: {
+        display: false
+      },
+      datalabels: {
+        color: '#fff',
+        font: {
+          size: 14,
+          weight: 'bold'
+        },
+        formatter: (value, context) => {
+          return context.chart.data.labels[context.dataIndex]; // Show name only
+        },
+        textAlign: 'center'
+      },
+      tooltip: {
+        callbacks: {
+          title: function (context) {
+            const index = context[0].dataIndex;
+            const vehicle = top3Vehicles[index];
+            return vehicle?.vehicleName || 'Unknown';
+          },
+          label: function (context) {
+            const index = context.dataIndex;
+            const vehicle = top3Vehicles[index];
+            return [
+              `Reg. No: ${vehicle?.registrationNumber || 'N/A'}`,
+              `Total Mileage: ${vehicle?.totalMileageCovered?.toLocaleString() || 'N/A'} km`
+            ];
+          },
+        },
+        bodyFont: { size: 14 },
+        titleFont: { size: 16, weight: 'bold' },
+        padding: 12,
+        displayColors: false,
+      },
+    },
+    cutout: '58%',
+  }
+
   const vehicleUsageData = {
     labels: top3Vehicles.map(v => v.vehicleName || v.model || 'Unknown'),
     datasets: [
@@ -119,8 +134,9 @@ export default function UserHomePage() {
           <div className="hero-bg-image active" style={{ backgroundImage: `url(${heroImage1})` }} />
           <div className="hero-overlay" />
           <div className="hero-content-wrapper">
-            <div className="hero-chart-container">
-              <h2 className="hero-chart-title">Your Most Used Vehicles</h2>
+
+            <div className="hero-section-item">
+              <h2 className="hero-section-title">Most Used Vehicles</h2>
               <div className="hero-chart">
                 {top3Vehicles.length > 0 ? (
                   <Doughnut data={vehicleUsageData} options={chartOptions} />
@@ -130,145 +146,110 @@ export default function UserHomePage() {
               </div>
             </div>
 
-            <div className="hero-actions">
-              <button className="hero-action-btn" onClick={() => setShowAdd(true)}>
-                <span className="btn-text">Add Vehicle</span>
-              </button>
-              <button className="hero-action-btn" onClick={() => setShowDocumentModal(true)}>
-                <span className="btn-text">Upload Document</span>
-              </button>
-              <button className="hero-action-btn" onClick={() => setShowServiceModal(true)}>
-                <span className="btn-text">Add Service Record</span>
-              </button>
+            <div className="hero-section-item">
+              <h2 className="hero-section-title">Quick Stats</h2>
+              <div className="stats-grid">
+                <div className="stat-item">
+                  <FaCar size={24} color="#FFC300" />
+                  <div className="stat-text">
+                    <span className="stat-description">Total Vehicles</span>
+                    <span className="stat-number">{vehicles.length}</span>
+                  </div>
+                </div>
+
+                <div className="stat-item">
+                  <FiFileText size={24} color="#FFC300" />
+                  <div className="stat-text">
+                    <span className="stat-description">Total Documents</span>
+                    <span className="stat-number">{docs.length}</span>
+                  </div>
+                </div>
+
+                <div className="stat-item">
+                  <FiTool size={24} color="#FFC300" />
+                  <div className="stat-text">
+                    <span className="stat-description">Services This Month</span>
+                    <span className="stat-number">0</span>
+                  </div>
+                </div>
+
+                <div className="stat-item">
+                  <FiAlertTriangle size={24} color="#FFC300" />
+                  <div className="stat-text">
+                    <span className="stat-description">Pending Alerts</span>
+                    <span className="stat-number">0</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="quick-links-section">
+                <h3 className="quick-links-title">Quick links</h3>
+                <div className="quick-links-buttons">
+                  <button className="hero-action-btn" onClick={() => setShowAdd(true)}>
+                    <span className="btn-text">Add Vehicle</span>
+                  </button>
+                  <button className="hero-action-btn" onClick={() => setShowDocumentModal(true)}>
+                    <span className="btn-text">Upload Document</span>
+                  </button>
+                </div>
+              </div>
             </div>
+
+            <div className="hero-section-item">
+              <h2 className="hero-section-title">Most Efficient Vehicle</h2>
+              <div className="efficient-vehicle-card">
+                {mostEfficientVehicle ? (
+                  <>
+                    <div className="efficient-vehicle-header">
+                      <div className="efficient-vehicle-badge">
+                        <FaTrophy size={40} color="#FFC300" />
+                      </div>
+                      <div className="efficient-vehicle-title">
+                        <h3 className="efficient-vehicle-name">{mostEfficientVehicle.vehicleName || 'N/A'}</h3>
+                        <p className="efficient-vehicle-desc">Best mileage per cost ratio</p>
+                      </div>
+                    </div>
+                    <div className="efficient-vehicle-stats">
+                      <div className="efficient-stat-line">
+                        <span className="efficient-stat-label">Mileage - </span>
+                        <span className="efficient-stat-value">{mostEfficientVehicle.latestMileage?.toLocaleString() || 'N/A'}</span>
+                      </div>
+                      <div className="efficient-stat-line">
+                        <span className="efficient-stat-label">Total Service Cost - </span>
+                        <span className="efficient-stat-value">₹{mostEfficientVehicle.totalServiceCost?.toLocaleString() || '0'}</span>
+                      </div>
+                      <div className="efficient-stat-line">
+                        <span className="efficient-stat-label">Cost Efficiency - </span>
+                        <span className="efficient-stat-value">₹{mostEfficientVehicle.runningCostPerKm?.toFixed(2) || '0'}/km</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ textAlign: 'center', color: 'rgba(255, 255, 255, 0.7)', padding: '40px' }}>
+                    <FaCar size={48} style={{ display: 'block', margin: '0 auto 16px auto', opacity: 0.5 }} />
+                    <p>Add vehicles to see efficiency metrics</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="quick-links-section">
+                <div className="quick-links-buttons">
+                  <button className="hero-action-btn" onClick={() => setShowServiceModal(true)}>
+                    <span className="btn-text">Add Service </span>
+                  </button>
+                  <button className="hero-action-btn" onClick={() => window.location.href = '/prematures'}>
+                    <span className="btn-text">Check Prematures</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
           </div>
+
         </div>
       </section>
 
       <div className="page-content">
-        {/* Quick Stats Section */}
-        <section style={{ marginBottom: 32 }}>
-          <h2 style={{ margin: '0 0 16px 0' }}>Quick Stats</h2>
-          <div className="stats-grid">
-            <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(34, 87, 122, 0.1)' }}>
-                <FaCar size={28} color="#22577A" />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">{vehicles.length}</div>
-                <div className="stat-label">Total Vehicles</div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(255, 195, 0, 0.1)' }}>
-                <FiFileText size={28} color="#B38B00" />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">{docs.length}</div>
-                <div className="stat-label">Total Documents</div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(34, 87, 122, 0.1)' }}>
-                <FiTool size={28} color="#22577A" />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">0</div>
-                <div className="stat-label">Services This Month</div>
-              </div>
-            </div>
-
-            <div className="stat-card">
-              <div className="stat-icon" style={{ background: 'rgba(255, 195, 0, 0.1)' }}>
-                <FiAlertTriangle size={28} color="#B38B00" />
-              </div>
-              <div className="stat-content">
-                <div className="stat-value">0</div>
-                <div className="stat-label">Pending Alerts</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Most Efficient Vehicle Section */}
-        <section style={{ marginBottom: 32 }}>
-          <h2 style={{ margin: '0 0 16px 0' }}>Most Efficient Vehicle</h2>
-          <div className="efficient-vehicle-card">
-            {mostEfficientVehicle ? (
-              <>
-                <div className="efficient-vehicle-badge">
-                  <FaTrophy size={40} color="#FFC300" />
-                </div>
-                <div className="efficient-vehicle-info">
-                  <h3 className="efficient-vehicle-name">{mostEfficientVehicle.vehicleName || 'N/A'}</h3>
-                  <p className="efficient-vehicle-desc">Best mileage per cost ratio</p>
-                  <div className="efficient-vehicle-stats">
-                    <div className="efficient-stat">
-                      <span className="efficient-stat-label">Mileage</span>
-                      <span className="efficient-stat-value">{mostEfficientVehicle.latestMileage?.toLocaleString() || 'N/A'} km</span>
-                    </div>
-                    <div className="efficient-stat">
-                      <span className="efficient-stat-label">Total Service Cost</span>
-                      <span className="efficient-stat-value">₹{mostEfficientVehicle.totalServiceCost?.toLocaleString() || '0'}</span>
-                    </div>
-                    <div className="efficient-stat">
-                      <span className="efficient-stat-label">Cost Efficiency</span>
-                      <span className="efficient-stat-value">₹{mostEfficientVehicle.runningCostPerKm?.toFixed(2) || '0'}/km</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="efficient-vehicle-image">
-                  <img src={mostEfficientVehicle.image || '/vehicle-placeholder.jpg'} alt={mostEfficientVehicle.vehicleName || 'Vehicle'} />
-                </div>
-              </>
-            ) : (
-              <div style={{ textAlign: 'center', color: 'var(--muted)', padding: '40px' }}>
-                <FaCar size={48} style={{ display: 'block', margin: '0 auto 16px auto', opacity: 0.5 }} />
-                <p>Add vehicles to see efficiency metrics</p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* Vehicles Section */}
-        <section style={{ marginBottom: 24 }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <h2 style={{ margin: 0 }}>Vehicles</h2>
-            <a href="/vehicles" className="view-all-btn">
-              View All
-            </a>
-          </div>
-          <div className="vehicle-grid">
-            {vehicles.slice(0, 3).map(v => <VehicleCard key={v.id} vehicle={v} />)}
-            <VehicleCard vehicle={null} onAdd={() => setShowAdd(true)} />
-          </div>
-        </section>
-
-        <section style={{ marginBottom: 24 }}>
-          <div className="documents-header-row">
-            <h2 style={{ margin: 0 }}>Documents</h2>
-            <a href="/documents" className="view-all-btn">View All</a>
-          </div>
-
-          {docs.length > 0 ? (
-            <DocumentsCarousel docs={docs} />
-          ) : (
-            <div style={{
-              padding: 20,
-              textAlign: 'center',
-              color: 'var(--muted)',
-              background: 'var(--card)',
-              borderRadius: 12,
-              border: '1px solid var(--border)'
-            }}>
-              No documents added yet.
-            </div>
-          )}
-        </section>
-
-        {/* Notification Table */}
         <NotificationTable />
       </div>
 

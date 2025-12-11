@@ -1,7 +1,9 @@
 package com.example.backend.serviceImpl;
 
+import com.example.backend.dao.OtpDataDao;
 import com.example.backend.dao.UserDao;
 import com.example.backend.dto.response.UserResponseDTO;
+import com.example.backend.entity.OtpData;
 import com.example.backend.entity.User;
 import com.example.backend.enums.MessageKey;
 import com.example.backend.mapper.UserMapper;
@@ -28,6 +30,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private OtpDataDao otpDataDao;
+
+    @Autowired
+    private EmailServiceImpl emailService;
 
     public UserResponseDTO login(String email, String password) {
         User user = userDao.findByEmail(email);
@@ -76,5 +84,32 @@ public class AuthServiceImpl implements AuthService {
             e.getMessage();
         }
         return userMapper.toResponseDTO(user);
+    }
+
+    @Override
+    public void sendOtp(String email) {
+        Integer otp = generateOtp();
+        emailService.sendSimpleEmail(email, "Sign Up request on Autolog", "Your OTP is " + otp);
+        otpDataDao.save(new OtpData(email, otp));
+    }
+
+    @Override
+    public String verifyOtp(String email, Integer otp) {
+        OtpData  otpData = otpDataDao.findByEmail(email);
+            if(otpData.getOtp().equals(otp))
+            {
+                otpDataDao.delete(otpData);
+                return "verified";
+            }
+            else
+            {
+                otpDataDao.delete(otpData);
+                return "not verified";
+            }
+
+    }
+
+    private Integer generateOtp() {
+        return (int) ((Math.random() * (9999 - 1000)) + 1000);
     }
 }

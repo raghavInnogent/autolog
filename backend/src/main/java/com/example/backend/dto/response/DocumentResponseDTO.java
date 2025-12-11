@@ -9,6 +9,8 @@ import java.time.LocalDate;
 public class DocumentResponseDTO {
     private Integer id;
     private Long vehicleId;
+    private String vehicleCompany;
+    private String vehicleModel;
     @JsonProperty("name")
     private String docName;
     private String type;

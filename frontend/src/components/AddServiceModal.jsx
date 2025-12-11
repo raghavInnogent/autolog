@@ -11,10 +11,7 @@ export default function AddServiceModal({ onClose, onCreated }) {
   const [cost, setCost] = useState('')
   const [type, setType] = useState('')
 
-  // Invoice handling
-  const [invoiceFile, setInvoiceFile] = useState(null)
-  const [invoiceUrl, setInvoiceUrl] = useState('')
-  const [inputMode, setInputMode] = useState('manual') // 'manual' or 'upload'
+
 
   // Service items
   const [servicedItems, setServicedItems] = useState([])
@@ -98,23 +95,12 @@ export default function AddServiceModal({ onClose, onCreated }) {
         perItemPrice: Number(item.perItemPrice)
       }))
 
-      // Determine the invoice value based on input mode
-      let invoiceValue = null
-      if (inputMode === 'manual' && invoiceUrl) {
-        invoiceValue = invoiceUrl
-      } else if (inputMode === 'upload' && invoiceFile) {
-        // For file upload, you might need to handle file upload separately
-        // For now, we'll use the file name or handle it as needed
-        invoiceValue = invoiceFile.name
-      }
-
       const payload = {
         vehicleId: Number(vehicleId),
         dateOfService,
         workshop: workshop || null,
         mileage: mileage ? Number(mileage) : null,
         cost: cost ? Number(cost) : null,
-        invoice: invoiceValue,
         type: type || null,
         servicedItems
       }
@@ -154,13 +140,13 @@ export default function AddServiceModal({ onClose, onCreated }) {
 
         {/* Service Type */}
         <label>Service Type</label>
-        <select value={type} onChange={e => setType(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}>
-          <option value="">Select type</option>
-          <option value="Regular">Regular</option>
-          <option value="Breakdown">Breakdown</option>
-          <option value="Periodic">Periodic</option>
-          <option value="Preventive">Preventive</option>
-        </select>
+        <input
+          type="text"
+          value={type}
+          onChange={e => setType(e.target.value)}
+          placeholder="e.g. Regular, Breakdown, Periodic, Preventive"
+          style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}
+        />
 
         <div style={{ marginTop: 8 }}>
           <label style={{ marginBottom: 8 }}>Service Items</label>
@@ -285,7 +271,7 @@ export default function AddServiceModal({ onClose, onCreated }) {
                           name: customItem.itemName
                         }
 
-                        await categoriesAPI.add(payload)
+                        await categoriesAPI.addServiceCategory(payload)
 
                         const res = await categoriesAPI.getAll()
                         const categories = res.data?.data || res.data || []
@@ -387,64 +373,6 @@ export default function AddServiceModal({ onClose, onCreated }) {
         {/* Cost */}
         <label>Cost (₹)</label>
         <input type="number" value={cost} onChange={e => setCost(e.target.value)} style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }} />
-
-        {/* Invoice Input - Toggle between Manual and Upload */}
-        <label style={{ marginTop: 12 }}>Invoice</label>
-        <div style={{ display: 'flex', gap: 8, marginTop: 6, marginBottom: 12 }}>
-          <button
-            type="button"
-            onClick={() => setInputMode('manual')}
-            style={{
-              flex: 1,
-              padding: 8,
-              borderRadius: 6,
-              border: `2px solid ${inputMode === 'manual' ? 'var(--primary)' : 'var(--border)'}`,
-              background: inputMode === 'manual' ? 'var(--primary)' : 'var(--card)',
-              color: inputMode === 'manual' ? 'white' : 'var(--text)',
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: 500
-            }}
-          >
-            Manual URL
-          </button>
-          <button
-            type="button"
-            onClick={() => setInputMode('upload')}
-            style={{
-              flex: 1,
-              padding: 8,
-              borderRadius: 6,
-              border: `2px solid ${inputMode === 'upload' ? 'var(--primary)' : 'var(--border)'}`,
-              background: inputMode === 'upload' ? 'var(--primary)' : 'var(--card)',
-              color: inputMode === 'upload' ? 'white' : 'var(--text)',
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: 500
-            }}
-          >
-            Upload File
-          </button>
-        </div>
-
-        {inputMode === 'manual' && (
-          <input
-            type="url"
-            value={invoiceUrl}
-            onChange={e => setInvoiceUrl(e.target.value)}
-            placeholder="https://example.com/invoice.pdf"
-            style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}
-          />
-        )}
-
-        {inputMode === 'upload' && (
-          <input
-            type="file"
-            onChange={e => setInvoiceFile(e.target.files?.[0] || null)}
-            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-            style={{ width: '100%', padding: 10, marginTop: 6, borderRadius: 8, border: '1px solid var(--border)' }}
-          />
-        )}
 
         {/* Buttons */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 16 }}>

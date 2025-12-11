@@ -78,7 +78,7 @@ export default function NotificationTable() {
   return (
     <section className="notification-table-section" id="notifications">
       <div className="notification-table-header">
-        <h2 style={{ margin: 0 }}>Upcoming Notifications</h2>
+        <h2 style={{ margin: 0 }}>Upcoming Repairs</h2>
         <button
           className="notification-table-refresh-btn"
           onClick={handleRefresh}

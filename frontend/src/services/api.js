@@ -42,6 +42,7 @@ export const servicesAPI = {
 export const categoriesAPI = {
   getAll: () => api.get('/categories/getAll'),
   add: (data) => api.post('/categories/addCategory', data),
+  addServiceCategory: (data) => api.post('/categories/addNewServiceCategory', data),
   update: (id, data) => api.put(`/categories/updateCategory/${id}`, data),
   delete: (id) => api.delete(`/categories/deleteCategory/${id}`),
 }
@@ -71,6 +72,8 @@ export const authAPI = {
   login: (email, password) => api.post('/auth/login', { email, password }),
   logout: () => api.post('/auth/logout'),
   getCurrentUser: () => api.get('/auth/getCurrentUser'),
+  sendOtp: (email) => api.post(`/auth/sendOtp?email=${encodeURIComponent(email)}`),
+  verifyOtp: (email, otp) => api.get(`/auth/verifyOtp?email=${encodeURIComponent(email)}&otp=${otp}`),
 }
 
 export const usersAPI = {

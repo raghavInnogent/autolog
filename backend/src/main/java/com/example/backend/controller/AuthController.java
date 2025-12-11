@@ -6,6 +6,7 @@ import com.example.backend.security.JwtUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,6 +31,19 @@ public class AuthController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/sendOtp")
+    public ResponseEntity<Void> sendOtp(@RequestParam String email){
+        authService.sendOtp(email);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/verifyOtp")
+    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam Integer otp){
+        String response = authService.verifyOtp(email,otp);
+        return response.equals("verified")? ResponseEntity.ok(response): ResponseEntity.badRequest().body(response);
+    }
+
+
     @GetMapping("/getCurrentUser")
     public ResponseEntity<UserResponseDTO> getCurrentUser(){
         return ResponseEntity.ok(authService.getCurrentUser());
@@ -39,6 +53,7 @@ public class AuthController {
         public String email;
         public String password;
     }
+
 
     public static class AuthResponse{
         public String token;

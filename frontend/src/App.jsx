@@ -6,6 +6,7 @@ import VehiclesPage from './pages/VehiclesPage'
 import VehicleDetailsPage from './pages/VehicleDetailsPage'
 import DocumentsPage from './pages/DocumentsPage'
 import ServicingsPage from './pages/ServicingsPage'
+import ServiceDetailsPage from './pages/ServiceDetailsPage'
 import AnalysisPage from './pages/AnalysisPage'
 import CompareVehiclesPage from './pages/CompareVehiclesPage'
 import LoginPage from './pages/LoginPage'
@@ -29,6 +30,7 @@ function App() {
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/register" element={<SignupPage />} />
 
               <Route element={<ProtectedRoute />}>
                 <Route path="/home" element={<UserHomePage />} />
@@ -37,6 +39,7 @@ function App() {
                 <Route path="/documents" element={<DocumentsPage />} />
                 <Route path="/documents/:type" element={<DocumentsPage />} />
                 <Route path="/servicings" element={<ServicingsPage />} />
+                <Route path="/services/:id" element={<ServiceDetailsPage />} />
                 <Route path="/analysis" element={<AnalysisPage />} />
                 <Route path="/compare-vehicles" element={<CompareVehiclesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />

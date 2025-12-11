@@ -135,9 +135,9 @@
 .view-servicings-btn {
     width: 100%;
     padding: 12px 16px;
-    background: #FFC300;
-    color: #22577A;
-    border: none;
+    background: #22577A;
+    color: #FFC300;
+    border: 1px solid #22577A;
     border-radius: 8px;
     font-weight: 700;
     font-size: 14px;
@@ -151,7 +151,9 @@
 .view-servicings-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    background: #FFD633;
+    background: #FFC300;
+    color: #22577A;
+    border-color: #FFC300;
 }
 
 .view-servicings-btn:active {

@@ -26,6 +26,8 @@ public class ServicedItems {
 
     private Integer quantity;
 
+    private String categoryName;
+
     private Integer costPerItem;
 }
 

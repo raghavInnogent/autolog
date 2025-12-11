@@ -8,7 +8,9 @@ public class ServicedItemResponseDTO {
 
     private Long id;
 
-    private Long serviceCategoryId;
+    private Long categoryId;
+
+    private String categoryName;
     
     private LocalDate expirationDate;
 

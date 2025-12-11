@@ -20,6 +20,17 @@
     box-shadow: 0 10px 30px rgba(2, 6, 23, 0.25);
     max-height: 90vh;
     overflow-y: auto;
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+}
+
+.add-service-modal form::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 .add-service-modal h3 {

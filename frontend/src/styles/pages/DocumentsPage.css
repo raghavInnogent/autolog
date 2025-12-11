@@ -83,9 +83,9 @@
 .view-doc-btn {
     width: 100%;
     padding: 10px;
-    background: transparent;
-    border: 1px solid var(--primary);
-    color: var(--primary);
+    background: #22577A;
+    border: 1px solid #22577A;
+    color: #FFC300;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
@@ -96,8 +96,9 @@
 }
 
 .view-doc-btn:hover {
-    background: var(--primary);
-    color: white;
+    background: #FFC300;
+    color: #22577A;
+    border-color: #FFC300;
 }
 
 .empty-state {

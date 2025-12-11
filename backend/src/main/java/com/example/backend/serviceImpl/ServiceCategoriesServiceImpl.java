@@ -76,17 +76,27 @@ public class ServiceCategoriesServiceImpl implements ServiceCategoriesService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, MessageKey.CATEGORY_ALREADY_EXISTS.name());
             }
 
+
             String prompt = String.format("""
-                    Given the automotive part or service item name below, 
-                    return ONLY the typical replacement interval in months as a single integer number. 
-                    If the item is a service/labor/washing or doesn't have a replacement interval, return 0. 
+                    Given the automotive part or service item name below,
+                    return ONLY the typical replacement interval in months as a single integer number.
+                    If the item is a service/labor/washing or doesn't have a replacement interval, return 0.
                     No explanations, no text, just the number.
                     Item: %s
                     """, dto.getName());
 
 
             Integer expiry = Integer.parseInt(groq.askGroq(prompt).block());
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println(dto.getExpiryInMonths());
             System.out.println("expiry : " + expiry);
+            System.out.println();
+            System.out.println();
+            System.out.println();
+            System.out.println();
             dto.setExpiryInMonths(expiry);
 
             ServiceCategories serviceCategories = serviceCategoriesMapper.toEntity(dto);

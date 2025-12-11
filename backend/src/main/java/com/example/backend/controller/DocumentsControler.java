@@ -3,6 +3,8 @@ package com.example.backend.controller;
 import com.example.backend.dto.request.DocumentRequestDTO;
 import com.example.backend.dto.response.DocumentResponseDTO;
 import com.example.backend.service.DocumentService;
+import com.example.backend.service.OcrService;
+import com.example.backend.serviceImpl.CloudinaryServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +23,8 @@ public class DocumentsControler {
     @Autowired
     private DocumentService documentService;
     @Autowired
-    private  CloudinaryController cloudinaryController;
+    CloudinaryServiceImpl cloudinaryService;
+
     @Autowired
     private OcrController ocrController;
 
@@ -29,11 +32,17 @@ public class DocumentsControler {
     public ResponseEntity<DocumentResponseDTO> uploadDocument(
             @RequestPart("file") MultipartFile file,
             @Valid @RequestPart("document") DocumentRequestDTO document) {
-    	  ocrController.extract(file);//calling OCR
-        String imageAddress = cloudinaryController.uploadFileToCloudinary(file, "documents");
-        System.out.println(imageAddress);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(documentService.uploadDocument(document));
+        try {
+            String imageAddress = cloudinaryService.uploadFile(file, "documents");
+            System.out.println(imageAddress);
+            document.setDocImage(imageAddress);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(documentService.uploadDocument(document));
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
     }
 
     @GetMapping("/getAllDocuments")

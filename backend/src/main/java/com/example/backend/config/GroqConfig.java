@@ -1,5 +1,6 @@
 package com.example.backend.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -7,10 +8,13 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class GroqConfig {
 
+    @Value("${groq.api.url}")
+    private String url;
+
     @Bean
     public WebClient groqClient() {
         return WebClient.builder()
-                .baseUrl("https://api.groq.com/openai/v1")
+                .baseUrl(url)
                 .build();
     }
 }

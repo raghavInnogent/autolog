@@ -8,4 +8,8 @@ public interface AuthService {
     UserResponseDTO login(String email, String password);
     void logout();
     UserResponseDTO getCurrentUser();
+
+    void sendOtp(String email);
+
+    String verifyOtp(String email, Integer otp);
 }

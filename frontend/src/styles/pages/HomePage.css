@@ -6,7 +6,7 @@
 .hero-banner {
     position: relative;
     width: 100%;
-    height: 700px;
+    height: 550px;
     overflow: hidden;
 }
 
@@ -38,65 +38,116 @@
 .hero-content-wrapper {
     position: relative;
     z-index: 2;
-    height: 100%;
+    height: auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     padding: 40px 60px;
-    gap: 40px;
+    gap: 10px;
+}
+
+/* Hero Section Items - 3 Equal Sections */
+.hero-section-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 450px;
+}
+
+.hero-section-title {
+    color: #FFFFFF;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    margin: 0;
+    width: 100%;
 }
 
 .hero-chart-container {
     flex: 1;
-    max-width: 800px;
+    max-width: 450px;
     position: relative;
     width: 100%;
-    height: 100vh;
-    overflow: hidden;
-    margin-left: 110px;
-    margin-top: 90px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+    margin-left: -60px;
 }
 
 .hero-chart-title {
     color: #FFFFFF;
-    font-size: 2rem;
+    font-size: 1.75rem;
+    /* Reverted to original */
     font-weight: 700;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     position: relative;
     z-index: 10;
-    top: 90px;
-    left: 80px;
+    margin-bottom: 20px;
+    /* Space between title and chart */
+    top: 0;
+    /* Reset */
+    text-align: center;
 }
 
 .hero-chart {
-    width: 750px;
-    height: 750px;
+    width: 100%;
+    max-width: 380px;
+    height: 380px;
     position: relative;
-    z-index: 5;
-    top: 0;
-    margin-left: 70px;
-    margin-top: -60px;
+    margin-left: -60px;
 }
 
 .hero-actions {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    min-width: 420px;
-    margin-right: 150px;
+    min-width: 300px;
+}
+
+.quick-links-section {
+    margin-top: 30px;
+    width: 100%;
+}
+
+/* Align second quick-links section without title */
+.quick-links-section:not(:has(.quick-links-title)) {
+    margin-top: 72px;
+    /* 30px + 1.3rem title height + 12px title margin */
+}
+
+.quick-links-title {
+    color: #FFC300;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+}
+
+.quick-links-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
 }
 
 .hero-action-btn {
     background: #FFC300;
     color: #22577A;
     border: none;
-    padding: 24px 40px;
-    border-radius: 12px;
-    font-size: 1.65rem;
+    padding: 20px 20px;
+    border-radius: 6px;
+    font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(255, 195, 0, 0.3);
+    flex: 1;
 }
 
 .hero-action-btn:hover {
@@ -120,66 +171,51 @@
 /* Quick Stats Section */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-}
-
-.stat-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    display: flex;
+    grid-template-columns: auto auto auto;
+    row-gap: 25px;
+    column-gap: 5px;
+    width: 100%;
+    margin-top: 30px;
     align-items: center;
-    gap: 16px;
-    transition: all 0.3s ease;
 }
 
-.stat-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
-    border-color: var(--accent);
+.stat-item {
+    display: contents;
 }
 
-.stat-icon {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
+.stat-item svg {
+    justify-self: start;
 }
 
-.stat-content {
-    flex: 1;
+.stat-text {
+    display: contents;
 }
 
-.stat-value {
-    font-size: 2rem;
+.stat-description {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+    justify-self: start;
+}
+
+.stat-number {
+    font-size: 1.5rem;
     font-weight: 700;
-    color: var(--nav-title);
+    color: #FFFFFF;
     line-height: 1;
-    margin-bottom: 4px;
 }
 
-.stat-label {
-    font-size: 0.875rem;
-    color: var(--muted);
-    font-weight: 500;
-}
-
-/* Most Efficient Vehicle Section */
 .efficient-vehicle-card {
-    background: linear-gradient(135deg, #22577A 0%, #1A4560 100%);
-    border-radius: 16px;
-    padding: 32px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
     display: flex;
-    align-items: center;
-    gap: 32px;
+    flex-direction: column;
+    gap: 24px;
     position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 24px rgba(34, 87, 122, 0.2);
+    overflow: visible;
+    box-shadow: none;
+    width: 100%;
 }
 
 .efficient-vehicle-card::before {
@@ -191,6 +227,13 @@
     height: 400px;
     background: radial-gradient(circle, rgba(255, 195, 0, 0.15) 0%, transparent 70%);
     border-radius: 50%;
+}
+
+.efficient-vehicle-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    z-index: 1;
 }
 
 .efficient-vehicle-badge {
@@ -205,46 +248,51 @@
     box-shadow: 0 4px 16px rgba(255, 195, 0, 0.3);
 }
 
-.efficient-vehicle-info {
+.efficient-vehicle-title {
     flex: 1;
-    z-index: 1;
-}
-
-.efficient-vehicle-name {
-    color: #FFC300;
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-}
-
-.efficient-vehicle-desc {
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 1rem;
-    margin: 0 0 20px 0;
-}
-
-.efficient-vehicle-stats {
-    display: flex;
-    gap: 32px;
-    flex-wrap: wrap;
-}
-
-.efficient-stat {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
+.efficient-vehicle-name {
+    color: #FFC300;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.efficient-vehicle-desc {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.efficient-vehicle-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 1;
+}
+
+.efficient-stat-line {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
 .efficient-stat-label {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    font-weight: 400;
 }
 
 .efficient-stat-value {
     color: #FFFFFF;
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.1rem;
+    font-weight: 600;
 }
 
 .efficient-vehicle-image {
@@ -272,21 +320,21 @@
 }
 
 .view-all-btn {
-    color: var(--nav-title);
+    background: #22577A;
+    color: #FFC300;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
     padding: 8px 16px;
     border-radius: 8px;
-    border: 1px solid var(--border);
+    border: 1px solid #22577A;
     transition: all 0.2s ease;
-    background: var(--card);
 }
 
 .view-all-btn:hover {
-    background: var(--accent);
+    background: #FFC300;
     color: #22577A;
-    border-color: var(--accent);
+    border-color: #FFC300;
     transform: translateX(4px);
 }
 
@@ -310,8 +358,8 @@
     }
 
     .hero-chart {
-        width: 600px;
-        height: 600px;
+        width: 300px;
+        height: 300px;
     }
 
     .hero-actions {
@@ -330,10 +378,14 @@
 @media (max-width: 768px) {
     .hero-banner {
         height: 500px;
+        /* Keep banner height */
     }
 
     .hero-content-wrapper {
         padding: 24px;
+        flex-direction: column;
+        /* Ensure column layout on mobile */
+        justify-content: center;
     }
 
     .hero-chart-title {
@@ -341,13 +393,26 @@
     }
 
     .hero-chart {
-        width: 450px;
-        height: 450px;
+        width: 280px;
+        height: 280px;
     }
 
     .stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 16px;
+        gap: 12px;
+        max-width: 280px;
+    }
+
+    .stat-card {
+        padding: 14px 16px;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
     }
 
     .efficient-vehicle-card {
@@ -373,7 +438,8 @@
 
 @media (max-width: 480px) {
     .hero-banner {
-        height: 420px;
+        height: 480px;
+        /* Adjusted height */
     }
 
     .hero-chart-title {
@@ -381,8 +447,8 @@
     }
 
     .hero-chart {
-        width: 320px;
-        height: 320px;
+        width: 250px;
+        height: 250px;
     }
 
     .hero-actions {
@@ -394,7 +460,21 @@
     }
 
     .stats-grid {
-        grid-template-columns: 1fr;
+        gap: 10px;
+        max-width: 260px;
+    }
+
+    .stat-card {
+        padding: 12px 14px;
+    }
+
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .stat-value {
+        font-size: 1.25rem;
     }
 
     .efficient-vehicle-stats {

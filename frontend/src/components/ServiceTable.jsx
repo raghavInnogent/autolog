@@ -1,34 +1,85 @@
 import React, { useEffect, useState } from 'react'
-import { servicesAPI } from '../services/api'
+import { useNavigate } from 'react-router-dom'
+import { servicesAPI, vehiclesAPI } from '../services/api'
 import AddServiceModal from './AddServiceModal'
 import InvoiceUploadModal from './InvoiceUploadModal'
 import ConfirmServiceModal from './ConfirmServiceModal'
 import '../styles/components/ServiceTable.css'
 
 export default function ServiceTable() {
-  const [rows, setRows] = useState([])
+  const [allRows, setAllRows] = useState([]) // Store all services
+  const [rows, setRows] = useState([]) // Filtered services to display
   const [loading, setLoading] = useState(false)
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
+  const [vehicleId, setVehicleId] = useState('')
+  const [vehicles, setVehicles] = useState([])
   const [openAdd, setOpenAdd] = useState(false)
   const [openUpload, setOpenUpload] = useState(false)
   const [confirmData, setConfirmData] = useState(null)
+  const navigate = useNavigate()
 
-  const fetch = async () => {
-    setLoading(true)
+  const fetchVehicles = async () => {
     try {
-      const params = {}
-      if (from) params.from = from
-      if (to) params.to = to
-      const res = await servicesAPI.getAll(params)
-      setRows(res.data || [])
-    } catch (err) { console.error(err) } finally { setLoading(false) }
+      const res = await vehiclesAPI.getAll()
+      setVehicles(res.data || [])
+    } catch (err) {
+      console.error('Error fetching vehicles:', err)
+    }
   }
 
-  useEffect(() => { fetch() }, [])
+  const fetchAllServices = async () => {
+    setLoading(true)
+    try {
+      const res = await servicesAPI.getAll({})
+      const services = res.data || []
+      setAllRows(services)
+      setRows(services) // Initially show all
+    } catch (err) {
+      console.error('Fetch error:', err)
+    } finally { setLoading(false) }
+  }
 
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(amount || 0)
+  // Client-side filter function
+  const applyFilters = () => {
+    let filtered = [...allRows]
+
+    // Filter by vehicle
+    if (vehicleId) {
+      filtered = filtered.filter(service =>
+        service.vehicle?.id === parseInt(vehicleId)
+      )
+    }
+
+    // Filter by date range
+    if (from) {
+      filtered = filtered.filter(service => {
+        const serviceDate = service.dateOfService || service.date
+        return serviceDate >= from
+      })
+    }
+
+    if (to) {
+      filtered = filtered.filter(service => {
+        const serviceDate = service.dateOfService || service.date
+        return serviceDate <= to
+      })
+    }
+
+    console.log('Filtered results:', filtered.length, 'out of', allRows.length)
+    setRows(filtered)
+  }
+
+  useEffect(() => {
+    fetchVehicles()
+    fetchAllServices()
+  }, [])
+
+  const getVehicleName = (service) => {
+    if (service.vehicle) {
+      return `${service.vehicle.company || ''} ${service.vehicle.model || ''}`.trim() || 'Unknown Vehicle'
+    }
+    return 'Unknown Vehicle'
   }
 
   const handleDataExtracted = (data) => {
@@ -42,11 +93,20 @@ export default function ServiceTable() {
     <div className="service-table">
       <div className="service-filters">
         <div className="filter-group">
+          <label>Vehicle</label>
+          <select value={vehicleId} onChange={e => setVehicleId(e.target.value)}>
+            <option value="">All Vehicles</option>
+            {vehicles.map(v => (
+              <option key={v.id} value={v.id}>
+                {v.company} {v.model} - {v.registrationNumber}
+              </option>
+            ))}
+          </select>
           <label>From</label>
           <input type="date" value={from} onChange={e => setFrom(e.target.value)} />
           <label>To</label>
           <input type="date" value={to} onChange={e => setTo(e.target.value)} />
-          <button className="navy-btn" onClick={fetch}>Filter</button>
+          <button className="navy-btn" onClick={applyFilters}>Filter</button>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
           <button className="navy-btn" onClick={() => setOpenUpload(true)}>📄 Upload Invoice</button>
@@ -64,30 +124,25 @@ export default function ServiceTable() {
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Type</th>
-                <th>Items</th>
+                <th>Vehicle</th>
                 <th>Workshop</th>
-                <th>Mileage</th>
-                <th>Cost</th>
-                <th>Invoice</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r, i) => (
                 <tr key={i}>
-                  <td>{r.date}</td>
-                  <td>{r.type || '-'}</td>
+                  <td>{r.dateOfService || r.date || '-'}</td>
+                  <td>{getVehicleName(r)}</td>
+                  <td>{r.workshop || '-'}</td>
                   <td>
-                    {r.items ? (
-                      Array.isArray(r.items)
-                        ? r.items.map(item => item.name || item).join(', ')
-                        : r.items
-                    ) : '-'}
+                    <button
+                      className="view-link"
+                      onClick={() => navigate(`/services/${r.id}`)}
+                    >
+                      View Details
+                    </button>
                   </td>
-                  <td>{r.workshop}</td>
-                  <td>{r.mileage ? `${r.mileage} km` : '-'}</td>
-                  <td className="service-cost">{formatCurrency(r.cost)}</td>
-                  <td>{r.invoice ? <a href={r.invoice} target="_blank" rel="noopener noreferrer" className="view-link">View</a> : '-'}</td>
                 </tr>
               ))}
             </tbody>
@@ -95,9 +150,9 @@ export default function ServiceTable() {
         </div>
       )}
 
-      {openAdd && <AddServiceModal onClose={() => setOpenAdd(false)} onCreated={fetch} />}
+      {openAdd && <AddServiceModal onClose={() => setOpenAdd(false)} onCreated={fetchAllServices} />}
       {openUpload && <InvoiceUploadModal onClose={() => setOpenUpload(false)} onDataExtracted={handleDataExtracted} />}
-      {confirmData && <ConfirmServiceModal data={confirmData} onClose={() => setConfirmData(null)} onCreated={fetch} />}
+      {confirmData && <ConfirmServiceModal data={confirmData} onClose={() => setConfirmData(null)} onCreated={fetchAllServices} />}
     </div>
   )
 }

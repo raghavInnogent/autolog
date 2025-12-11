@@ -60,8 +60,6 @@ public class Notification {
     @Column(name = "read_status", nullable = false)
     private ReadStatus readStatus;
 
-
-
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 

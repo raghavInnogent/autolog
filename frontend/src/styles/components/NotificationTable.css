@@ -10,9 +10,9 @@
 }
 
 .notification-table-refresh-btn {
-  background: var(--card);
-  color: var(--nav-title);
-  border: 1px solid var(--border);
+  background: #22577A;
+  color: #FFC300;
+  border: 1px solid #22577A;
   padding: 8px 16px;
   border-radius: 8px;
   font-weight: 600;

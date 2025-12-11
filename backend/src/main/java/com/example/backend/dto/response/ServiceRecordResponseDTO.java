@@ -1,5 +1,6 @@
 package com.example.backend.dto.response;
 
+import com.example.backend.dto.summary.VehicleSummaryDTO;
 import lombok.Data;
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +10,7 @@ public class ServiceRecordResponseDTO {
 
     private Long id;
 
-    private Long vehicleId;
+    private VehicleSummaryDTO vehicle;
 
     private Integer cost;
 

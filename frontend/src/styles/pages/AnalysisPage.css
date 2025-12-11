@@ -53,9 +53,9 @@
 }
 
 .compare-btn {
-    background: #FFC300;
-    color: #22577A;
-    border: none;
+    background: #22577A;
+    color: #FFC300;
+    border: 1px solid #22577A;
     padding: 12px 28px;
     border-radius: 8px;
     font-size: 15px;
@@ -66,7 +66,9 @@
 }
 
 .compare-btn:hover {
-    background: #ffcd33;
+    background: #FFC300;
+    color: #22577A;
+    border-color: #FFC300;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(255, 195, 0, 0.3);
 }

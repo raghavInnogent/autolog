@@ -10,7 +10,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = VehicleMapper.class)
 @Component
 public interface ServiceRecordMapper {
 
@@ -21,12 +21,13 @@ public interface ServiceRecordMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "expirationDate", ignore = true)
+    @Mapping(target = "categoryName", ignore = true)
     @Mapping(target = "serviceCategoryId", source = "serviceCategoryId")
     ServicedItems toServicedItemEntity(ServicedItemRequestDTO dto);
 
-    @Mapping(target = "vehicleId", source = "vehicle.id")
     ServiceRecordResponseDTO toResponseDTO(ServiceRecord entity);
 
-    @Mapping(target = "serviceCategoryId", source = "serviceCategoryId")
+    @Mapping(target = "categoryId", source = "serviceCategoryId")
+    @Mapping(target = "categoryName", source = "categoryName")
     ServicedItemResponseDTO toServicedItemResponseDTO(ServicedItems entity);
 }

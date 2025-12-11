@@ -14,6 +14,7 @@ export default function CompareVehiclesPage() {
 
     const [selectedId1, setSelectedId1] = useState('')
     const [selectedId2, setSelectedId2] = useState('')
+    const [typeError, setTypeError] = useState('')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -132,12 +133,15 @@ export default function CompareVehiclesPage() {
                     <div className="custom-select-wrapper">
                         <select
                             value={selectedId1}
-                            onChange={(e) => setSelectedId1(e.target.value)}
+                            onChange={(e) => {
+                                setSelectedId1(e.target.value)
+                                setTypeError('')
+                            }}
                         >
                             <option value="">Select a vehicle</option>
                             {vehicles.map(v => (
                                 <option key={v.id} value={v.id} disabled={Number(v.id) === Number(selectedId2)}>
-                                    {v.company} {v.model} ({v.registrationNumber})
+                                    {v.company} {v.model} ({v.registrationNumber}) - {v.type}
                                 </option>
                             ))}
                         </select>
@@ -153,11 +157,20 @@ export default function CompareVehiclesPage() {
                         onChange={(e) => setSelectedId2(e.target.value)}
                     >
                         <option value="">Select a vehicle</option>
-                        {vehicles.map(v => (
-                            <option key={v.id} value={v.id} disabled={Number(v.id) === Number(selectedId1)}>
-                                {v.company} {v.model} ({v.registrationNumber})
-                            </option>
-                        ))}
+                        {vehicles
+                            .filter(v => {
+                                // If no vehicle 1 selected, show all
+                                if (!selectedId1) return true
+                                // Otherwise, only show vehicles of the same type
+                                const vehicle1 = vehicles.find(v1 => v1.id === Number(selectedId1))
+                                return vehicle1 && v.type === vehicle1.type && Number(v.id) !== Number(selectedId1)
+                            })
+                            .map(v => (
+                                <option key={v.id} value={v.id}>
+                                    {v.company} {v.model} ({v.registrationNumber}) - {v.type}
+                                </option>
+                            ))
+                        }
                     </select>
                 </div>
             </div>

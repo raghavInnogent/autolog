@@ -2,6 +2,7 @@ package com.example.backend.serviceImpl;
 
 import com.example.backend.dto.request.GroqRequestDTO;
 import com.example.backend.dto.response.GroqResponseDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,13 +18,8 @@ public class GroqService {
     @Value("${groq.api.key}")
     private String apiKey;
 
-    private final WebClient client;
-
-    public GroqService(WebClient.Builder builder) {
-        this.client = builder
-                .baseUrl("https://api.groq.com/openai/v1")
-                .build();
-    }
+    @Autowired
+    private WebClient client;
 
     public Mono<String> askGroq(String prompt) {
 
