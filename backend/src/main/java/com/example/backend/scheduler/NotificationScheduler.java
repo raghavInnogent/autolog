@@ -24,7 +24,7 @@ public class NotificationScheduler {
     private final UserDao userDao;
 
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 1 * * *")
     @Transactional
     public void markExpiredNotificationsAsInactive() {
         log.info("Starting scheduled job: Mark Expired Notifications as INACTIVE");

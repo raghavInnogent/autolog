@@ -39,26 +39,6 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
     @Autowired
     private ServiceCategoriesDao serviceCategoriesDao;
 
-    private PrematureItemResponseDto convertToResponseDTO(PrematureServiceItem item) {
-        String vehicleName = "Unknown";
-        if (item.getVehicleId() != null) {
-            Vehicle vehicle = vehicleDao.findById(item.getVehicleId()).orElse(null);
-            if (vehicle != null) {
-                vehicleName = vehicle.getModel();
-            }
-        }
-
-        String categoryName = "Unknown";
-        if (item.getCategoryId() != null) {
-            ServiceCategories category = serviceCategoriesDao.findById(item.getCategoryId());
-            if (category != null) {
-                categoryName = category.getName();
-            }
-        }
-
-        return prematureServiceItemMapper.toResponseDTO(item, vehicleName, categoryName);
-    }
-
     @Override
     public ResponseEntity<PrematureItemResponseDto> savePrematureItem(PrematureServiceItemRequestDto itemDto) {
         if (itemDto == null) {
@@ -74,27 +54,9 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "userId, vehicleId, and categoryId are required");
         }
 
-        if (itemDto.getPrematureCount() < 0) {
-            log.error("Invalid premature count: {}", itemDto.getPrematureCount());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Premature count cannot be negative");
-        }
-
-        Vehicle vehicle = vehicleDao.findById(itemDto.getVehicleId())
-                .orElseThrow(() -> {
-                    log.error("Vehicle not found with id: {}", itemDto.getVehicleId());
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name());
-                });
-
-        if (!vehicle.getOwner().getId().equals(itemDto.getUserId())) {
-            log.error("Vehicle {} does not belong to user {}", itemDto.getVehicleId(), itemDto.getUserId());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vehicle does not belong to this user");
-        }
-
-        ServiceCategories category = serviceCategoriesDao.findById(itemDto.getCategoryId());
-        if (category == null) {
-            log.error("Category not found with id: {}", itemDto.getCategoryId());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-        }
+        validatePrematureCount(itemDto.getPrematureCount());
+        validateVehicleOwnership(itemDto.getVehicleId(), itemDto.getUserId());
+        validateCategoryExists(itemDto.getCategoryId());
 
         PrematureServiceItem prematureItem = prematureServiceItemMapper.toEntity(itemDto);
         PrematureServiceItem savedItem = prematureServiceItemDao.save(prematureItem);
@@ -109,10 +71,7 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
     public ResponseEntity<PrematureItemResponseDto> updatePrematureItem(PrematureServiceItemRequestDto itemDto) {
         log.info("Updating premature item for categoryId: {}", itemDto.getCategoryId());
 
-        if (itemDto.getPrematureCount() < 0) {
-            log.error("Invalid premature count: {}", itemDto.getPrematureCount());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Premature count cannot be negative");
-        }
+        validatePrematureCount(itemDto.getPrematureCount());
 
         PrematureServiceItem existingItem = prematureServiceItemDao.findByCategoryId(itemDto.getCategoryId())
                 .orElseThrow(() -> {
@@ -120,22 +79,8 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "Premature service item not found");
                 });
 
-        Vehicle vehicle = vehicleDao.findById(itemDto.getVehicleId())
-                .orElseThrow(() -> {
-                    log.error("Vehicle not found with id: {}", itemDto.getVehicleId());
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name());
-                });
-
-        if (!vehicle.getOwner().getId().equals(itemDto.getUserId())) {
-            log.error("Vehicle {} does not belong to user {}", itemDto.getVehicleId(), itemDto.getUserId());
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vehicle does not belong to this user");
-        }
-
-        ServiceCategories category = serviceCategoriesDao.findById(itemDto.getCategoryId());
-        if (category == null) {
-            log.error("Category not found with id: {}", itemDto.getCategoryId());
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
-        }
+        validateVehicleOwnership(itemDto.getVehicleId(), itemDto.getUserId());
+        validateCategoryExists(itemDto.getCategoryId());
 
         existingItem.setUserId(itemDto.getUserId());
         existingItem.setVehicleId(itemDto.getVehicleId());
@@ -270,5 +215,53 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
 
         log.info("Found {} premature items for userId: {} and vehicleId: {}", responseDtos.size(), userId, vehicleId);
         return ResponseEntity.ok(responseDtos);
+    }
+
+    private PrematureItemResponseDto convertToResponseDTO(PrematureServiceItem item) {
+        String vehicleName = "Unknown";
+        if (item.getVehicleId() != null) {
+            Vehicle vehicle = vehicleDao.findById(item.getVehicleId()).orElse(null);
+            if (vehicle != null) {
+                vehicleName = vehicle.getModel();
+            }
+        }
+
+        String categoryName = "Unknown";
+        if (item.getCategoryId() != null) {
+            ServiceCategories category = serviceCategoriesDao.findById(item.getCategoryId());
+            if (category != null) {
+                categoryName = category.getName();
+            }
+        }
+
+        return prematureServiceItemMapper.toResponseDTO(item, vehicleName, categoryName);
+    }
+
+    private void validateVehicleOwnership(Long vehicleId, Long userId) {
+        Vehicle vehicle = vehicleDao.findById(vehicleId)
+                .orElseThrow(() -> {
+                    log.error("Vehicle not found with id: {}", vehicleId);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.VEHICLE_NOT_FOUND.name());
+                });
+
+        if (!vehicle.getOwner().getId().equals(userId)) {
+            log.error("Vehicle {} does not belong to user {}", vehicleId, userId);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vehicle does not belong to this user");
+        }
+    }
+
+    private void validateCategoryExists(Long categoryId) {
+        ServiceCategories category = serviceCategoriesDao.findById(categoryId);
+        if (category == null) {
+            log.error("Category not found with id: {}", categoryId);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
+        }
+    }
+
+    private void validatePrematureCount(int count) {
+        if (count < 0) {
+            log.error("Invalid premature count: {}", count);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Premature count cannot be negative");
+        }
     }
 }

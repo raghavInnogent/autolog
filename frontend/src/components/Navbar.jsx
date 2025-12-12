@@ -8,7 +8,7 @@ import '../styles/components/Navbar.css'
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const { isAuth, logout } = useAuth()
+  const { isAuth, logout, user } = useAuth()
   const nav = useNavigate()
   const menuRef = useRef()
 
@@ -34,7 +34,7 @@ export default function Navbar() {
         </Link>
 
         <nav className="nav-links">
-          {isAuth && (!useAuth().user?.role || useAuth().user?.role !== 'ADMIN') ? (
+          {isAuth && (!user?.role || user?.role !== 'ADMIN') ? (
             <>
               <NavLink to="/home" className="nav-link">Dashboard</NavLink>
               <NavLink to="/vehicles" className="nav-link">Vehicles</NavLink>

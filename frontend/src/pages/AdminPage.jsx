@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import useAuth from '../hooks/useAuth'
-import { adminAPI, categoriesAPI } from '../services/api'
+import { adminAPI, categoriesAPI, prematureAPI } from '../services/api'
 import { Plus, Edit, Trash2, Search, X } from 'lucide-react'
 import '../styles/components/AdminPage.css'
 
@@ -31,6 +31,7 @@ function AdminPage() {
     const [editingCategory, setEditingCategory] = useState(null)
     const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
     const [categoryForm, setCategoryForm] = useState({ name: '', description: '', expiryInMonths: '' })
+    const [prematureCounts, setPrematureCounts] = useState({})
 
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
@@ -41,8 +42,28 @@ function AdminPage() {
 
     useEffect(() => {
         if (activeTab === 'users') filterUsers()
-        else if (activeTab === 'categories') filterCategories()
+        else if (activeTab === 'categories') {
+            filterCategories()
+            fetchPrematureCounts()
+        }
     }, [userSearch, categorySearch, users, categories, activeTab])
+
+    async function fetchPrematureCounts() {
+        if (categories.length === 0) return
+        const counts = {}
+        // We can fetch individually or optimize. For now, Promise.all is fine for small number of categories.
+        // Or if the list is large, we might want to do it in batches or lazy load. 
+        // Given instructions, this is acceptable.
+        await Promise.all(categories.map(async (c) => {
+            try {
+                const res = await prematureAPI.getCountByCategory(c.id)
+                counts[c.id] = res.data
+            } catch (e) {
+                counts[c.id] = 0
+            }
+        }))
+        setPrematureCounts(counts)
+    }
 
     async function fetchData() {
         setLoading(true)
@@ -277,6 +298,7 @@ function AdminPage() {
                                         <th>ID</th>
                                         <th>Name</th>
                                         <th>Expiry (Months)</th>
+                                        <th>Prematurity</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -290,6 +312,7 @@ function AdminPage() {
                                             <td style={{ fontWeight: '500' }}>#{c.id}</td>
                                             <td>{c.name}</td>
                                             <td>{c.expiryInMonths !== undefined ? c.expiryInMonths : '-'}</td>
+                                            <td> {prematureCounts[c.id] !== undefined ? prematureCounts[c.id] : '...'} </td>
                                             <td>
                                                 <button
                                                     onClick={() => openCategoryModal(c)}

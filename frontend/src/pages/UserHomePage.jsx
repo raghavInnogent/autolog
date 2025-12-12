@@ -9,6 +9,7 @@ import AddVehicleModal from '../components/AddVehicleModal'
 import AddServiceModal from '../components/AddServiceModal'
 import DocumentUploadModal from '../components/DocumentUploadModal'
 import DocumentsCarousel from '../components/DocumentsCarousel'
+import PrematureItemsModal from '../components/PrematureItemsModal'
 import NotificationTable from '../components/NotificationTable'
 import { vehiclesAPI, documentsAPI, notificationsAPI, analyticsAPI } from '../services/api'
 import '../styles/pages/HomePage.css'
@@ -27,6 +28,7 @@ export default function UserHomePage() {
   const [showAdd, setShowAdd] = useState(false)
   const [showServiceModal, setShowServiceModal] = useState(false)
   const [showDocumentModal, setShowDocumentModal] = useState(false)
+  const [showPrematureModal, setShowPrematureModal] = useState(false)
   const [top3Vehicles, setTop3Vehicles] = useState([])
   const [mostEfficientVehicle, setMostEfficientVehicle] = useState(null)
 
@@ -237,7 +239,7 @@ export default function UserHomePage() {
                   <button className="hero-action-btn" onClick={() => setShowServiceModal(true)}>
                     <span className="btn-text">Add Service </span>
                   </button>
-                  <button className="hero-action-btn" onClick={() => window.location.href = '/prematures'}>
+                  <button className="hero-action-btn" onClick={() => setShowPrematureModal(true)}>
                     <span className="btn-text">Check Prematures</span>
                   </button>
                 </div>
@@ -256,6 +258,7 @@ export default function UserHomePage() {
       {showAdd && <AddVehicleModal onClose={() => setShowAdd(false)} onCreated={fetch} />}
       {showServiceModal && <AddServiceModal onClose={() => setShowServiceModal(false)} onCreated={fetch} />}
       {showDocumentModal && <DocumentUploadModal onClose={() => setShowDocumentModal(false)} onUploaded={fetch} />}
+      {showPrematureModal && <PrematureItemsModal onClose={() => setShowPrematureModal(false)} />}
     </div >
   )
 }
