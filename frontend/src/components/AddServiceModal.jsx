@@ -379,7 +379,7 @@ export default function AddServiceModal({ onClose, onCreated }) {
           <button type="button" className="navy-btn" onClick={onClose} style={{ background: 'var(--card)', color: 'var(--text)', border: '1px solid var(--border)' }}>
             Cancel
           </button>
-          <button type="submit" className="navy-btn" disabled={loading}>
+          <button type="submit" className="navy-btn" style={{ background: '#22577A', color: '#FFC300', border: '1px solid #22577A' }} disabled={loading}>
             {loading ? 'Saving...' : 'Create Service Record'}
           </button>
         </div>

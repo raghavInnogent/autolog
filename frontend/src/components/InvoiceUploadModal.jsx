@@ -93,7 +93,7 @@ export default function InvoiceUploadModal({ onClose, onDataExtracted }) {
                     >
                         Cancel
                     </button>
-                    <button type="submit" className="navy-btn" disabled={loading}>
+                    <button type="submit" className="navy-btn" style={{ background: '#22577A', color: '#FFC300', border: '1px solid #22577A' }} disabled={loading}>
                         {loading ? 'Processing...' : 'Upload & Extract'}
                     </button>
                 </div>

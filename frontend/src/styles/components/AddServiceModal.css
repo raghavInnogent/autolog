@@ -89,6 +89,12 @@
     margin-top: 12px;
 }
 
+.add-service-modal .navy-btn:hover:not([style*="background: var(--card)"]) {
+    background: #FFC300 !important;
+    color: #22577A !important;
+    border-color: #FFC300 !important;
+}
+
 @media (max-width: 600px) {
     .add-service-modal form {
         width: 92vw;

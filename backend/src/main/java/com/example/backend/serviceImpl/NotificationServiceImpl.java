@@ -39,6 +39,8 @@ public class NotificationServiceImpl implements NotificationService {
     private final NotificationMapper notificationMapper;
     private final VehicleMapper vehicleMapper;
 
+    private final EmailServiceImpl emailService;
+
     @Override
     public void generateNotificationsForServicedItem(ServicedItems item, Long vehicleId, Long userId) {
         createOrUpdateNotification(item.getId(), ReferenceType.SERVICED_ITEM, NotificationType.SERVICE_ITEM_EXPIRY,
@@ -104,10 +106,6 @@ public class NotificationServiceImpl implements NotificationService {
 
         notificationDao.save(notification);
         log.info("Notification created successfully for {}", logIdentifier);
-
-        if (notification.getPriority() == NotificationPriority.HIGH) {
-            sendHighPriorityNotificationEmail(notification);
-        }
     }
 
     @Override
@@ -243,21 +241,6 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void markAsAcknowledged(Long referenceId, ReferenceType referenceType) {
-        List<Notification> notifications = notificationDao.findByReferenceIdAndReferenceType(
-                referenceId, referenceType);
-
-        for (Notification notification : notifications) {
-            if (notification.getStatus() == NotificationStatus.ACTIVE) {
-                notification.setStatus(NotificationStatus.ACKNOWLEDGED);
-                notificationDao.save(notification);
-                log.info("Notification ID: {} marked as ACKNOWLEDGED for reference ID: {}",
-                        notification.getId(), referenceId);
-            }
-        }
-    }
-
-    @Override
     public void sendHighPriorityNotificationEmail(Notification notification) {
         try {
             User user = userDao.findById(notification.getUserId())
@@ -267,9 +250,7 @@ public class NotificationServiceImpl implements NotificationService {
             String subject = " HIGH Priority: " + notification.getMessage();
             String message = buildEmailTemplate(notification, user);
 
-            // Assuming EmailService interface
-            // emailService.sendEmail(user.getEmail(), subject, message);
-
+            emailService.sendSimpleEmail(user.getEmail(), subject, message);
             notificationDao.save(notification);
 
             log.info("HIGH priority email sent to User ID: {} for Notification ID: {}",
@@ -279,7 +260,6 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
-    // Helper methods
 
     private void updateNotification(Notification notification, LocalDate expiryDate) {
         notification.setExpiryDate(expiryDate);

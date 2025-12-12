@@ -51,9 +51,7 @@ function AdminPage() {
     async function fetchPrematureCounts() {
         if (categories.length === 0) return
         const counts = {}
-        // We can fetch individually or optimize. For now, Promise.all is fine for small number of categories.
-        // Or if the list is large, we might want to do it in batches or lazy load. 
-        // Given instructions, this is acceptable.
+
         await Promise.all(categories.map(async (c) => {
             try {
                 const res = await prematureAPI.getCountByCategory(c.id)
@@ -84,7 +82,6 @@ function AdminPage() {
         }
     }
 
-    // Refetch when switching tabs
     useEffect(() => {
         fetchData()
     }, [activeTab])

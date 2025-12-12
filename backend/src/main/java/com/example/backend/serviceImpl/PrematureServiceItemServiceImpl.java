@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
     private ServiceCategoriesDao serviceCategoriesDao;
 
     @Override
-    public ResponseEntity<PrematureItemResponseDto> savePrematureItem(PrematureServiceItemRequestDto itemDto) {
+    public PrematureItemResponseDto savePrematureItem(PrematureServiceItemRequestDto itemDto) {
         if (itemDto == null) {
             log.error("Request body is null");
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request body cannot be null");
@@ -64,11 +65,11 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
         PrematureItemResponseDto responseDto = convertToResponseDTO(savedItem);
 
         log.info("Successfully created premature item with id: {}", savedItem.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+        return responseDto;
     }
 
     @Override
-    public ResponseEntity<PrematureItemResponseDto> updatePrematureItem(PrematureServiceItemRequestDto itemDto) {
+    public PrematureItemResponseDto updatePrematureItem(PrematureServiceItemRequestDto itemDto) {
         log.info("Updating premature item for categoryId: {}", itemDto.getCategoryId());
 
         validatePrematureCount(itemDto.getPrematureCount());
@@ -91,26 +92,13 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
         PrematureItemResponseDto responseDto = convertToResponseDTO(updatedItem);
 
         log.info("Successfully updated premature item with id: {}", updatedItem.getId());
-        return ResponseEntity.ok(responseDto);
+        return responseDto;
     }
 
-    @Override
-    public ResponseEntity<Void> deletePrematureItem(Long id) {
-        log.info("Deleting premature item with id: {}", id);
 
-        PrematureServiceItem prematureItem = prematureServiceItemDao.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Premature item not found with id: {}", id);
-                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Premature service item not found");
-                });
-
-        prematureServiceItemDao.deleteById(id);
-        log.info("Successfully deleted premature item with id: {}", id);
-        return ResponseEntity.noContent().build();
-    }
 
     @Override
-    public ResponseEntity<List<PrematureItemResponseDto>> getAllPrematureItemsByUserId(Long userId) {
+    public List<PrematureItemResponseDto> getAllPrematureItemsByUserId(Long userId) {
         log.info("Fetching all premature items for userId: {}", userId);
 
         List<PrematureItemResponseDto> responseList = prematureServiceItemDao.findByUserId(userId).stream()
@@ -118,11 +106,11 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
                 .collect(Collectors.toList());
 
         log.info("Found {} premature items for userId: {}", responseList.size(), userId);
-        return ResponseEntity.ok(responseList);
+        return responseList;
     }
 
     @Override
-    public ResponseEntity<Integer> getTotalPrematureCountByCategoryId(Long categoryId) {
+    public Integer getTotalPrematureCountByCategoryId(Long categoryId) {
         log.info("Fetching total premature count for categoryId: {}", categoryId);
 
         ServiceCategories category = serviceCategoriesDao.findById(categoryId);
@@ -133,11 +121,11 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
 
         Integer count = prematureServiceItemDao.getTotalPrematureCountByCategoryId(categoryId);
         log.info("Total premature count for categoryId {}: {}", categoryId, count);
-        return ResponseEntity.ok(count);
+        return count;
     }
 
     @Override
-    public ResponseEntity<Integer> getTotalPrematureCountByVehicleIdAndCategoryId(Long vehicleId, Long categoryId) {
+    public Integer getTotalPrematureCountByVehicleIdAndCategoryId(Long vehicleId, Long categoryId) {
         log.info("Fetching total premature count for vehicleId: {} and categoryId: {}", vehicleId, categoryId);
 
         vehicleDao.findById(vehicleId)
@@ -154,20 +142,20 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
 
         Integer count = prematureServiceItemDao.getTotalPrematureCountByVehicleIdAndCategoryId(vehicleId, categoryId);
         log.info("Total premature count for vehicleId {} and categoryId {}: {}", vehicleId, categoryId, count);
-        return ResponseEntity.ok(count);
+        return count;
     }
 
     @Override
-    public ResponseEntity<Integer> getAdminTotalPrematureCountForAllCategories() {
+    public Integer getAdminTotalPrematureCountForAllCategories() {
         log.info("Fetching total premature count for all categories (admin)");
 
         Integer count = prematureServiceItemDao.getAdminTotalPrematureCountForAllCategories();
         log.info("Total premature count across all categories: {}", count);
-        return ResponseEntity.ok(count);
+        return count;
     }
 
     @Override
-    public ResponseEntity<List<PrematureItemResponseDto>> getPrematureByVehicleId(Long vehicleId) {
+    public List<PrematureItemResponseDto> getPrematureByVehicleId(Long vehicleId) {
         log.info("Fetching premature items for vehicleId: {}", vehicleId);
 
         vehicleDao.findById(vehicleId)
@@ -180,7 +168,7 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
 
         if (prematureItems.isEmpty()) {
             log.info("No premature items found for vehicleId: {}", vehicleId);
-            return ResponseEntity.noContent().build();
+            return new ArrayList<PrematureItemResponseDto>();
         }
 
         List<PrematureItemResponseDto> responseDtos = prematureItems.stream()
@@ -188,11 +176,11 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
                 .collect(Collectors.toList());
 
         log.info("Found {} premature items for vehicleId: {}", responseDtos.size(), vehicleId);
-        return ResponseEntity.ok(responseDtos);
+        return responseDtos;
     }
 
     @Override
-    public ResponseEntity<List<PrematureItemResponseDto>> getPrematureItemByUserIdAndVehicleId(Long userId,
+    public List<PrematureItemResponseDto> getPrematureItemByUserIdAndVehicleId(Long userId,
             Long vehicleId) {
         log.info("Fetching premature items for userId: {} and vehicleId: {}", userId, vehicleId);
 
@@ -206,7 +194,7 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
 
         if (prematureItems.isEmpty()) {
             log.info("No premature items found for userId: {} and vehicleId: {}", userId, vehicleId);
-            return ResponseEntity.noContent().build();
+            return new ArrayList<PrematureItemResponseDto>();
         }
 
         List<PrematureItemResponseDto> responseDtos = prematureItems.stream()
@@ -214,7 +202,7 @@ public class PrematureServiceItemServiceImpl implements PrematureServiceItemServ
                 .collect(Collectors.toList());
 
         log.info("Found {} premature items for userId: {} and vehicleId: {}", responseDtos.size(), userId, vehicleId);
-        return ResponseEntity.ok(responseDtos);
+        return responseDtos;
     }
 
     private PrematureItemResponseDto convertToResponseDTO(PrematureServiceItem item) {

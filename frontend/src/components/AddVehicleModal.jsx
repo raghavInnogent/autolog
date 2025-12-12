@@ -115,7 +115,7 @@ export default function AddVehicleModal({ onClose, onCreated }) {
         {error && <div style={{ color: 'crimson', fontSize: 13 }}>{error}</div>}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8, marginTop: 12 }}>
           <button type="button" onClick={onClose} className="navy-btn cancel-btn">Cancel</button>
-          <button type="submit" className="navy-btn">{loading ? 'Saving...' : 'Add Vehicle'}</button>
+          <button type="submit" className="navy-btn" style={{ background: '#22577A', color: '#FFC300', border: '1px solid #22577A' }}>{loading ? 'Saving...' : 'Add Vehicle'}</button>
         </div>
       </form>
     </div>

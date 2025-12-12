@@ -90,6 +90,12 @@
     transition: all 0.2s ease;
 }
 
+.document-upload-modal .navy-btn:hover:not([style*="background: var(--card)"]) {
+    background: #FFC300 !important;
+    color: #22577A !important;
+    border-color: #FFC300 !important;
+}
+
 .document-upload-modal .cancel-btn {
     background: transparent;
     border: 1px solid #e0e0e0;

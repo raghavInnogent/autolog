@@ -11,7 +11,7 @@ import DocumentUploadModal from '../components/DocumentUploadModal'
 import DocumentsCarousel from '../components/DocumentsCarousel'
 import PrematureItemsModal from '../components/PrematureItemsModal'
 import NotificationTable from '../components/NotificationTable'
-import { vehiclesAPI, documentsAPI, notificationsAPI, analyticsAPI } from '../services/api'
+import { vehiclesAPI, documentsAPI, notificationsAPI, analyticsAPI, prematureAPI } from '../services/api'
 import '../styles/pages/HomePage.css'
 import heroImage1 from '../assets/heroImage1.jpg'
 
@@ -31,6 +31,7 @@ export default function UserHomePage() {
   const [showPrematureModal, setShowPrematureModal] = useState(false)
   const [top3Vehicles, setTop3Vehicles] = useState([])
   const [mostEfficientVehicle, setMostEfficientVehicle] = useState(null)
+  const [prematureCount, setPrematureCount] = useState(0)
 
   const fetch = async () => {
     try {
@@ -58,6 +59,14 @@ export default function UserHomePage() {
       }
       setTop3Vehicles(top3Res.data || [])
       setMostEfficientVehicle(efficientRes.data || null)
+
+      try {
+        const prematureRes = await prematureAPI.getTotalCount()
+        setPrematureCount(prematureRes.data || 0)
+      } catch (prematureError) {
+        console.error('Error fetching premature count:', prematureError)
+        setPrematureCount(0)
+      }
 
       console.log('Top 3 Vehicles:', top3Res.data)
       console.log('Most Efficient Vehicle:', efficientRes.data)
@@ -152,35 +161,35 @@ export default function UserHomePage() {
               <h2 className="hero-section-title">Quick Stats</h2>
               <div className="stats-grid">
                 <div className="stat-item">
-                  <FaCar size={24} color="#FFC300" />
-                  <div className="stat-text">
+                  <div className="stat-label">
+                    <FaCar size={24} color="#FFC300" />
                     <span className="stat-description">Total Vehicles</span>
-                    <span className="stat-number">{vehicles.length}</span>
                   </div>
+                  <span className="stat-number">{vehicles.length}</span>
                 </div>
 
                 <div className="stat-item">
-                  <FiFileText size={24} color="#FFC300" />
-                  <div className="stat-text">
+                  <div className="stat-label">
+                    <FiFileText size={24} color="#FFC300" />
                     <span className="stat-description">Total Documents</span>
-                    <span className="stat-number">{docs.length}</span>
                   </div>
+                  <span className="stat-number">{docs.length}</span>
                 </div>
 
                 <div className="stat-item">
-                  <FiTool size={24} color="#FFC300" />
-                  <div className="stat-text">
+                  <div className="stat-label">
+                    <FiTool size={24} color="#FFC300" />
                     <span className="stat-description">Services This Month</span>
-                    <span className="stat-number">0</span>
                   </div>
+                  <span className="stat-number">0</span>
                 </div>
 
                 <div className="stat-item">
-                  <FiAlertTriangle size={24} color="#FFC300" />
-                  <div className="stat-text">
-                    <span className="stat-description">Pending Alerts</span>
-                    <span className="stat-number">0</span>
+                  <div className="stat-label">
+                    <FiAlertTriangle size={24} color="#FFC300" />
+                    <span className="stat-description">Premature Services</span>
                   </div>
+                  <span className="stat-number">{prematureCount}</span>
                 </div>
               </div>
 

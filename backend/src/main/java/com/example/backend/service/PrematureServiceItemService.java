@@ -10,21 +10,19 @@ import java.util.List;
 @Service
 public interface PrematureServiceItemService {
 
-    ResponseEntity<PrematureItemResponseDto> savePrematureItem(PrematureServiceItemRequestDto itemDto);
+    PrematureItemResponseDto savePrematureItem(PrematureServiceItemRequestDto itemDto);
 
-    ResponseEntity<PrematureItemResponseDto> updatePrematureItem(PrematureServiceItemRequestDto itemDto);
+    PrematureItemResponseDto updatePrematureItem(PrematureServiceItemRequestDto itemDto);
 
-    ResponseEntity<Void> deletePrematureItem(Long id);
+    List<PrematureItemResponseDto> getAllPrematureItemsByUserId(Long userId);
 
-    ResponseEntity<List<PrematureItemResponseDto>> getAllPrematureItemsByUserId(Long userId);
+    Integer getTotalPrematureCountByCategoryId(Long categoryId);
 
-    ResponseEntity<Integer> getTotalPrematureCountByCategoryId(Long categoryId);
+    Integer getTotalPrematureCountByVehicleIdAndCategoryId(Long vehicleId, Long categoryId);
 
-    ResponseEntity<Integer> getTotalPrematureCountByVehicleIdAndCategoryId(Long vehicleId, Long categoryId);
+    Integer getAdminTotalPrematureCountForAllCategories();
 
-    ResponseEntity<Integer> getAdminTotalPrematureCountForAllCategories();
+    List<PrematureItemResponseDto> getPrematureByVehicleId(Long vehicleId);
 
-    ResponseEntity<List<PrematureItemResponseDto>> getPrematureByVehicleId(Long vehicleId);
-
-    ResponseEntity<List<PrematureItemResponseDto>> getPrematureItemByUserIdAndVehicleId(Long userId, Long vehicleId);
+    List<PrematureItemResponseDto> getPrematureItemByUserIdAndVehicleId(Long userId, Long vehicleId);
 }

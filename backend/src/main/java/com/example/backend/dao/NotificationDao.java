@@ -50,17 +50,6 @@ public class NotificationDao {
         return repository.findByUserIdAndReadStatusOrderByPriorityDescCreatedAtDesc(userId, readStatus);
     }
 
-    public List<Notification> findByUserIdAndStatusAndReadStatusOrderByPriorityDescCreatedAtDesc(
-            Long userId, NotificationStatus status, ReadStatus readStatus) {
-        return repository.findByUserIdAndStatusAndReadStatusOrderByPriorityDescCreatedAtDesc(
-                userId, status, readStatus);
-    }
-
-    public List<Notification> findByUserIdAndPriorityOrderByCreatedAtDesc(
-            Long userId, NotificationPriority priority) {
-        return repository.findByUserIdAndPriorityOrderByCreatedAtDesc(userId, priority);
-    }
-
     public List<Notification> findByVehicleIdOrderByCreatedAtDesc(Long vehicleId) {
         return repository.findByVehicleIdOrderByCreatedAtDesc(vehicleId);
     }
@@ -68,15 +57,6 @@ public class NotificationDao {
     public Optional<Notification> findByReferenceIdAndReferenceTypeAndStatus(
             Long referenceId, ReferenceType referenceType, NotificationStatus status) {
         return repository.findByReferenceIdAndReferenceTypeAndStatus(referenceId, referenceType, status);
-    }
-
-    public List<Notification> findByReferenceIdAndReferenceType(
-            Long referenceId, ReferenceType referenceType) {
-        return repository.findByReferenceIdAndReferenceType(referenceId, referenceType);
-    }
-
-    public Long countByUserIdAndReadStatus(Long userId, ReadStatus readStatus) {
-        return repository.countByUserIdAndReadStatus(userId, readStatus);
     }
 
     public Long countByUserIdAndStatus(Long userId, NotificationStatus status) {
@@ -93,23 +73,8 @@ public class NotificationDao {
         return repository.countByUserIdAndStatusAndReadStatus(userId, status, readStatus);
     }
 
-    public List<Notification> findByExpiryDateBetweenAndStatus(
-            LocalDate from, LocalDate to, NotificationStatus status) {
-        return repository.findByExpiryDateBetweenAndStatus(from, to, status);
-    }
-
-    public List<Notification> findActiveNotificationsExpiringSoon(LocalDate from, LocalDate to) {
-        return repository.findActiveNotificationsExpiringSoon(from, to);
-    }
-
     public int markExpiredAsInactive(LocalDate date, NotificationStatus currentStatus,
             NotificationStatus newStatus) {
         return repository.markExpiredAsInactive(date, currentStatus, newStatus);
-    }
-
-    public List<Notification> findByUserIdAndPriorityAndReadStatusAndStatus(
-            Long userId, NotificationPriority priority, ReadStatus readStatus, NotificationStatus status) {
-        return repository.findByUserIdAndPriorityAndReadStatusAndStatus(
-                userId, priority, readStatus, status);
     }
 }

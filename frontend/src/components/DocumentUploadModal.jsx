@@ -135,7 +135,7 @@ export default function DocumentUploadModal({ onClose, onUploaded }) {
           >
             Cancel
           </button>
-          <button type="submit" className="navy-btn">
+          <button type="submit" className="navy-btn" style={{ background: '#22577A', color: '#FFC300', border: '1px solid #22577A' }}>
             {loading ? 'Uploading...' : 'Upload'}
           </button>
         </div>

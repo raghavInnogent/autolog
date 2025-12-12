@@ -22,10 +22,6 @@ public class PrematureServiceItemDao {
         return prematureServiceItemRepository.findById(id);
     }
 
-    public void deleteById(Long id) {
-        prematureServiceItemRepository.deleteById(id);
-    }
-
     public Optional<PrematureServiceItem> findByCategoryId(Long categoryId) {
         return Optional.ofNullable(prematureServiceItemRepository.getPrematureServiceItemByCategoryId(categoryId));
     }

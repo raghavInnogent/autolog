@@ -16,14 +16,12 @@ import java.util.List;
 @Service
 public interface NotificationService {
 
-    // Generation methods
     void generateNotificationsForServicedItem(ServicedItems item, Long vehicleId, Long userId);
 
     void generateNotificationsForDocument(Document document, Long userId);
 
     void scanAndGenerateNotificationsForUser(Long userId);
 
-    // Query methods
     NotificationDetailDTO getById(Long id, Long userId);
 
     List<NotificationResponseDTO> getAllByUser(Long userId, NotificationStatus status,
@@ -33,13 +31,9 @@ public interface NotificationService {
 
     NotificationCountDTO getCounts(Long userId);
 
-    // Action methods
     void markAsRead(Long id, Long userId);
 
     void markAllAsRead(Long userId);
 
-    void markAsAcknowledged(Long referenceId, ReferenceType referenceType);
-
-    // Email methods
     void sendHighPriorityNotificationEmail(Notification notification);
 }

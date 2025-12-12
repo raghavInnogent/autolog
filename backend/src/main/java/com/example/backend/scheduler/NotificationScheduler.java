@@ -56,6 +56,7 @@ public class NotificationScheduler {
             for (User user : allUsers) {
                 try {
                     notificationService.scanAndGenerateNotificationsForUser(user.getId());
+
                     successCount++;
                 } catch (Exception e) {
                     errorCount++;

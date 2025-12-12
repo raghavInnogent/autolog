@@ -137,21 +137,21 @@
 }
 
 .hero-action-btn {
-    background: #FFC300;
-    color: #22577A;
-    border: none;
+    background: #22577A;
+    color: #ffffff;
+    border: 2px solid #FFC300;
     padding: 20px 20px;
     border-radius: 6px;
     font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(255, 195, 0, 0.3);
+    box-shadow: 0 4px 12px rgba(34, 87, 122, 0.3);
     flex: 1;
 }
 
 .hero-action-btn:hover {
-    background: #FFFFFF;
+    background: #FFC300;
     color: #22577A;
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 195, 0, 0.5);
@@ -171,9 +171,9 @@
 /* Quick Stats Section */
 .stats-grid {
     display: grid;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: auto auto;
     row-gap: 25px;
-    column-gap: 5px;
+    column-gap: 20px;
     width: 100%;
     margin-top: 30px;
     align-items: center;
@@ -183,19 +183,17 @@
     display: contents;
 }
 
-.stat-item svg {
-    justify-self: start;
-}
-
-.stat-text {
-    display: contents;
+.stat-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .stat-description {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.9);
     font-weight: 400;
-    justify-self: start;
+    text-transform: none;
 }
 
 .stat-number {

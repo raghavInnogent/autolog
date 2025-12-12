@@ -36,10 +36,6 @@ public class ServiceRecordEventListener {
         // Process each serviced item
         for (ServicedItems newItem : record.getServicedItems()) {
             try {
-                // Check for premature replacement and create history
-               // serviceHistoryService.checkAndCreatePrematureReplacementHistory(newItem, vehicleId);
-
-                // Generate notifications for the new item
                 notificationService.generateNotificationsForServicedItem(newItem, vehicleId, userId);
 
                 log.info("Processed ServicedItem ID: {} for Vehicle ID: {}", newItem.getId(), vehicleId);

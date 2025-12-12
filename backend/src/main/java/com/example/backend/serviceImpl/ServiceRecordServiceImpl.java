@@ -115,7 +115,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
         double totalExpenditure = 0.0;
 
         for (Object[] result : results) {
-            int month = ((Number) result[0]).intValue() - 1; // Convert to 0-indexed (Jan=0)
+            int month = ((Number) result[0]).intValue() - 1;
             double amount = ((Number) result[1]).doubleValue();
             monthlyExpenditure.set(month, amount);
             totalExpenditure += amount;
@@ -243,7 +243,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     private void addPrematureServiceItem(ServicedItems serviceItem, Long categoryId,
             Long vehicleId, Long userId) {
         try {
-            // Check if premature record already exists for this category
+
             PrematureServiceItem existing = prematureServiceItemDao.findByCategoryId(categoryId)
                     .orElse(null);
 
@@ -253,16 +253,13 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
             requestDto.setCategoryId(categoryId);
 
             if (existing != null) {
-                // If exists, increment the count
                 requestDto.setPrematureCount(existing.getPrematureCount() + 1);
                 prematureServiceItemService.updatePrematureItem(requestDto);
             } else {
-                // If not exists, create new with count = 1
                 requestDto.setPrematureCount(1);
                 prematureServiceItemService.savePrematureItem(requestDto);
             }
         } catch (Exception e) {
-            // Log error but don't fail the service record creation
             System.err.println("Failed to record premature replacement for categoryId: "
                     + categoryId + " - " + e.getMessage());
         }
