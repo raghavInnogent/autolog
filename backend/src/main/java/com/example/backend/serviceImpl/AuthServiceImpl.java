@@ -55,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
             notificationService.scanAndGenerateNotificationsForUser(user.getId());
         } catch (Exception e) {
             e.getMessage();
-//
+
         }
 
         return userMapper.toResponseDTO(user);

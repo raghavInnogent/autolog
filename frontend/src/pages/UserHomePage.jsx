@@ -221,16 +221,16 @@ export default function UserHomePage() {
                       </div>
                     </div>
                     <div className="efficient-vehicle-stats">
-                      <div className="efficient-stat-line">
-                        <span className="efficient-stat-label">Mileage - </span>
+                      <div className="efficient-stat-item">
+                        <span className="efficient-stat-label">Mileage</span>
                         <span className="efficient-stat-value">{mostEfficientVehicle.latestMileage?.toLocaleString() || 'N/A'}</span>
                       </div>
-                      <div className="efficient-stat-line">
-                        <span className="efficient-stat-label">Total Service Cost - </span>
+                      <div className="efficient-stat-item">
+                        <span className="efficient-stat-label">Total Service Cost</span>
                         <span className="efficient-stat-value">₹{mostEfficientVehicle.totalServiceCost?.toLocaleString() || '0'}</span>
                       </div>
-                      <div className="efficient-stat-line">
-                        <span className="efficient-stat-label">Cost Efficiency - </span>
+                      <div className="efficient-stat-item">
+                        <span className="efficient-stat-label">Cost Efficiency</span>
                         <span className="efficient-stat-value">₹{mostEfficientVehicle.runningCostPerKm?.toFixed(2) || '0'}/km</span>
                       </div>
                     </div>

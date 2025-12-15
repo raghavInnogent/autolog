@@ -1,9 +1,6 @@
 package com.example.backend.serviceImpl;
 
-import com.example.backend.dao.PrematureServiceItemDao;
-import com.example.backend.dao.ServiceCategoriesDao;
-import com.example.backend.dao.ServiceRecordDao;
-import com.example.backend.dao.VehicleDao;
+import com.example.backend.dao.*;
 import com.example.backend.dto.analysis.MonthlyExpenditureDTO;
 import com.example.backend.dto.analysis.TopUsedVehicleDTO;
 import com.example.backend.dto.analysis.VehicleExpenditureDTO;
@@ -15,16 +12,13 @@ import com.example.backend.dto.request.ServicedItemRequestDTO;
 import com.example.backend.dto.response.ServiceRecordResponseDTO;
 import com.example.backend.dto.response.UserResponseDTO;
 import com.example.backend.entity.*;
-import com.example.backend.event.ServiceRecordCreatedEvent;  // ADD THIS
+import com.example.backend.event.ServiceRecordCreatedEvent;
 import com.example.backend.mapper.ServiceRecordMapper;
-import com.example.backend.repository.ServiceCategoriesRepository;
-import com.example.backend.repository.ServicedItemsRepository;
-import com.example.backend.repository.VehicleRepository;
 import com.example.backend.service.PrematureServiceItemService;
 import com.example.backend.service.ServiceRecordService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;  // ADD THIS
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -41,14 +35,14 @@ import java.util.List;
 public class ServiceRecordServiceImpl implements ServiceRecordService {
 
     private final ServiceRecordDao dao;
-    private final VehicleRepository vehicleRepo;
-    private final ServiceCategoriesRepository categoryRepo;
     private final ServiceRecordMapper mapper;
     private final ServiceCategoriesDao  categoryDao;
     private final AuthServiceImpl authService;
     private final PrematureServiceItemService prematureServiceItemService;
-    private final ServicedItemsRepository servicedItemsRepository;
+    private final ServicedItemsDao  servicedItemsDao;
     private final PrematureServiceItemDao prematureServiceItemDao;
+    private final ApplicationEventPublisher eventPublisher;
+
     @Autowired
     private VehicleDao vehicleDao;
 
@@ -56,7 +50,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
     public ServiceRecordResponseDTO create(ServiceRecordRequestDTO dto) {
         ServiceRecord record = mapper.toEntity(dto);
 
-        Vehicle vehicle = vehicleRepo.findById(dto.getVehicleId())
+        Vehicle vehicle = vehicleDao.findById(dto.getVehicleId())
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND,
                         String.format("Vehicle not found with id: %d", dto.getVehicleId())
@@ -71,6 +65,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
         });
 
         ServiceRecord savedRecord = dao.save(record);
+        eventPublisher.publishEvent(new ServiceRecordCreatedEvent(this, savedRecord));
         checkAndStorePrematureItems(savedRecord, vehicle.getOwner().getId());
 
         return mapper.toResponseDTO(savedRecord);
@@ -231,7 +226,7 @@ public class ServiceRecordServiceImpl implements ServiceRecordService {
             Long categoryId = serviceItem.getServiceCategoryId();
             LocalDate newExpirationDate = serviceItem.getExpirationDate();
 
-            ServicedItems previousItem = servicedItemsRepository.getPrematureItemByExpirationDate(
+            ServicedItems previousItem = servicedItemsDao.getPrematureItemByExpirationDate(
                     vehicleId, categoryId, today);
 
             if (previousItem != null && newExpirationDate.isBefore(previousItem.getExpirationDate())) {

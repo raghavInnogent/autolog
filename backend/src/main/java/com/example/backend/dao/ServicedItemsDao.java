@@ -29,5 +29,8 @@ public class ServicedItemsDao {
     public List<ServicedItems> findActiveItemsByVehicleAndCategory(Long vehicleId, Long categoryId, LocalDate currentDate) {
         return servicedItemsRepository.findActiveItemsByVehicleAndCategory(vehicleId,categoryId,currentDate);
     }
+    public ServicedItems getPrematureItemByExpirationDate(Long vehicleId, Long categoryId, LocalDate currentDate) {
+        return servicedItemsRepository.getPrematureItemByExpirationDate(vehicleId, categoryId, currentDate);
+    }
 
 }

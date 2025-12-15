@@ -14,6 +14,8 @@ public class UserResponseDTO {
 
     private String email;
 
+    private String image;
+
     private Long contactNo;
 
     private String role;

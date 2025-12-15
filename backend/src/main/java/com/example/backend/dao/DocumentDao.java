@@ -37,4 +37,16 @@ public class DocumentDao {
         return documentRepository.findAllByVehicleOwnerId(userId);
     }
 
+    public List<Document> findAllByVehicleId(Long vehicleId) { return documentRepository.findByVehicleId(vehicleId);}
+
 }
+
+
+
+
+
+
+
+
+
+

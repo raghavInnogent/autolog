@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { vehiclesAPI } from '../services/api'
+import { vehiclesAPI, documentsAPI } from '../services/api'
 import { FaArrowLeft, FaCar, FaCalendarAlt, FaRoad, FaIdCard, FaIndustry, FaFileAlt, FaFilePdf, FaFileImage } from 'react-icons/fa'
+import DocumentViewModal from '../components/DocumentViewModal'
 import '../styles/pages/VehicleDetailsPage.css'
 
 export default function VehicleDetailsPage() {
@@ -10,6 +11,8 @@ export default function VehicleDetailsPage() {
     const [vehicle, setVehicle] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const [selectedDocument, setSelectedDocument] = useState(null)
+    const [showModal, setShowModal] = useState(false)
 
     useEffect(() => {
         const fetchVehicle = async () => {
@@ -37,6 +40,23 @@ export default function VehicleDetailsPage() {
         if (lowerType.includes('pdf')) return <FaFilePdf />
         if (lowerType.includes('image') || lowerType.includes('jpg') || lowerType.includes('png')) return <FaFileImage />
         return <FaFileAlt />
+    }
+
+    const handleDocumentClick = async (docId) => {
+        try {
+            const response = await documentsAPI.getById(docId)
+            const documentData = response.data?.data || response.data
+            setSelectedDocument(documentData)
+            setShowModal(true)
+        } catch (err) {
+            console.error('Error fetching document:', err)
+            alert('Failed to load document details')
+        }
+    }
+
+    const handleCloseModal = () => {
+        setShowModal(false)
+        setSelectedDocument(null)
     }
 
     if (loading) {
@@ -150,21 +170,29 @@ export default function VehicleDetailsPage() {
                             {vehicle.documents && vehicle.documents.length > 0 ? (
                                 <div className="docs-slider">
                                     {vehicle.documents.map((doc, index) => (
-                                        <a
+                                        <div
                                             key={doc.id || index}
-                                            href={doc.documentUrl || doc.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
                                             className="doc-tile"
+                                            onClick={() => handleDocumentClick(doc.id)}
+                                            style={{ cursor: 'pointer' }}
                                         >
                                             <div className="doc-icon-circle">
                                                 {getDocumentIcon(doc.documentType || doc.type)}
                                             </div>
                                             <div className="doc-info">
-                                                <h4>{doc.documentName || doc.name || 'Untitled'}</h4>
-                                                <span>{doc.documentType || doc.type || 'DOCUMENT'}</span>
+                                                <h4>{doc.docName || doc.documentName || doc.name || 'Untitled'}</h4>
+                                                <span style={{ fontSize: 12, color: '#64748b' }}>
+                                                    {doc.expirationDate
+                                                        ? new Date(doc.expirationDate).toLocaleDateString('en-IN', {
+                                                            year: 'numeric',
+                                                            month: 'short',
+                                                            day: 'numeric'
+                                                        })
+                                                        : 'No expiry date'
+                                                    }
+                                                </span>
                                             </div>
-                                        </a>
+                                        </div>
                                     ))}
                                 </div>
                             ) : (
@@ -177,6 +205,14 @@ export default function VehicleDetailsPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Document View Modal */}
+            {showModal && selectedDocument && (
+                <DocumentViewModal
+                    document={selectedDocument}
+                    onClose={handleCloseModal}
+                />
+            )}
         </div>
     )
 }

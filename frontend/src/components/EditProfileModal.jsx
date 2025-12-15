@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import '../pages/ProfilePage.css'; // Reusing the CSS file
+import '../styles/components/EditProfileModal.css';
+import { FaUserCircle, FaTimes } from 'react-icons/fa';
 
 const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        phoneNumber: '',
-        email: '', // Often read-only, but user asked to update "Name, Contact, Email"
+        name: '',
+        email: '',
+        contactNo: '',
     });
     const [profileImage, setProfileImage] = useState(null);
     const [photoPreview, setPhotoPreview] = useState(null);
@@ -14,15 +14,12 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
 
     useEffect(() => {
         if (userData) {
-            // parsing name into first/last if possible, or just using what we have
-            const names = (userData.name || '').split(' ');
             setFormData({
-                firstName: names[0] || '',
-                lastName: names.slice(1).join(' ') || '',
-                phoneNumber: userData.phoneNumber || '',
+                name: userData.name || '',
                 email: userData.email || '',
+                contactNo: userData.contactNo || '',
             });
-            setPhotoPreview(userData.profilePhoto || null);
+            setPhotoPreview(userData.image || null);
         }
     }, [userData, isOpen]);
 
@@ -46,12 +43,9 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
         setIsLoading(true);
 
         try {
-            // Construct payload
             const updatedData = {
                 ...formData,
-                // Combine name for the parent component or keeping it separate depending on requirements
-                name: `${formData.firstName} ${formData.lastName}`.trim(),
-                file: profileImage // The file object
+                file: profileImage
             };
 
             await onSave(updatedData);
@@ -67,87 +61,82 @@ const EditProfileModal = ({ isOpen, onClose, userData, onSave }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-container">
-                <div className="modal-header">
+        <div className="edit-modal-overlay" onClick={onClose}>
+            <div className="edit-modal-container" onClick={(e) => e.stopPropagation()}>
+                <div className="edit-modal-header">
                     <h2>Edit Profile</h2>
-                    <button className="close-btn" onClick={onClose}>&times;</button>
+                    <button className="edit-modal-close-btn" onClick={onClose}>
+                        <FaTimes />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit}>
-                    <div className="modal-body">
-                        <div className="image-upload-wrapper">
-                            <div className="image-preview-box">
+                    <div className="edit-modal-body">
+                        {/* Image Upload */}
+                        <div className="edit-image-upload-wrapper">
+                            <div className="edit-image-preview-box">
                                 {photoPreview ? (
                                     <img src={photoPreview} alt="Profile Preview" />
                                 ) : (
-                                    <div className="img-placeholder">
-                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                            <circle cx="12" cy="7" r="4"></circle>
-                                        </svg>
+                                    <div className="edit-img-placeholder">
+                                        <FaUserCircle />
                                     </div>
                                 )}
                             </div>
                             <input
                                 type="file"
-                                id="profilePhotoInput"
+                                id="editProfilePhotoInput"
                                 accept="image/*"
                                 onChange={handlePhotoChange}
                                 style={{ display: 'none' }}
                             />
-                            <label htmlFor="profilePhotoInput" className="upload-label">
+                            <label htmlFor="editProfilePhotoInput" className="edit-upload-label">
                                 Change Photo
                             </label>
                         </div>
 
-                        <div className="form-group">
-                            <label>First Name</label>
+                        {/* Form Fields */}
+                        <div className="edit-form-group">
+                            <label>Full Name</label>
                             <input
                                 type="text"
-                                name="firstName"
-                                value={formData.firstName}
+                                name="name"
+                                value={formData.name}
                                 onChange={handleInputChange}
+                                placeholder="Enter your full name"
                                 required
                             />
                         </div>
 
-                        <div className="form-group">
-                            <label>Last Name</label>
-                            <input
-                                type="text"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Email</label>
+                        <div className="edit-form-group">
+                            <label>Email Address</label>
                             <input
                                 type="email"
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
+                                placeholder="your.email@example.com"
                                 required
                             />
                         </div>
 
-                        <div className="form-group">
+                        <div className="edit-form-group">
                             <label>Contact Number</label>
                             <input
                                 type="tel"
-                                name="phoneNumber"
-                                value={formData.phoneNumber}
+                                name="contactNo"
+                                value={formData.contactNo}
                                 onChange={handleInputChange}
                                 placeholder="+1 234 567 8900"
                             />
                         </div>
                     </div>
 
-                    <div className="modal-footer">
-                        <button type="button" className="btn-secondary" onClick={onClose}>Cancel</button>
-                        <button type="submit" className="btn-primary" disabled={isLoading}>
+                    <div className="edit-modal-footer">
+                        <button type="button" className="edit-btn-cancel" onClick={onClose}>
+                            Cancel
+                        </button>
+                        <button type="submit" className="edit-btn-save" disabled={isLoading}>
                             {isLoading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>

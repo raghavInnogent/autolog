@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public interface ServicedItemsRepository extends JpaRepository<ServicedItems, Long> {
 
-    List<ServicedItems> findByExpirationDateBetween(LocalDate from, LocalDate to);
 
     @Query("SELECT si FROM ServicedItems si " + "JOIN ServiceRecord sr ON si MEMBER OF sr.servicedItems "
             + "WHERE sr.vehicle.id = :vehicleId " + "AND si.serviceCategoryId = :categoryId "
@@ -20,8 +19,6 @@ public interface ServicedItemsRepository extends JpaRepository<ServicedItems, Lo
     List<ServicedItems> findActiveItemsByVehicleAndCategory(@Param("vehicleId") Long vehicleId,
             @Param("categoryId") Long categoryId, @Param("currentDate") LocalDate currentDate);
 
-    @Query("SELECT si FROM ServicedItems si WHERE si.expirationDate < :date")
-    List<ServicedItems> findExpiredItems(@Param("date") LocalDate date);
 
     @Query("SELECT si FROM ServicedItems si " + "JOIN ServiceRecord sr ON si MEMBER OF sr.servicedItems "
             + "WHERE sr.vehicle.id = :vehicleId")

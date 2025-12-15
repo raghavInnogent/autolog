@@ -1,13 +1,17 @@
 package com.example.backend.serviceImpl;
 
+import com.example.backend.dao.DocumentDao;
 import com.example.backend.dao.UserDao;
 import com.example.backend.dao.VehicleDao;
 import com.example.backend.dto.analysis.TopUsedVehicleDTO;
 import com.example.backend.dto.request.VehicleRequestDTO;
 import com.example.backend.dto.response.VehicleResponseDTO;
+import com.example.backend.dto.summary.DocumentSummaryDTO;
+import com.example.backend.entity.Document;
 import com.example.backend.entity.User;
 import com.example.backend.entity.Vehicle;
 import com.example.backend.enums.MessageKey;
+import com.example.backend.mapper.DocumentMapper;
 import com.example.backend.mapper.VehicleMapper;
 import com.example.backend.service.VehicleService;
 import jakarta.transaction.Transactional;
@@ -32,6 +36,12 @@ public class VehicleServiceImpl implements VehicleService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private DocumentDao documentDao;
+
+    @Autowired
+    private DocumentMapper documentMapper;
+
     public VehicleResponseDTO create(Long ownerId, VehicleRequestDTO dto) {
         User owner = userDao.findById(ownerId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, MessageKey.USER_NOT_FOUND.name()));
@@ -52,7 +62,14 @@ public class VehicleServiceImpl implements VehicleService {
         if (!v.getOwner().getId().equals(userId)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Access Denied");
         }
-        return vehicleMapper.toResponseDTO(v);
+        VehicleResponseDTO dto = vehicleMapper.toResponseDTO(v);
+        List<DocumentSummaryDTO> documents = documentDao.findAllByVehicleId(dto.getId())
+                .stream()
+                .map(document -> documentMapper.toSummaryDTO(document))
+                .toList();
+
+        dto.setDocuments(documents);
+        return dto;
     }
 
     public List<VehicleResponseDTO> getAll(Long userId) {

@@ -35,7 +35,4 @@ public class User {
     private UserRole role;
 
 	private Long contactNo;
-
-    private String address;
-
 }

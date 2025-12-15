@@ -127,7 +127,7 @@ export default function LoginPage() {
           </form>
 
           <div className="signup-link">
-            Don't have an account? <Link to="/signup">Create one now</Link>
+            Don't have an account? <Link to="/signup">Create new account</Link>
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@ export const vehiclesAPI = {
 
 export const documentsAPI = {
   getAll: (params) => api.get('/documents/getAllDocuments', { params }),
+  getById: (id) => api.get(`/documents/getDocumentById/${id}`),
   upload: (formData) => api.post('/documents/uploadDocument', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 }
 

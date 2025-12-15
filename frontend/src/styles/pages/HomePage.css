@@ -269,22 +269,25 @@
 }
 
 .efficient-vehicle-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+    display: grid;
+    grid-template-columns: auto auto;
+    row-gap: 20px;
+    column-gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    align-items: center;
     z-index: 1;
 }
 
-.efficient-stat-line {
-    display: flex;
-    align-items: baseline;
-    gap: 4px;
+.efficient-stat-item {
+    display: contents;
 }
 
 .efficient-stat-label {
     color: rgba(255, 255, 255, 0.9);
     font-size: 1rem;
     font-weight: 400;
+    text-transform: none;
 }
 
 .efficient-stat-value {
